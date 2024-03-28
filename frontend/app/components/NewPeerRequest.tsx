@@ -1,4 +1,3 @@
-
 import { Box, Button, HStack, IconButton, Text } from "@chakra-ui/react";
 
 import { Room } from "@huddle01/web-core";

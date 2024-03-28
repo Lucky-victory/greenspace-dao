@@ -17,10 +17,12 @@ export const communityMessagesState = createSlice({
     },
   },
   extraReducers(builder) {
-     builder.addMatcher(GreenSpaceDAOApi.endpoints.getCommunityMessages.matchFulfilled, (state, action) => {
-    
-      state.data = action.payload.data!;
-    })
+    builder.addMatcher(
+      GreenSpaceDAOApi.endpoints.getCommunityMessages.matchFulfilled,
+      (state, action) => {
+        state.data = action.payload.data!;
+      }
+    );
   },
 });
 

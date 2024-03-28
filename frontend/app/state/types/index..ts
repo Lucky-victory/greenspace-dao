@@ -1,6 +1,7 @@
-export type APIResponse<T> = {
-  data: T | null;
+export type APIResponse<T = null> = {
+  data: T;
   message?: string;
+  error?: any;
 };
 export type USERS = {
   id: number;
@@ -8,12 +9,13 @@ export type USERS = {
   chainId?: string;
   fullName?: string | null;
   role?: "admin" | "user";
-  avatarUrl?: string;
+  avatar?: string;
   authId?: string;
+  userType?: "member" | "nutritionist";
 };
 export type NEW_USER = Pick<
   USERS,
-  "address" | "chainId" | "fullName" | "avatarUrl" | "authId"
+  "address" | "chainId" | "fullName" | "avatar" | "authId"
 >;
 export type MEETINGS = {
   id: number;

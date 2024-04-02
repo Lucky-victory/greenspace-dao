@@ -32,7 +32,7 @@ pub struct Nutritionist {
     pub bump: u8,
 }
 
-impl BountyHunter {
+impl Nutritionist {
     pub const LEN: usize = DISCRIMINATOR_LENGTH  // 8-byte discriminator
         + NAME_LENGTH                            // Name
         + PUBKEY_LENGTH                          // Authority

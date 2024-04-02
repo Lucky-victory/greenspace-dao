@@ -3,21 +3,21 @@ use anchor_lang::prelude::*;
 use crate::constants::*;
 
 #[account]
-pub struct BountyApplication {
-    /// Bounty being applied to
-    pub bounty: Pubkey,
+pub struct NutritonistApplication{
+    // /// Bounty being applied to
+    // pub bounty: Pubkey,
 
-    /// Bounty creator this bounty belongs to
-    pub bounty_creator: Pubkey,
+    // /// Bounty creator this bounty belongs to
+    // pub bounty_creator: Pubkey,
 
-    /// Bonuty hunter applying for this bounty
-    pub bounty_hunter: Pubkey,
+    /// Nutritionist applying for the role
+    pub nutritonist: Pubkey,
 
-    /// User Token Account
-    pub bounty_hunter_token_account: Pubkey,
+    /// Nutritionist Token Account
+    pub nutritonist_token_account: Pubkey,
 
-    /// Bounty application status
-    pub bounty_application_status: BountyStatus,
+    /// Nutritonist application status
+    pub nutritonist_application_status: NutritonistApplicationStatus,
 
     /// Bump
     pub bump: u8,
@@ -30,7 +30,7 @@ pub enum NutritonistApplicationStatus {
     Accepted,
 }
 
-impl NutritonistApplicationStatus {
+impl NutritonistApplication {
     pub const LEN: usize = DISCRIMINATOR_LENGTH // 8-byte discriminator
        // + PUBKEY_LENGTH                         // 
         + PUBKEY_LENGTH                         // Nutritionist

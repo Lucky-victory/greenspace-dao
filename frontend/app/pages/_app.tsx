@@ -15,6 +15,10 @@ import { fonts } from "@/fonts";
 import { AppChakraProvider } from "@/providers/chakra";
 import { HuddleClient, HuddleProvider } from "@huddle01/react";
 import "@/styles/globals.css";
+import {
+  DynamicContextProvider,
+  DynamicWidget,
+} from "@dynamic-labs/sdk-react-core";
 import type { AppProps } from "next/app";
 import "swiper/css";
 import { SessionProvider } from "next-auth/react";

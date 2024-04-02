@@ -45,7 +45,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
         maxW={"1350"}
         h={"var(--chakra-vh,100vh)"}
         minH={600}
-        bg={"gs-yellow.900"}
+        bg={"black"}
       >
         <DashboardSideNav
           links={navLinks}

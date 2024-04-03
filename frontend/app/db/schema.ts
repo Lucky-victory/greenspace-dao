@@ -96,7 +96,6 @@ export const fitnessPlans = mysqlTable(
     updatedAt: timestamp("updated_at").onUpdateNow(),
   },
   (t) => ({
-    authIdx: index("auth_idx").on(t.authId),
     titleIdx: index("title_idx").on(t.title),
     slugIdx: index("slug_idx").on(t.slug),
   })

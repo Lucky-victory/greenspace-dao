@@ -1,6 +1,5 @@
-'use client';
-import Icon from '@/components/Icon';
-import { ChatMessages, Community } from '@/types/state';
+import Icon from "@/components/Icon";
+import { ChatMessages, Community } from "@/types/state";
 import {
   Avatar,
   Box,
@@ -17,30 +16,30 @@ import {
   TabPanels,
   Tabs,
   Text,
-} from '@chakra-ui/react';
-import BoringAvatars from 'boring-avatars';
-import { KeyboardEvent, useEffect, useState } from 'react';
-import { MdChat, MdEvent, MdViewAgenda } from 'react-icons/md';
-import { formatChatTimestamp, maskHexAddress } from '@/helpers';
+} from "@chakra-ui/react";
+import BoringAvatars from "boring-avatars";
+import { KeyboardEvent, useEffect, useState } from "react";
+import { MdChat, MdEvent, MdViewAgenda } from "react-icons/md";
+import { formatChatTimestamp, maskHexAddress } from "@/helpers";
 
-import { useAppContext } from '@/context/state';
-import { nanoid } from 'nanoid';
-import { PushAPI, CONSTANTS } from '@pushprotocol/restapi';
+import { useAppContext } from "@/context/state";
+import { nanoid } from "nanoid";
+import { PushAPI, CONSTANTS } from "@pushprotocol/restapi";
 import {
   usePushProtocolContext,
   PushProtocolProvider,
-} from '@/context/pushContext';
-import { ethers } from 'ethers';
+} from "@/context/pushContext";
+import { ethers } from "ethers";
 import {
   useAccount,
   useWalletClient,
   useConnect,
   useNetwork,
   type WalletClient,
-} from 'wagmi';
+} from "wagmi";
 
 export default function CommunityViewPage() {
-  const [messageToSend, setMessageToSend] = useState('');
+  const [messageToSend, setMessageToSend] = useState("");
 
   const { community, setCommunity, user } = useAppContext();
 
@@ -48,7 +47,7 @@ export default function CommunityViewPage() {
     community?.messages as ChatMessages[]
   );
   const [chatId, setChatId] = useState(
-    'b758f421a981a8498c200265ee96f5da0636b79fe28c8c598d4650f806d78973'
+    "b758f421a981a8498c200265ee96f5da0636b79fe28c8c598d4650f806d78973"
   );
   const { address } = useAccount();
   const { data: walletClient } = useWalletClient();
@@ -72,7 +71,7 @@ export default function CommunityViewPage() {
   const totalFetch = async () => {
     const _chatHistory = await pushProtocolUser.chat.history(chatId);
 
-    console.log('Chat History', _chatHistory);
+    console.log("Chat History", _chatHistory);
     setChatHistory(_chatHistory);
 
     let formattedChatHistory = _chatHistory.map((_message: any) => {
@@ -86,7 +85,7 @@ export default function CommunityViewPage() {
         timestamp: new Date(_message.timestamp).toISOString(),
         content: _message.messageContent,
         fullname: `${maskedAddress}`,
-        status: 'sent',
+        status: "sent",
         show_status: true,
       };
     });
@@ -95,7 +94,7 @@ export default function CommunityViewPage() {
   };
 
   function handleInputKeyUp(evt: KeyboardEvent) {
-    if (evt.key == 'Enter' && messageToSend !== '') {
+    if (evt.key == "Enter" && messageToSend !== "") {
       sendMessage("Text");
     }
   }
@@ -125,7 +124,7 @@ export default function CommunityViewPage() {
     // });
 
     //setPushProtocolUser(user);
-    console.log('sending message');
+    console.log("sending message");
     //console.log(`pushProtocolUser: ${JSON.stringify(pushProtocolUser, null, 2)}`)
 
     console.log(_message);
@@ -133,85 +132,84 @@ export default function CommunityViewPage() {
       totalFetch();
     }
     //setMessage('')
-    setMessageToSend('');
+    setMessageToSend("");
   };
-  
+
   useEffect(() => {
     initialize();
   }, []);
 
-
   return (
-    <Box className='h-screen' minH={'620px'} bg={'secondaryColor.50'}>
-      <Box bg={'white'} maxW={1250} mx={'auto'}>
-        <Box h={'120px'} bg={'primaryColor.800'}></Box>
+    <Box className="h-screen" minH={"620px"} bg={"secondaryColor.50"}>
+      <Box bg={"white"} maxW={1250} mx={"auto"}>
+        <Box h={"120px"} bg={"primaryColor.800"}></Box>
         <Flex gap={4}>
           <Box
-            rounded={'full'}
-            w={'80px'}
-            h={'80px'}
-            border={'2px'}
-            borderColor={'white'}
-            mt={'-6'}
+            rounded={"full"}
+            w={"80px"}
+            h={"80px"}
+            border={"2px"}
+            borderColor={"white"}
+            mt={"-6"}
             ml={6}
           >
             <Box
               as={community?.cover ? Avatar : BoringAvatars}
-              variant='sunset'
-              w={'full'}
-              h={'full'}
-              size={'auto'}
-              {...{ src: community?.cover, alt: '' }}
+              variant="sunset"
+              w={"full"}
+              h={"full"}
+              size={"auto"}
+              {...{ src: community?.cover, alt: "" }}
             ></Box>
           </Box>
           <Flex>
-            <Heading size={'md'} pt={1} fontSize={{ lg: '24px' }}>
+            <Heading size={"md"} pt={1} fontSize={{ lg: "24px" }}>
               {community?.name}
             </Heading>
           </Flex>
         </Flex>
         <HStack
-          alignItems={'start'}
+          alignItems={"start"}
           gap={6}
           my={6}
           px={6}
           divider={<StackDivider />}
         >
-          <Tabs flex={1} variant={'soft-rounded'} colorScheme='primaryColor'>
+          <Tabs flex={1} variant={"soft-rounded"} colorScheme="primaryColor">
             <TabList>
               <Tab>
-                <HStack spacing={3} alignItems={'center'}>
+                <HStack spacing={3} alignItems={"center"}>
                   <MdChat />
                   <span>Chats</span>
                 </HStack>
               </Tab>
               <Tab>
-                <HStack spacing={3} alignItems={'center'}>
+                <HStack spacing={3} alignItems={"center"}>
                   <MdEvent />
                   <span>Events</span>
                 </HStack>
               </Tab>
               <Tab>
-                <HStack spacing={3} alignItems={'center'}>
+                <HStack spacing={3} alignItems={"center"}>
                   <MdViewAgenda />
                   <span>Challenges</span>
                 </HStack>
               </Tab>
             </TabList>
-            <TabPanels h={'full'} py={3}>
-              <TabPanel pl={0} minH={'400px'} pos={'relative'}>
-                <Box minH={300} maxH={'350px'} overflowY={'auto'}>
+            <TabPanels h={"full"} py={3}>
+              <TabPanel pl={0} minH={"400px"} pos={"relative"}>
+                <Box minH={300} maxH={"350px"} overflowY={"auto"}>
                   {!chats?.length && (
                     <Flex
-                      justify={'center'}
-                      minH='300'
-                      bg={'gray.100'}
-                      align={'center'}
+                      justify={"center"}
+                      minH="300"
+                      bg={"gray.100"}
+                      align={"center"}
                     >
                       <Text
-                        color={'gray.500'}
-                        fontWeight={'medium'}
-                        fontSize={'xl'}
+                        color={"gray.500"}
+                        fontWeight={"medium"}
+                        fontSize={"xl"}
                       >
                         No Chats yet
                       </Text>
@@ -222,30 +220,30 @@ export default function CommunityViewPage() {
                       divider={<StackDivider />}
                       py={4}
                       px={2}
-                      rounded={'md'}
+                      rounded={"md"}
                       // bg={'gray.100'}
                     >
                       {chats?.map((message, i) => (
                         <HStack
                           key={message?.id}
-                          align={'flex-start'}
+                          align={"flex-start"}
                           gap={3}
-                          bg={'white'}
+                          bg={"white"}
                           p={3}
-                          rounded={'md'}
+                          rounded={"md"}
                         >
-                          <Box as={BoringAvatars} variant='beam'></Box>
+                          <Box as={BoringAvatars} variant="beam"></Box>
 
                           <Stack>
                             <HStack>
-                              <Heading size={'sm'} color={'primaryColor.800'}>
-                                {message?.userAddress || '0x456****8bc45'}{' '}
+                              <Heading size={"sm"} color={"primaryColor.800"}>
+                                {message?.userAddress || "0x456****8bc45"}{" "}
                               </Heading>
                               <Text
-                                as={'span'}
-                                color={'gray'}
-                                fontSize={'sm'}
-                                fontWeight={'medium'}
+                                as={"span"}
+                                color={"gray"}
+                                fontSize={"sm"}
+                                fontWeight={"medium"}
                               >
                                 {formatChatTimestamp(message?.timestamp)}
                               </Text>
@@ -259,26 +257,26 @@ export default function CommunityViewPage() {
                   )}
                 </Box>
                 <HStack
-                  pos={'sticky'}
-                  bg={'white'}
+                  pos={"sticky"}
+                  bg={"white"}
                   py={3}
                   bottom={0}
-                  w={'full'}
+                  w={"full"}
                   left={0}
                 >
                   <Input
                     value={messageToSend}
                     onChange={(e) => setMessageToSend(e.target.value)}
-                    colorScheme='primaryColor'
-                    placeholder='Type a message...'
+                    colorScheme="primaryColor"
+                    placeholder="Type a message..."
                     onKeyUp={handleInputKeyUp}
                   />
                   <Button
-                    variant={'solid'}
+                    variant={"solid"}
                     onClick={() => sendMessage("Text")}
                     // colorScheme='primaryColor'
                     // colorScheme='blue'
-                    isDisabled={messageToSend === ''}
+                    isDisabled={messageToSend === ""}
                   >
                     Send
                   </Button>
@@ -286,26 +284,26 @@ export default function CommunityViewPage() {
               </TabPanel>
               <TabPanel>
                 <Flex
-                  minH={'300px'}
-                  align={'center'}
-                  justify={'center'}
-                  bg={'gray.100'}
-                  fontWeight={'bold'}
-                  fontSize={'lg'}
-                  color={'gray.500'}
+                  minH={"300px"}
+                  align={"center"}
+                  justify={"center"}
+                  bg={"gray.100"}
+                  fontWeight={"bold"}
+                  fontSize={"lg"}
+                  color={"gray.500"}
                 >
                   No Events Available
                 </Flex>
               </TabPanel>
               <TabPanel>
                 <Flex
-                  minH={'300px'}
-                  align={'center'}
-                  justify={'center'}
-                  bg={'gray.100'}
-                  fontWeight={'bold'}
-                  fontSize={'lg'}
-                  color={'gray.500'}
+                  minH={"300px"}
+                  align={"center"}
+                  justify={"center"}
+                  bg={"gray.100"}
+                  fontWeight={"bold"}
+                  fontSize={"lg"}
+                  color={"gray.500"}
                 >
                   No Challenges Available
                 </Flex>
@@ -313,17 +311,17 @@ export default function CommunityViewPage() {
             </TabPanels>
           </Tabs>
 
-          <Stack bg={'white'} maxW={'350px'} pb={6}>
+          <Stack bg={"white"} maxW={"350px"} pb={6}>
             <Box
-              borderBottom={'1px'}
-              borderBottomColor={'gray.300'}
+              borderBottom={"1px"}
+              borderBottomColor={"gray.300"}
               py={3}
               px={5}
             >
-              <Heading size={'md'} as={'h3'}>
+              <Heading size={"md"} as={"h3"}>
                 About {community?.name}
               </Heading>
-              <Text fontSize={'sm'} mt={2}>
+              <Text fontSize={"sm"} mt={2}>
                 {community?.description}
               </Text>
             </Box>

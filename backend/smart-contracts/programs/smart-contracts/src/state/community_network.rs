@@ -5,7 +5,7 @@ use crate::constants::*;
 #[account]
 pub struct CommunityNetwork {
     /// Authority of GreenspaceDAO (will change to a multisig later)
-    pub authority: Pubkey,
+    pub admin: Pubkey,
 
     /// Community Network Vault Token Account
     pub community_network_vault: Pubkey,
@@ -14,10 +14,10 @@ pub struct CommunityNetwork {
     pub vault_mint: Pubkey,
 
     /// Number of nutritionists whitelisted by the Greenspace
-    pub whitelisted_nutritionists: u64,
+    pub total_whitelisted_nutritionists: u64,
 
     /// Number of registered users
-    pub users: u64,
+    pub total_users: u64,
 
     /// Bump
     pub bump: u8,

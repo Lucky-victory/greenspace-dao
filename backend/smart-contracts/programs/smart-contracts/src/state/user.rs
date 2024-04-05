@@ -15,8 +15,11 @@ pub struct User {
     // /// User Token Account
     // pub user_token_account: Pubkey,
 
-     /// User Id on the platform
-     pub id: u64,
+    /// User Id on the platform
+    pub id: u64,
+
+    /// Community Network associated with the user
+    pub community_network: Pubkey;
 
     /// subscription status
     pub user_subscription_status: UserStatus,
@@ -37,6 +40,7 @@ impl User {
         + PUBKEY_LENGTH                          // Authority
         + DATA_LENGTH                            // Reputation
         + DATA_LENGTH                            // id of User on the platform
+        + PUBKEY_LENGTH                           // Community_network
         + USER_ENUM_LENGTH                          // User subscription Status
         + BOOL_LENGTH; // PDA Bump
 }

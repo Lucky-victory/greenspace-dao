@@ -31,6 +31,6 @@ impl NutritonistApplication {
     pub const LEN: usize = DISCRIMINATOR_LENGTH // 8-byte discriminator
         + PUBKEY_LENGTH                         // Nutritionist
         // + PUBKEY_LENGTH                         // Nutritionist Token Account
-        + ENUM_LENGTH                           // Nutritionist application Status
+        + NUTRITIONIST_ENUM_LENGTH                          // Nutritionist application Status
         + BOOL_LENGTH; // Bump
 }

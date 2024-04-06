@@ -110,13 +110,11 @@ export const POST: HTTP_METHOD_CB = async (
   try {
     const { startTime, endTime, ...data } = req.body;
     const createdAppointment = await db.transaction(async (tx) => {
-      const [insertRes] = await tx
-        .insert(appointments)
-        .values({
-          ...data,
-          startTime: timestamp(startTime),
-          endTime: timestamp(endTime),
-        });
+      const [insertRes] = await tx.insert(appointments).values({
+        ...data,
+        startTime: timestamp(startTime),
+        endTime: timestamp(endTime),
+      });
       const createdAppointment = await tx.query.appointments.findFirst({
         where: eq(appointments.id, insertRes.insertId),
         // with: {

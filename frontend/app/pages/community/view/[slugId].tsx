@@ -12,9 +12,10 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
-import { Link } from "@chakra-ui/next-js";
 import PageWrapper from "@/components/PageWrapper";
 import { useActiveTab } from "@/hooks";
+import { generateUsername } from "@/utils";
+import { Link } from "@chakra-ui/next-js";
 
 export default function CommunityViewPage() {
   const [activeTab, setActiveTab] = useActiveTab("tab");
@@ -23,11 +24,29 @@ export default function CommunityViewPage() {
     py: 2,
     px: 6,
     rounded: "full",
-    // color:"gs-yellow.500",
+    fontWeight: "normal",
     _hover: {
       bg: "gray.700",
     },
   };
+  const members = [
+    {
+      fullName: "Mike Uche",
+      avatar: "https://randomuser.me/api/portraits/men/53.jpg",
+      username: "GH_1341331684",
+    },
+    {
+      fullName: "Olivia Dan",
+      avatar: "https://randomuser.me/api/portraits/women/36.jpg",
+      username: "GH_1931331334",
+    },
+    {
+      fullName: "Chinenye Johnson",
+      avatar: "https://randomuser.me/api/portraits/women/30.jpg",
+      username: "GH_1931331684",
+    },
+  ];
+
   const tabs = [
     {
       name: "About",
@@ -47,6 +66,7 @@ export default function CommunityViewPage() {
     },
   ];
   const tabButtons = tabs.map((tab) => {
+    // if (activeTab === "") setActiveTab("about");
     const isActive = tab.url === activeTab;
     return (
       <ListItem fontSize={"18px"} key={tab.name}>
@@ -54,7 +74,11 @@ export default function CommunityViewPage() {
           onClick={() => setActiveTab(tab.url)}
           variant={"unstyled"}
           {...tabBtnStyles}
-          {...(isActive && { color: "gs-yellow.400", bg: "gs-gray.800" })}
+          {...(isActive && {
+            fontWeight: 500,
+            color: "gs-yellow.300",
+            bg: "gs-gray.800",
+          })}
         >
           {tab.name}
         </Button>
@@ -107,11 +131,11 @@ export default function CommunityViewPage() {
               {[tabButtons]}
             </Flex>
           </Stack>
-          <Box flex={1} px={4} borderX={"1px"} borderColor={"gray.400"}>
+          <Box flex={1} px={4} borderX={"1px"} borderColor={"gray.600"}>
             info area
           </Box>
           <Box px={5} hideBelow={"lg"}>
-            <Box bg={"gray.800"} borderRadius={"15px"}>
+            <Box bg={"gray.900"} borderRadius={"15px"} minW={250}>
               <Heading
                 size={"md"}
                 fontWeight={500}
@@ -122,39 +146,24 @@ export default function CommunityViewPage() {
                 Members
               </Heading>
               <Stack p={4} as={List} divider={<Divider />}>
-                <ListItem>
-                  <HStack gap={4}>
-                    <Avatar size={"sm"} />{" "}
-                    <Stack>
-                      <Text fontWeight={500}>Mike Uche</Text>
-                    </Stack>
-                    <Button rounded={"full"} fontWeight={"normal"} size={"xs"}>
-                      View profile
-                    </Button>
-                  </HStack>
-                </ListItem>
-                <ListItem>
-                  <HStack gap={4}>
-                    <Avatar size={"sm"} />{" "}
-                    <Stack>
-                      <Text fontWeight={500}>Olivia Daniel</Text>
-                    </Stack>
-                    <Button rounded={"full"} fontWeight={"normal"} size={"xs"}>
-                      View profile
-                    </Button>
-                  </HStack>
-                </ListItem>
-                <ListItem>
-                  <HStack gap={4}>
-                    <Avatar size={"sm"} />{" "}
-                    <Stack>
-                      <Text fontWeight={500}>Chinenye Johnson</Text>
-                    </Stack>
-                    <Button rounded={"full"} fontWeight={"normal"} size={"xs"}>
-                      View profile
-                    </Button>
-                  </HStack>
-                </ListItem>
+                {members?.length > 0 &&
+                  members.map((member, i) => {
+                    return (
+                      <ListItem key={"member" + i}>
+                        <HStack gap={4}>
+                          <Avatar size={"sm"} src={member?.avatar} />{" "}
+                          <Stack>
+                            <Link
+                              href={"/user/" + member?.username}
+                              textDecor={"none!important"}
+                            >
+                              <Text fontWeight={500}>{member?.fullName}</Text>
+                            </Link>
+                          </Stack>
+                        </HStack>
+                      </ListItem>
+                    );
+                  })}
               </Stack>
             </Box>
           </Box>

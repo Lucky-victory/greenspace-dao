@@ -11,9 +11,25 @@ pub const LINK_LENGTH: usize = 50 * 4;
 
 #[constant]
 pub const USER_SEED: &[u8] = b"user";
+
+#[constant]
+pub const COMMUNITY_NETWORK_SEED: &[u8] = b"community-network";
+
 //update later
+#[constant]
 pub const COMMUNITY_NETWORK_ADMIN_PUBKEY: &str = "";
+
 pub const COMMUNITY_NETWORK_ESCROW_PDA_SEEDS: &[u8] = b"community-escrow";
+#[constant]
 pub const USDC_MINT_PUBKEY: Pubkey = pubkey!("envK7QRnj5Vm7m7yrB2bTn8YUpM6AYFW7WW1NK8YgTY");
+#[constant]
+pub const ADMIN: Pubkey = pubkey!("");
+// #[constant]
+// pub const USER_SUB_AMOUNT: u64 = 50;
+// #[constant]
+// pub const LAMPORTS_PER_USDC: u64 = 1_000_000;
 
+#[constant]
+pub const USER_SUB_AMOUNT: u64 = 50_000_000;
 
+pub const SEED_PROGRAM_CONFIG: &[u8] = b"program_config";

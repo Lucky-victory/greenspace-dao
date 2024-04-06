@@ -1,9 +1,9 @@
 use anchor_lang::prelude::*;
 
-declare_id!("69LrDhtKu2M6FXuF1mqJCM9s2J427XV19QFg972MWg9A");
+declare_id!("HtnGh5bjJ9LCUHhVBvifGjTZC9irtqR7p3pga4a6Q8mp");
 
 #[program]
-pub mod smart_contracts {
+pub mod greentest {
     use super::*;
 
     pub fn initialize(ctx: Context<Initialize>) -> Result<()> {

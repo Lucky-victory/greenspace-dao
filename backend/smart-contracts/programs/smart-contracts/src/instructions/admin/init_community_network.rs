@@ -19,6 +19,7 @@ pub struct InitCommunityNetwork<'info> {
     pub community_network: Box<Account<'info, CommunityNetwork>>,
 
     #[account(
+        mut,
         init_if_needed,
         payer = authority,
         associated_token::mint = user_nft_mint,
@@ -26,13 +27,8 @@ pub struct InitCommunityNetwork<'info> {
     )]
     pub user_nft: Account<'info, TokenAccount>,
 
-    // #[account(mut,
-    //     seeds = ["user-mint".as_bytes().as_ref()],
-    //     bump
-    // )]
-    // pub user_nft_mint: Account<'info, Mint>,
-
     #[account(
+        mut,
         init,
         seeds = ["user-mint".as_bytes()],
         bump,
@@ -44,6 +40,7 @@ pub struct InitCommunityNetwork<'info> {
     pub user_nft_mint: Account<'info, Mint>,
 
     #[account(
+        mut,
         init_if_needed,
         payer = authority,
         associated_token::mint = user_nft_mint,
@@ -59,6 +56,7 @@ pub struct InitCommunityNetwork<'info> {
     // pub nutritionist_nft_mint: Account<'info, Mint>,
 
     #[account(
+        mut,
         init,
         seeds = ["nutritionist-mint".as_bytes()],
         bump,
@@ -78,16 +76,16 @@ pub struct InitCommunityNetwork<'info> {
       )]
     pub community_network_vault_usdc_account: Account<'info, TokenAccount>,
 
-    #[account(mut)]
+    #[account(mut, address = ADMIN)]
     pub authority: Signer<'info>,
 
     pub token_program: Program<'info, Token>,
 
-    pub associated_token_program: Program<'info, AssociatedToken>
+    pub associated_token_program: Program<'info, AssociatedToken>,
 
     pub system_program: Program<'info, System>,
 
-    pub rent: Sysvar<'info, Rent>
+    //pub rent: Sysvar<'info, Rent>
 
 }
 

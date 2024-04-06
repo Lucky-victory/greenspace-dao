@@ -12,17 +12,17 @@ import {
   Stack,
   Text,
   useBreakpoint,
-  useBreakpointValue,
 } from "@chakra-ui/react";
 import PageWrapper from "@/components/PageWrapper";
 import { useActiveTab } from "@/hooks";
-import { generateUsername, isDuplicate } from "@/utils";
 import { Link } from "@chakra-ui/next-js";
 import { FiGlobe, FiLock } from "react-icons/fi";
 import { useEffect, useState } from "react";
 import TabPanels from "@/components/community-page/TabPanels";
 import { useRouter } from "next/router";
 import Head from "next/head";
+import PageLoader from "@/components/PageLoader";
+import { useGetCommunityQuery } from "@/state/services";
 
 const tabsObj = [
   {
@@ -43,13 +43,20 @@ const tabsObj = [
   },
 ];
 export default function CommunityViewPage() {
+  // TODO: Add a 404 redirect when no community was found.
   const router = useRouter();
   const { slugId } = router.query as { slugId: string };
+
   const [activeTab, setActiveTab] = useActiveTab("tab");
   const breakpoint = useBreakpoint();
   const [tabs, setTabs] = useState(tabsObj);
   const smallerBreakPoints = ["md", "base", "sm"];
-
+  // TODO: Replace the community object with the communityData from useGetCommunityQuery
+  const {
+    data: communityData,
+    isLoading,
+    isFetching,
+  } = useGetCommunityQuery({ spaceIdOrId: slugId });
   useEffect(() => {
     if (smallerBreakPoints.includes(breakpoint)) {
       setTabs((prev) => tabs.filter((tab) => tab.name !== "Members"));
@@ -122,22 +129,22 @@ export default function CommunityViewPage() {
     );
   });
   return (
-    <>
-      <Head>
-        <title>{community.name}</title>
-        <meta name="description" content={community.description} />
-        <meta property="og:title" content={community.name} />
-        <meta property="og:description" content={community.description} />
-        <meta property="og:type" content="website" />
-        <meta property="og:image" content={community.coverImage} />
-        <meta property="og:url" content="https://greenspacedao.xyz" />
-        <meta property="og:site_name" content="GreenspaceDAO" />
-        <meta property="og:locale" content="en_US" />
-        <meta property="og:locale:alternate" content="en" />
-        <meta property="og:locale:alternate" content="en_US" />
-        <meta property="og:locale:alternate" content="en_GB" />
-      </Head>
+    <PageLoader isLoading={isLoading || isFetching}>
       <PageWrapper props={{ minH: "var(--chakra-vh,100vh)" }}>
+        <Head>
+          <title>{community.name}</title>
+          <meta name="description" content={community.description} />
+          <meta property="og:title" content={community.name} />
+          <meta property="og:description" content={community.description} />
+          <meta property="og:type" content="website" />
+          <meta property="og:image" content={community.coverImage} />
+          <meta property="og:url" content="https://greenspacedao.xyz" />
+          <meta property="og:site_name" content="GreenspaceDAO" />
+          <meta property="og:locale" content="en_US" />
+          <meta property="og:locale:alternate" content="en" />
+          <meta property="og:locale:alternate" content="en_US" />
+          <meta property="og:locale:alternate" content="en_GB" />
+        </Head>
         <Box>
           {/* BANNER AREA */}
           <Box>
@@ -162,7 +169,7 @@ export default function CommunityViewPage() {
                     )}
                   </>
                   <Text
-                    fontSize={"14px"}
+                    fontSize={"10px"}
                     textTransform={"uppercase"}
                     as={"span"}
                   >
@@ -197,7 +204,7 @@ export default function CommunityViewPage() {
                   objectFit={"cover"}
                 />
               </Box>
-              <Heading as={"h1"} mt={{ lg: 14, base: 0 }}>
+              <Heading as={"h1"} textAlign={"center"} mt={{ lg: 14, base: 0 }}>
                 {community?.name}
               </Heading>
             </Flex>
@@ -265,6 +272,6 @@ export default function CommunityViewPage() {
           </Flex>
         </Box>
       </PageWrapper>
-    </>
+    </PageLoader>
   );
 }

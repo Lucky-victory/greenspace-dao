@@ -14,4 +14,6 @@ pub const USER_SEED: &[u8] = b"user";
 //update later
 pub const COMMUNITY_NETWORK_ADMIN_PUBKEY: &str = "";
 pub const COMMUNITY_NETWORK_ESCROW_PDA_SEEDS: &[u8] = b"community-escrow";
+pub const USDC_MINT_PUBKEY: Pubkey = pubkey!("envK7QRnj5Vm7m7yrB2bTn8YUpM6AYFW7WW1NK8YgTY");
+
 

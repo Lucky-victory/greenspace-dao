@@ -81,7 +81,7 @@ export default function App({ Component, pageProps }: AppProps) {
   const network = WalletAdapterNetwork.Devnet;
   const endpoint = useMemo(() => clusterApiUrl(network), [network]);
   const wallets = useMemo(
-    () => [new SolflareWalletAdapter({ network })],
+    () => [new PhantomWalletAdapter(), new SolflareWalletAdapter({ network })],
     [network]
   );
   return (

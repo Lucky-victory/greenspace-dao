@@ -15,7 +15,7 @@ export default function AuthBtn({
   userSession: USER_SESSION;
 }) {
   // const { publicKey, disconnecting } = useWallet();
-  const { isPending:isWagPending } = useDisconnect();
+  const { isPending: isWagPending } = useDisconnect();
 
   const { isConnected, isConnecting, isReconnecting, address } = useAccount();
 

@@ -1,23 +1,25 @@
-"use client";
-
 import { getCsrfToken } from "next-auth/react";
 
-import { DynamicContextProvider } from "../lib/dynamic";
+import { DynamicContextProvider } from "@/lib/dynamic";
 import {
   EthereumWalletConnectors,
   SolanaWalletConnectors,
-} from "../lib/dynamic";
+} from "@/lib/dynamic";
+
+import axios from "axios";
 
 export default function ProviderWrapper({ children }: React.PropsWithChildren) {
   return (
     <DynamicContextProvider
       settings={{
         environmentId: process.env.NEXT_PUBLIC_DYNAMIC_ENVIRONMENT_ID as string,
-        walletConnectors: [EthereumWalletConnectors, SolanaWalletConnectors],
+        walletConnectors: [SolanaWalletConnectors],
         eventsCallbacks: {
           onAuthSuccess: async (event) => {
             console.log("auth success from Dynamic", event);
-            const { authToken } = event;
+            const { authToken, user, primaryWallet } = event;
+
+            console.log("from authSuccess event", { user });
 
             const csrfToken = (await getCsrfToken()) as string;
 

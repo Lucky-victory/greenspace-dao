@@ -7,8 +7,8 @@ import { validateJWT } from "./lib/authHelpers";
 
 type User = {
   id: string;
-  FirstName: string;
-  LastName: string;
+  firstName: string;
+  lastName: string;
   email: string;
   // Add other fields as needed
 };
@@ -38,8 +38,8 @@ export const config = {
           // Transform the JWT payload into your user object
           const user: User = {
             id: jwtPayload.sub as string, // Assuming 'sub' is the user ID
-            FirstName: jwtPayload.FirstName || "", // Replace with actual field from JWT payload
-            LastName: jwtPayload.LastName || "", // Replace with actual field from JWT payload
+            firstName: jwtPayload.FirstName || "", // Replace with actual field from JWT payload
+            lastName: jwtPayload.LastName || "", // Replace with actual field from JWT payload
             email: jwtPayload.email || "", // Replace with actual field from JWT payload
             // Map other fields as needed
           };

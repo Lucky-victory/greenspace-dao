@@ -55,17 +55,23 @@ pub struct InitUser<'info> {
 
     pub token_program: Program<'info, Token>,
 
+    pub associated_token_program: Program<'info, AssociatedToken>,
+
     pub system_program: Program<'info, System>,
 }
 
 pub fn handler(ctx: Context<InitUser>) -> Result<()> {
     let user = &mut ctx.accounts.user;
+    let community_network = &mut ctx.accounts.community_network;
 
-    user.authority = *ctx.accounts.authority.key;
+    user.authority = ctx.accounts.authority.key();
     user.reputation = 0;
-    user.id = *ctx.community_network.total_users + 1;
+    user.id = community_network.total_users + 1;
     user.user_subscription_status = UserStatus::Active;
-    user.bump = *ctx.bumps.get("user").unwrap();
+    user.user_token_account = ctx.accounts.user_token_account.key();
+    user.user_nft_account = ctx.accounts.user_nft_account.key();
+    user.timestamp = ctx.accounts.clock.unix_timestamp;
+    user.bump = *ctx.bumps.get("user_account").unwrap();
 
     //  // Convert USDC amount to lamports (assuming USDC has 6 decimals)
     //  let sub_amount = USER_SUB_AMOUNT * LAMPORTS_PER_USDC / 10u64.pow(6);

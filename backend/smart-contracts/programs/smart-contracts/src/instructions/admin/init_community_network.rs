@@ -92,9 +92,10 @@ pub struct InitCommunityNetwork<'info> {
 pub fn init_community_network_handler(ctx: Context<InitCommunityNetwork>, name: String) -> Result<()> {
     let community_network = &mut ctx.accounts.community_network;
 
-    community_network.admin = *ctx.accounts.authority.key;
+    community_network.admin = ctx.accounts.authority.key();
     community_network.community_network_usdc_vault = ctx.accounts.community_network_vault_usdc_account.key();
     community_network.user_nft_mint = ctx.accounts.user_nft_mint.key();
+    community_network.total_nutritionist_applications = 0;
     community_network.total_whitelisted_nutritionists = 0;
     community_network.total_users = 0;
     community_network.bump = *ctx.bumps.get("community_network").unwrap();

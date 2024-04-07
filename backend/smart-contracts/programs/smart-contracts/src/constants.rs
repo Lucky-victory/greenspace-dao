@@ -13,6 +13,12 @@ pub const LINK_LENGTH: usize = 50 * 4;
 pub const USER_SEED: &[u8] = b"user";
 
 #[constant]
+pub const NUTRITIONIST_SEED: &[u8] = b"nutritionist";
+
+#[constant]
+pub const NUTRITIONIST_APPLICATION_SEED: &[u8] = b"nutritionist";
+
+#[constant]
 pub const COMMUNITY_NETWORK_SEED: &[u8] = b"community-network";
 
 //update later

@@ -3,23 +3,31 @@ use anchor_lang::prelude::*;
 use crate::constants::*;
 
 #[account]
-pub struct NutritonistApplication {
-    
-    /// Nutritionist applying for the role
-    pub nutritonist: Pubkey,
+pub struct NutritionistApplication {
+    /// Authority of Nutritionist
+    pub authority: Pubkey,
 
-    // /// Nutritionist Token Account
-    // pub nutritionist_token_account: Pubkey,
+    /// Nutritionist Token Account
+    pub nutritionist_token_account: Pubkey,
+
+    /// Nutritionist Id on the platform
+    pub id: u64,
 
     /// Nutritonist application status
-    pub nutritonist_application_status: NutritonistApplicationStatus,
+    pub nutritionist_application_status: NutritionistApplicationStatus,
+
+    ///// Reputation of nutritionist
+    // pub reputation: i64,
+
+    /// nft account associated with nutritionist
+    pub nutritionist_nft_account: Pubkey,
 
     /// Bump
     pub bump: u8,
 }
 
 #[derive(Debug, AnchorSerialize, AnchorDeserialize, Eq, PartialEq, Clone, Copy)]
-pub enum NutritonistApplicationStatus {
+pub enum NutritionistApplicationStatus {
     NotApplied,
     Pending,
     Accepted,
@@ -27,10 +35,13 @@ pub enum NutritonistApplicationStatus {
     Canceled,
 }
 
-impl NutritonistApplication {
-    pub const LEN: usize = DISCRIMINATOR_LENGTH // 8-byte discriminator
-        + PUBKEY_LENGTH                         // Nutritionist
-        // + PUBKEY_LENGTH                         // Nutritionist Token Account
-        + NUTRITIONIST_ENUM_LENGTH                          // Nutritionist application Status
-        + BOOL_LENGTH; // Bump
+impl NutritionistApplication {
+    pub const LEN: usize = DISCRIMINATOR_LENGTH  // 8-byte discriminator
+        + PUBKEY_LENGTH                          // Authority
+        + PUBKEY_LENGTH                       // Nutritionist Token Account
+        + DATA_LENGTH                            // id of Nutritionist applicant on the platform
+        + NUTRITIONIST_ENUM_LENGTH              // Nutritionist application Status
+        // + DATA_LENGTH                            // Reputation
+        + PUBKEY_LENGTH                       // Nutritionist Nft Account
+        + BOOL_LENGTH; // PDA Bump
 }

@@ -13,22 +13,39 @@ pub struct Nutritionist {
     /// Nutritionist Id on the platform
     pub id: u64,
 
+    // /// Nutritonist application status
+    // pub nutritionist_application_status: NutritionistApplicationStatus,
+
     /// Reputation of nutritionist
     pub reputation: i64,
 
-    // nutritonist status
-    pub is_whitelisted: bool;
+    /// nft account associated with nutritionist
+    pub nutritionist_nft_account: Pubkey,
+
+    // nutritionist status
+    pub is_whitelisted: bool,
 
     /// Bump
     pub bump: u8,
 }
+
+// #[derive(Debug, AnchorSerialize, AnchorDeserialize, Eq, PartialEq, Clone, Copy)]
+// pub enum NutritionistApplicationStatus {
+//     NotApplied,
+//     Pending,
+//     Accepted,
+//     Rejected,
+//     Canceled,
+// }
 
 impl Nutritionist {
     pub const LEN: usize = DISCRIMINATOR_LENGTH  // 8-byte discriminator
         + PUBKEY_LENGTH                          // Authority
         + PUBKEY_LENGTH                       // Nutritionist Token Account
         + DATA_LENGTH                            // id of Nutritionist on the platform
+        // + NUTRITIONIST_ENUM_LENGTH              // Nutritionist application Status
         + DATA_LENGTH                            // Reputation
-        + BOOL_LENGTH;                              //Whitelist status
+        + PUBKEY_LENGTH                       // Nutritionist Nft Account
+        + BOOL_LENGTH                              //Whitelist status
         + BOOL_LENGTH; // PDA Bump
 }

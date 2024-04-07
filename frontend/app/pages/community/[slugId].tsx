@@ -43,7 +43,7 @@ const tabsObj = [
   },
 ];
 export default function CommunityViewPage() {
-  // TODO: Add a 404 redirect when no community was found.
+  // TODO: Add a 404 redirect when no community is found.
   const router = useRouter();
   const { slugId } = router.query as { slugId: string };
 
@@ -193,7 +193,7 @@ export default function CommunityViewPage() {
                 w={{ lg: 150, base: 130 }}
                 h={{ lg: 150, base: 130 }}
                 boxShadow={"0 0 0 4px #8a8f91"}
-                bg={"red"}
+                bg={"gray.700 m,"}
                 overflow={"hidden"}
               >
                 <Image

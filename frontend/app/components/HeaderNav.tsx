@@ -35,7 +35,11 @@ import isEmpty from "just-is-empty";
 import { DynamicWidget } from "@dynamic-labs/sdk-react-core";
 export function HeaderNav() {
   const { isMobileSize, isTabletSize } = useResize();
+  const o = w.useWalletModal();
 
+  function openConnectModal() {
+    o.setVisible(true);
+  }
   const linkStyles = {
     display: isMobileSize || isTabletSize ? "block" : "inline-block",
     fontSize: "16px",

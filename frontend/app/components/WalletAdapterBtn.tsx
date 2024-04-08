@@ -26,7 +26,7 @@ type ButtonProps = PropsWithChildren<{
 export default function WalletAdaptor(props: ButtonProps) {
   return (
     <>
-      <w.WalletMultiButton {...props} />
+      <WalletMultiButton {...props} />
     </>
   );
 }

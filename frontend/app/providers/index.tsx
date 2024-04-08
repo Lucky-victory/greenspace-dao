@@ -5,6 +5,7 @@ import { Provider as ReduxProvider } from "react-redux";
 import store from "@/state/store";
 function AppProviders({ children }: { children: React.ReactNode }) {
   return (
+    // <WagmiConfig config={config}>
     <AppWrapper>
       <ReduxProvider store={store}>
         <ThirdwebProvider
@@ -15,6 +16,7 @@ function AppProviders({ children }: { children: React.ReactNode }) {
         </ThirdwebProvider>
       </ReduxProvider>
     </AppWrapper>
+    // </WagmiConfig>
   );
 }
 

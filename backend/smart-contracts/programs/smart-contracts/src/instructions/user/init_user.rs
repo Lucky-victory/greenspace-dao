@@ -103,7 +103,7 @@ pub fn handler(ctx: Context<InitUser>) -> Result<()> {
             },
             &[&[
                 "user-mint".as_bytes(),
-                &[*ctx.bumps.get("user_mint").unwrap()],
+                &[*ctx.bumps.get("user_nft_mint").unwrap()],
             ]],
         ),
         1,

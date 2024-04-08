@@ -28,11 +28,11 @@ pub struct ApproveNutritionistApplication<'info> {
     #[account(mut, address = ADMIN)]
     pub authority: Signer<'info>,
 
-    #[account(
-        mut,
-        token::mint = USDC_MINT_PUBKEY
-    )]
-    pub nutritionist_token_account: Account<'info, TokenAccount>,
+    // #[account(
+    //     mut,
+    //     token::mint = USDC_MINT_PUBKEY
+    // )]
+    // pub nutritionist_token_account: Account<'info, TokenAccount>,
 
     #[account(mut,
         seeds = ["nutritionist-mint".as_bytes().as_ref()],
@@ -40,14 +40,14 @@ pub struct ApproveNutritionistApplication<'info> {
     )]
     pub nutritionist_nft_mint: Account<'info, Mint>,
 
-    #[account(
-        mut,
-        init_if_needed,
-        payer = authority,
-        associated_token::mint = nutritionist_nft_mint,
-        associated_token::authority = authority
-    )]
-    pub nutritionist_nft_account: Account<'info, TokenAccount>,
+    // #[account(
+    //     mut,
+    //     init_if_needed,
+    //     payer = authority,
+    //     associated_token::mint = nutritionist_nft_mint,
+    //     associated_token::authority = authority
+    // )]
+    // pub nutritionist_nft_account: Account<'info, TokenAccount>,
 
     #[account(mut
         seeds = [COMMUNITY_NETWORK_SEED],
@@ -96,10 +96,10 @@ pub fn handler(ctx: Context<ApproveNutritionistApplication>) -> Result<()> {
 
     whitelisted_nutritionist = Nutritionist{
         authority: nutritionist_applicant.authority.key(),
-        nutritionist_token_account:  ctx.accounts.nutritionist_token_account.key(),
+        nutritionist_token_account:  nutritionist_applicant.nutritionist_token_account.key(),
         id: *community_network.total_whitelisted_nutritionists + 1,
         reputation: 0,
-        nutritionist_nft_account: ctx.accounts.nutritionist_nft_account.key(),
+        nutritionist_nft_account: nutritionist_applicant.nutritionist_nft_account.key(),
         is_whitelisted: true,
         bump: bump_seed
     };
@@ -131,8 +131,8 @@ pub fn handler(ctx: Context<ApproveNutritionistApplication>) -> Result<()> {
         CpiContext::new_with_signer(
             ctx.accounts.token_program.to_account_info(),
             MintTo {
-                authority: ctx.accounts.nutritionist_nft_mint.to_account_info(),
-                to: ctx.accounts.nutritionist_nft_account.to_account_info(),
+                authority: nutritionist_applicant.nutritionist_nft_mint.to_account_info(),
+                to: nutritionist_applicant.nutritionist_nft_account.to_account_info(),
                 mint: ctx.accounts.nutritionist_nft_mint.to_account_info(),
             },
             &[&[

@@ -89,7 +89,7 @@ pub fn handler(ctx: Context<ApproveNutritionistApplication>) -> Result<()> {
     let program_id = id();
 
     let (whitelisted_nutritionist, bump_seed) = Pubkey::find_program_address(
-        &[b"nutritionist", nutritionist_applicant.authority.pubkey()/*.as_ref()*/],
+        &[b"nutritionist", nutritionist_applicant.authority.key()/*.as_ref()*/],
         //program_id,
         ctx.program_id
     );
@@ -114,7 +114,7 @@ pub fn handler(ctx: Context<ApproveNutritionistApplication>) -> Result<()> {
         cpi_ctx.accounts.from.key,
         cpi_ctx.accounts.to.key,
         cpi_ctx.accounts.base.key,
-        b"nutritionist",
+        [b"nutritionist", nutritionist_applicant.authority.key()],
         min_rent_lamports,
         Nutritionist::LEN,
         ctx.program_id

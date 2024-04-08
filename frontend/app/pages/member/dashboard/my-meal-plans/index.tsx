@@ -24,9 +24,7 @@ export default function DashBoard() {
       <Box className="min-h-full h-full px-4 mt-6">
         <Flex align={"center"} justify={"space-between"}>
           <Flex align={"center"} gap={6}>
-            <Heading size={"lg"} >
-              Your Meal Plans
-            </Heading>{" "}
+            <Heading size={"lg"}>Your Meal Plans</Heading>{" "}
             <Text
               className="bg-primaryGreen text-white rounded-full py-1 px-4 "
               fontSize={"sm"}

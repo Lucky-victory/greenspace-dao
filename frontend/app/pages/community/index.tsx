@@ -1,7 +1,6 @@
-'use client';
 
-import Icon from '@/components/Icon';
-import Header from '@/components/header';
+import Icon from "@/components/Icon";
+import { HeaderNav } from "@/components/HeaderNav";
 import {
   useToast,
   Avatar,
@@ -20,16 +19,16 @@ import {
   TagLabel,
   Text,
   useDisclosure,
-} from '@chakra-ui/react';
-import { format } from 'date-fns';
-import { useContext, useEffect, useState } from 'react';
-import BoringAvatar from 'boring-avatars';
+} from "@chakra-ui/react";
+import { format } from "date-fns";
+import { useContext, useEffect, useState } from "react";
+import BoringAvatar from "boring-avatars";
 //@ts-ignore
-import DatePicker from 'react-datepicker';
-import { Community } from '@/types/state';
-import { useAppContext } from '@/context/state';
-import { useRouter } from 'next/router';
-import Footer from '@/components/footer';
+import DatePicker from "react-datepicker";
+import { Community } from "@/types/state";
+import { useAppContext } from "@/context/state";
+import { useRouter } from "next/router";
+import Footer from "@/components/Footer";
 
 export default function NutritionistPage() {
   // const toast = useToast({
@@ -46,91 +45,91 @@ export default function NutritionistPage() {
   const { communities, setCommunity } = useAppContext();
   const handleJoin = (community: Community | null) => {
     setCommunity(community);
-    router.push('/community/' + community?.slug);
+    router.push("/community/" + community?.slug);
   };
 
   return (
     <>
       <Box
-        className='bg-primaryYellowTrans'
+        className="bg-primaryYellowTrans"
         // h={'100vh'}
         px={6}
-        overflowY={'auto'}
+        overflowY={"auto"}
         pb={12}
       >
-        <Header bg='white' />
-        <Box maxW={'1300'} mx={'auto'}>
-          <Heading size={'lg'} my={4} bg={'white'} py={4} px={3} rounded={'md'}>
+        <HeaderNav />
+        <Box maxW={"1300"} mx={"auto"}>
+          <Heading size={"lg"} my={4} bg={"white"} py={4} px={3} rounded={"md"}>
             Find people with similar interest
           </Heading>
-          <Flex gap={6} wrap={'wrap'}>
+          <Flex gap={6} wrap={"wrap"}>
             {communities?.map((c, i) => {
               return (
                 <Box
-                  maxW={{ lg: '50%' }}
-                  key={'nutri' + i}
-                  bg={'white'}
-                  rounded={'md'}
+                  maxW={{ lg: "50%" }}
+                  key={"nutri" + i}
+                  bg={"white"}
+                  rounded={"md"}
                   px={4}
                   py={5}
                   flex={1}
                   minW={500}
                 >
-                  <Flex align={'start'} gap={4} mb={5}>
-                    {c.cover && <Avatar size={'lg'} src={c.cover} />}
+                  <Flex align={"start"} gap={4} mb={5}>
+                    {c.cover && <Avatar size={"lg"} src={c.cover} />}
                     {!c.cover && (
                       <BoringAvatar
-                        variant='sunset'
+                        variant="sunset"
                         colors={[
-                          '#92A1C6',
-                          '#146A7C',
-                          '#F0AB3D',
-                          '#C271B4',
-                          '#C20D90',
+                          "#92A1C6",
+                          "#146A7C",
+                          "#F0AB3D",
+                          "#C271B4",
+                          "#C20D90",
                         ]}
                       />
                     )}
                     <Box>
                       <Heading
-                        className='text-primaryGreen'
-                        as={'h3'}
+                        className="text-primaryGreen"
+                        as={"h3"}
                         mb={2}
-                        size={'md'}
+                        size={"md"}
                       >
                         {c.name}
                       </Heading>
                       <Text
                         as={Flex}
                         gap={1}
-                        alignItems={'center'}
-                        fontWeight={'medium'}
-                        className='text-secondaryGray'
+                        alignItems={"center"}
+                        fontWeight={"medium"}
+                        className="text-secondaryGray"
                       >
-                        <Icon name='group' size={20} /> {c.membersCount} members
+                        <Icon name="group" size={20} /> {c.membersCount} members
                       </Text>
                     </Box>
                     <Button
                       onClick={() => handleJoin(c)}
-                      ml={'auto'}
-                      className='bg-primaryYellow text-primaryGreen'
+                      ml={"auto"}
+                      className="bg-primaryYellow text-primaryGreen"
                       gap={2}
-                      rounded={'full'}
-                      size={'md'}
+                      rounded={"full"}
+                      size={"md"}
                     >
-                      <Icon size={24} name='group_add' /> Join Community
+                      <Icon size={24} name="group_add" /> Join Community
                     </Button>
                   </Flex>
                   {c.description && (
                     <Box>
                       <Heading
                         mb={3}
-                        as={'h4'}
-                        size={'md'}
-                        className='text-primaryGreen'
+                        as={"h4"}
+                        size={"md"}
+                        className="text-primaryGreen"
                       >
                         Description
                       </Heading>
-                      <Text pb={4} className='text-primaryGray'>
+                      <Text pb={4} className="text-primaryGray">
                         {c.description}
                       </Text>
                     </Box>

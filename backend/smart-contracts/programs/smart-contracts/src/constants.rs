@@ -16,7 +16,7 @@ pub const USER_SEED: &[u8] = b"user";
 pub const NUTRITIONIST_SEED: &[u8] = b"nutritionist";
 
 #[constant]
-pub const NUTRITIONIST_APPLICATION_SEED: &[u8] = b"nutritionist";
+pub const NUTRITIONIST_APPLICANT_SEED: &[u8] = b"nutritionist-applicant";
 
 #[constant]
 pub const COMMUNITY_NETWORK_SEED: &[u8] = b"community-network";

@@ -6,15 +6,15 @@ use crate::{errors::ErrorCodes, state::*};
 
 #[derive(Accounts)]
 #[instruction()]
-pub struct InitNutritionistApplication<'info> {
+pub struct InitNutritionistApplicant<'info> {
     #[account(
         init,
-        seeds = [NUTRITIONIST_APPLICATION_SEED, authority.key().as_ref()],
+        seeds = [NUTRITIONIST_APPLICANT_SEED, authority.key().as_ref()],
         bump,
         payer = authority,
-        space = NutritionistApplication::LEN
+        space = NutritionistApplicant::LEN
     )]
-    pub nutritionist_application: Account<'info, NutritionistApplication>,
+    pub nutritionist_applicant: Account<'info, NutritionistApplicant>,
 
     #[account(mut)]
     pub authority: Signer<'info>,
@@ -40,9 +40,9 @@ pub struct InitNutritionistApplication<'info> {
     )]
     pub nutritionist_nft_account: Account<'info, TokenAccount>,
 
-    #[account(
-        seeds = [COMMUNITY_NETWORK_SEED],
-        bump
+    #[account(mut
+        // seeds = [COMMUNITY_NETWORK_SEED],
+        // bump
         //has_one = community_network_vault_usdc_account
     )]
     pub community_network: Box<Account<'info, CommunityNetwork>>,
@@ -60,18 +60,21 @@ pub struct InitNutritionistApplication<'info> {
     pub system_program: Program<'info, System>,
 }
 
-pub fn handler(ctx: Context<InitNutritionist>) -> Result<()> {
-    let nutritionist_application = &mut ctx.accounts.nutritionist_application;
+pub fn handler(ctx: Context<InitNutritionistApplicant>) -> Result<()> {
+    let nutritionist_applicant = &mut ctx.accounts.nutritionist_applicant;
     let community_network = &mut ctx.accounts.community_network;
 
-    nutritionist_application.authority = ctx.accounts.authority.key();
-    nutritionist_application.nutritionist_token_account = ctx.accounts.nutritionist_token_account.key();
-    nutritionist_application.nutritionist_nft_account = ctx.accounts.nutritionist_nft_account.key();
-    nutritionist_application.id = *community_network.total_nutritionist_applications + 1;
-    nutritionist_application.nutritionist_application_status = NutritionistApplicationStatus::Pending;
-    nutritionist_application.bump = *ctx.bumps.get("nutritionist_application").unwrap();
+    nutritionist_applicant.authority = ctx.accounts.authority.key();
+    nutritionist_applicant.nutritionist_token_account =
+        ctx.accounts.nutritionist_token_account.key();
+    nutritionist_applicant.nutritionist_nft_account = ctx.accounts.nutritionist_nft_account.key();
+    nutritionist_applicant.id = *community_network.total_nutritionist_applications + 1;
+    nutritionist_applicant.nutritionist_application_status =
+        NutritionistApplicationStatus::Pending;
+    nutritionist_applicant.is_whitelisted = false;
+    nutritionist_applicant.bump = *ctx.bumps.get("nutritionist_applicant").unwrap();
 
     community_network.total_nutritionist_applications += 1;
-   
+
     Ok(())
 }

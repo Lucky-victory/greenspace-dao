@@ -57,6 +57,8 @@ pub struct InitUser<'info> {
 
     pub associated_token_program: Program<'info, AssociatedToken>,
 
+    pub clock: Sysvar<'info, Clock>,
+
     pub system_program: Program<'info, System>,
 }
 
@@ -101,7 +103,7 @@ pub fn handler(ctx: Context<InitUser>) -> Result<()> {
             },
             &[&[
                 "user-mint".as_bytes(),
-                &[*ctx.bumps.get("user-mint").unwrap()],
+                &[*ctx.bumps.get("user_mint").unwrap()],
             ]],
         ),
         1,

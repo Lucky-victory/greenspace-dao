@@ -3,7 +3,7 @@ use anchor_lang::prelude::*;
 use crate::constants::*;
 
 #[account]
-pub struct NutritionistApplication {
+pub struct NutritionistApplicant {
     /// Authority of Nutritionist
     pub authority: Pubkey,
 
@@ -22,6 +22,9 @@ pub struct NutritionistApplication {
     /// nft account associated with nutritionist
     pub nutritionist_nft_account: Pubkey,
 
+    ///bool to show whether nutritionist is whitelisted or not
+    pub is_whitelisted: bool,
+
     /// Bump
     pub bump: u8,
 }
@@ -35,7 +38,7 @@ pub enum NutritionistApplicationStatus {
     Canceled,
 }
 
-impl NutritionistApplication {
+impl NutritionistApplicant {
     pub const LEN: usize = DISCRIMINATOR_LENGTH  // 8-byte discriminator
         + PUBKEY_LENGTH                          // Authority
         + PUBKEY_LENGTH                       // Nutritionist Token Account
@@ -43,5 +46,6 @@ impl NutritionistApplication {
         + NUTRITIONIST_ENUM_LENGTH              // Nutritionist application Status
         // + DATA_LENGTH                            // Reputation
         + PUBKEY_LENGTH                       // Nutritionist Nft Account
+        + BOOL_LENGTH                        // Nutritionist whitelisted status
         + BOOL_LENGTH; // PDA Bump
 }

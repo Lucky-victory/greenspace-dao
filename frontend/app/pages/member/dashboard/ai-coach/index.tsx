@@ -296,14 +296,8 @@ const AiCoachPage = () => {
               />
             )}
 
-            <Box
-              bg={"gray.800"}
-              className=" flex flex-col justify-end gap-4 p-4 fixed bottom-4 max-w-[48.5rem] w-full rounded-[20px] shadow-[0_0_50px_7px_rgba(0,0,0,0.08)]"
-            >
-              <Box
-                bg={"gray.800"}
-                className="w-full  p-4 rounded shadow-[0_0_50px_7px_rgba(0,0,0,0.08)]"
-              >
+            <div className=" flex flex-col justify-end gap-4 bg-white p-4 fixed bottom-4 max-w-[48.5rem] w-full h-min rounded-[20px] shadow-[0_0_50px_7px_rgba(0,0,0,0.08)]">
+              <div className="w-full bg-white p-4 rounded shadow-[0_0_50px_7px_rgba(0,0,0,0.08)]">
                 {/* This enables the textarea to auto grow! */}
                 <div className="relative">
                   <div className="whitespace-pre-line bg-white invisible min-h-[4rem] w-full">
@@ -320,7 +314,7 @@ const AiCoachPage = () => {
                     value={state.active_question}
                   />
                 </div>
-              </Box>
+              </div>
 
               <div className="flex justify-end">
                 <MessageButton
@@ -329,7 +323,7 @@ const AiCoachPage = () => {
                   }}
                 />
               </div>
-            </Box>
+            </div>
           </div>
         </div>
       </div>

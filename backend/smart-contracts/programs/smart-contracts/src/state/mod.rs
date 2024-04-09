@@ -1,13 +1,13 @@
-pub mod admin;
+
 pub mod community_network;
-pub mod member;
-pub mod community;
+pub mod user;
+pub mod nutritionist_applicant;
 pub mod nutritionist;
 
-pub use admin::*;
+
 pub use community_network::*;
-pub use member::*;
-pub use community::*;
+pub use user::*;
+pub use nutritionist_applicant::*;
 pub use nutritionist::*;
 
 

@@ -1,15 +1,13 @@
 use {
-    anchor_lang::prelude::*,
-    anchor_spl::{
+    crate::constants::ADMIN, anchor_lang::prelude::*, anchor_spl::{
         metadata::{create_metadata_accounts_v3, CreateMetadataAccountsV3, Metadata},
         token::{Mint, Token},
-    },
-    mpl_token_metadata::{pda::find_metadata_account, state::DataV2},
+    }, mpl_token_metadata::{pda::find_metadata_account, state::DataV2}
 };
 
 #[derive(Accounts)]
 pub struct InitUserNft<'info> {
-    #[account(mut)]
+    #[account(mut, address = ADMIN)]
     pub payer: Signer<'info>,
 
     // Create mint account
@@ -39,7 +37,7 @@ pub struct InitUserNft<'info> {
     pub rent: Sysvar<'info, Rent>,
 }
 
-pub fn create_token(
+pub fn init_user_nft_handler(
     ctx: Context<InitUserNft>,
     token_name: String,
     token_symbol: String,
@@ -48,7 +46,7 @@ pub fn create_token(
     msg!("Creating metadata account");
 
     // PDA signer seeds
-    let signer_seeds: &[&[&[u8]]] = &[&[b"mint", &[*ctx.bumps.get("user_nft_mint").unwrap()]]];
+    let signer_seeds: &[&[&[u8]]] = &[&[b"user-mint", &[*ctx.bumps.get("user_nft_mint").unwrap()]]];
 
     // Cross Program Invocation (CPI) signed by PDA
     // Invoking the create_metadata_account_v3 instruction on the token metadata program
@@ -80,7 +78,7 @@ pub fn create_token(
         None,  // Collection details
     )?;
 
-    msg!("Token created successfully.");
+    msg!("User NFT created successfully.");
 
     Ok(())
 }

@@ -2,6 +2,7 @@ use anchor_lang::prelude::*;
 use anchor_spl::associated_token::AssociatedToken;
 use anchor_spl::token::{mint_to, Mint, MintTo, Token, TokenAccount};
 
+use crate::constants::{COMMUNITY_NETWORK_SEED, NUTRITIONIST_APPLICANT_SEED, USDC_MINT_PUBKEY};
 use crate::{errors::ErrorCodes, state::*};
 
 #[derive(Accounts)]
@@ -20,8 +21,10 @@ pub struct InitNutritionistApplicant<'info> {
     pub authority: Signer<'info>,
 
     #[account(
-        mut,
-        token::mint = USDC_MINT_PUBKEY
+        //init_if_needed,
+        //payer = authority,
+        token::mint = USDC_MINT_PUBKEY,
+        //associated_token::authority = authority
     )]
     pub nutritionist_token_account: Account<'info, TokenAccount>,
 
@@ -32,7 +35,6 @@ pub struct InitNutritionistApplicant<'info> {
     pub nutritionist_nft_mint: Account<'info, Mint>,
 
     #[account(
-        mut,
         init_if_needed,
         payer = authority,
         associated_token::mint = nutritionist_nft_mint,
@@ -40,9 +42,9 @@ pub struct InitNutritionistApplicant<'info> {
     )]
     pub nutritionist_nft_account: Account<'info, TokenAccount>,
 
-    #[account(mut
-        // seeds = [COMMUNITY_NETWORK_SEED],
-        // bump
+    #[account(mut,
+        seeds = [COMMUNITY_NETWORK_SEED],
+         bump
         //has_one = community_network_vault_usdc_account
     )]
     pub community_network: Box<Account<'info, CommunityNetwork>>,
@@ -57,10 +59,12 @@ pub struct InitNutritionistApplicant<'info> {
 
     pub associated_token_program: Program<'info, AssociatedToken>,
 
+    pub rent: Sysvar<'info, Rent>,
+
     pub system_program: Program<'info, System>,
 }
 
-pub fn handler(ctx: Context<InitNutritionistApplicant>) -> Result<()> {
+pub fn init_nutritionist_applicant_handler(ctx: Context<InitNutritionistApplicant>) -> Result<()> {
     let nutritionist_applicant = &mut ctx.accounts.nutritionist_applicant;
     let community_network = &mut ctx.accounts.community_network;
 
@@ -68,7 +72,7 @@ pub fn handler(ctx: Context<InitNutritionistApplicant>) -> Result<()> {
     nutritionist_applicant.nutritionist_token_account =
         ctx.accounts.nutritionist_token_account.key();
     nutritionist_applicant.nutritionist_nft_account = ctx.accounts.nutritionist_nft_account.key();
-    nutritionist_applicant.id = *community_network.total_nutritionist_applications + 1;
+    nutritionist_applicant.id = community_network.total_nutritionist_applications + 1;
     nutritionist_applicant.nutritionist_application_status =
         NutritionistApplicationStatus::Pending;
     nutritionist_applicant.is_whitelisted = false;

@@ -1,4 +1,4 @@
-use crate::state::*;
+use crate::{constants::NUTRITIONIST_SEED, state::*};
 use anchor_lang::prelude::*;
 
 #[derive(Accounts)]
@@ -10,7 +10,7 @@ pub struct CloseNutritionistContext<'info> {
     #[account(
         mut,
         seeds = [
-            NUTRITIONIST_SEED_SEED,
+            NUTRITIONIST_SEED,
             nutritionist.key().as_ref(),
         ],
         bump = nutritionist_account.bump,
@@ -19,6 +19,6 @@ pub struct CloseNutritionistContext<'info> {
     pub nutritionist_account: Account<'info, User>,
 }
 
-pub fn close_nutritionist(_ctx: Context<CloseNutritionistContext>) -> Result<()> {
+pub fn close_nutritionist_account_handler(_ctx: Context<CloseNutritionistContext>) -> Result<()> {
     Ok(())
 }

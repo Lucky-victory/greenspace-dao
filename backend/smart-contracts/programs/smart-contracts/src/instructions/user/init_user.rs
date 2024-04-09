@@ -1,7 +1,8 @@
 use anchor_lang::prelude::*;
 use anchor_spl::associated_token::AssociatedToken;
-use anchor_spl::token::{mint_to, Mint, MintTo, Token, TokenAccount};
+use anchor_spl::token::{self, mint_to, Mint, MintTo, Token, TokenAccount};
 
+use crate::constants::{COMMUNITY_NETWORK_SEED, USDC_MINT_PUBKEY, USER_SEED, USER_SUB_AMOUNT};
 use crate::{errors::ErrorCodes, state::*};
 
 #[derive(Accounts)]
@@ -20,7 +21,8 @@ pub struct InitUser<'info> {
     pub authority: Signer<'info>,
 
     #[account(
-        mut,
+        //mut,
+        //init_if_needed,
         token::mint = USDC_MINT_PUBKEY
     )]
     pub user_token_account: Account<'info, TokenAccount>,
@@ -32,7 +34,7 @@ pub struct InitUser<'info> {
     pub user_nft_mint: Account<'info, Mint>,
 
     #[account(
-        mut,
+        //mut,
         init_if_needed,
         payer = authority,
         associated_token::mint = user_nft_mint,
@@ -43,7 +45,7 @@ pub struct InitUser<'info> {
     #[account(
         seeds = [COMMUNITY_NETWORK_SEED],
         bump,
-        has_one = community_network_vault_usdc_account
+        has_one = community_network_usdc_vault
     )]
     pub community_network: Box<Account<'info, CommunityNetwork>>,
 
@@ -51,7 +53,7 @@ pub struct InitUser<'info> {
         mut,
         token::mint = USDC_MINT_PUBKEY
     )]
-    pub community_network_vault_usdc_account: Account<'info, TokenAccount>,
+    pub community_network_usdc_vault: Account<'info, TokenAccount>,
 
     pub token_program: Program<'info, Token>,
 
@@ -60,11 +62,18 @@ pub struct InitUser<'info> {
     pub clock: Sysvar<'info, Clock>,
 
     pub system_program: Program<'info, System>,
+
+    pub rent: Sysvar<'info, Rent>
 }
 
-pub fn handler(ctx: Context<InitUser>) -> Result<()> {
-    let user = &mut ctx.accounts.user;
+pub fn init_user_handler(ctx: Context<InitUser>) -> Result<()> {
+    let user = &mut ctx.accounts.user_account;
     let community_network = &mut ctx.accounts.community_network;
+
+    // require!(
+    //     ctx.accounts.system_program.key() != user.community_network.key(),
+    //     Error::AlreadyJoinedCommunity
+    // );
 
     user.authority = ctx.accounts.authority.key();
     user.reputation = 0;
@@ -86,7 +95,7 @@ pub fn handler(ctx: Context<InitUser>) -> Result<()> {
                 authority: ctx.accounts.authority.to_account_info(),
                 to: ctx
                     .accounts
-                    .community_network_vault_usdc_account
+                    .community_network_usdc_vault
                     .to_account_info(),
             },
         ),

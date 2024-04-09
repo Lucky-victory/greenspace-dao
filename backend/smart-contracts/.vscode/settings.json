@@ -1,0 +1,11 @@
+{
+    "rust-analyzer.linkedProjects": [
+        "./programs/smart-contracts/Cargo.toml",
+        "./programs/smart-contracts/Cargo.toml",
+        "./programs/smart-contracts/Cargo.toml",
+        "./programs/smart-contracts/Cargo.toml",
+        "./programs/smart-contracts/Cargo.toml",
+        "./programs/smart-contracts/Cargo.toml"
+    ],
+    "rust-analyzer.showUnlinkedFileNotification": false
+}

@@ -1,3 +1,6 @@
+use anchor_lang::prelude::*;
+use solana_program::{pubkey, pubkey::Pubkey};
+
 pub const DISCRIMINATOR_LENGTH: usize = 8;
 pub const NAME_LENGTH: usize = 30 * 4;
 pub const PUBKEY_LENGTH: usize = 32;
@@ -20,16 +23,12 @@ pub const NUTRITIONIST_APPLICANT_SEED: &[u8] = b"nutritionist-applicant";
 
 #[constant]
 pub const COMMUNITY_NETWORK_SEED: &[u8] = b"community-network";
-
-//update later
 #[constant]
-pub const COMMUNITY_NETWORK_ADMIN_PUBKEY: &str = "";
-
 pub const COMMUNITY_NETWORK_ESCROW_PDA_SEEDS: &[u8] = b"community-escrow";
 #[constant]
 pub const USDC_MINT_PUBKEY: Pubkey = pubkey!("envK7QRnj5Vm7m7yrB2bTn8YUpM6AYFW7WW1NK8YgTY");
 #[constant]
-pub const ADMIN: Pubkey = pubkey!("");
+pub const ADMIN: Pubkey = pubkey!("EkgaBFHzhKRTfTyXEooeNPkvPeaSCgURSpQbSpfV3Rmf");
 // #[constant]
 // pub const USER_SUB_AMOUNT: u64 = 50;
 // #[constant]

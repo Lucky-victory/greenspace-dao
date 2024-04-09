@@ -29,7 +29,7 @@ pub struct CommunityNetwork {
     pub bump: u8,
 }
 
-impl Dao {
+impl CommunityNetwork {
     pub const LEN: usize = DISCRIMINATOR_LENGTH      // 8-byte discriminator
         + PUBKEY_LENGTH                              // Authority of GreenspaceDAO
         + PUBKEY_LENGTH                              // Community Network Vault Token Account Greenspace

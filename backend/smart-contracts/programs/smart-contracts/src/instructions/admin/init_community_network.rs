@@ -4,13 +4,13 @@ use anchor_spl::{
     associated_token::AssociatedToken,
     token::{Mint, Token, TokenAccount},
 };
-//use crate::USDC_MINT_PUBKEY;
+use crate::constants::*;
 
 #[derive(Accounts)]
 pub struct InitCommunityNetwork<'info> {
     #[account(
         init,
-        seeds = [b"community-network", authority.key().as_ref()],
+        seeds = [b"community-network"/*, authority.key().as_ref()*/],
         bump,
         payer = authority, 
         space = CommunityNetwork::LEN
@@ -35,9 +35,10 @@ pub struct InitCommunityNetwork<'info> {
     pub nutritionist_nft_mint: Account<'info, Mint>,
 
     #[account(
-        mut,
-        init_if_needed,
-        payer = authority,
+        //init,
+        //payer = authority,
+         //token::mint = USDC_MINT_PUBKEY,
+         //token::authority = authority.key(),
         associated_token::mint = USDC_MINT_PUBKEY,
         associated_token::authority = authority.key()
       )]
@@ -52,7 +53,7 @@ pub struct InitCommunityNetwork<'info> {
 
     pub system_program: Program<'info, System>,
 
-    //pub rent: Sysvar<'info, Rent>
+    pub rent: Sysvar<'info, Rent>
 
 }
 

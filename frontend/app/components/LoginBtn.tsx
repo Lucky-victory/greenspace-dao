@@ -10,10 +10,10 @@ export default function LoginBtn() {
   //   const [getUser, { data: user }] = useLazyGetUserQuery();
   const router = useRouter();
   //const { publicKey } = useWallet();
- //const address = publicKey?.toBase58();
+  //const address = publicKey?.toBase58();
 
   const { isConnected, address } = useAccount();
-  
+
   const { signCustomMessage, setSigned, signed } = useCustomSign();
   const [isLoading, setIsLoading] = useState(false);
   async function handleLogin() {

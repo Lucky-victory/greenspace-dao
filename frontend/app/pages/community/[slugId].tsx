@@ -66,6 +66,7 @@ export default function CommunityViewPage() {
       setTabs((prev) => tabs.filter((tab) => tab.name !== "Members"));
       if (activeTab === "members") setActiveTab("");
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [breakpoint]);
 
   const community = {

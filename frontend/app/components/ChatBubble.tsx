@@ -1,5 +1,6 @@
-import Image from "next/image";
+// import Image from "next/image";
 import CommentCard from "@/components/CommentCard";
+import { Image } from "@chakra-ui/react";
 
 const ChatBubble = (chat: {
   name: string;
@@ -11,14 +12,12 @@ const ChatBubble = (chat: {
       <div className=" w-full max-w-[70px] h-[70px] overflow-hidden rounded-full relative">
         <Image
           // put the greenspace logo here!
-          src={""}
+          src={"/icons/favicon-32x32.png"}
           style={{
             objectFit: "cover",
             zIndex: -1,
-            background: "white",
+            // background: "white",
           }}
-          fill
-          priority
           alt={`something`}
         />
       </div>

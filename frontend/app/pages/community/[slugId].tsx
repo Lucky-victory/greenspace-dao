@@ -23,6 +23,7 @@ import { useRouter } from "next/router";
 import Head from "next/head";
 import PageLoader from "@/components/PageLoader";
 import { useGetCommunityQuery } from "@/state/services";
+import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 
 const tabsObj = [
   {
@@ -42,10 +43,13 @@ const tabsObj = [
     url: "chats",
   },
 ];
-export default function CommunityViewPage() {
+export default function CommunityViewPage({
+  slugId: slugIdFromServer,
+}: InferGetServerSidePropsType<typeof getServerSideProps>) {
   // TODO: Add a 404 redirect when no community is found.
   const router = useRouter();
-  const { slugId } = router.query as { slugId: string };
+
+  const slugId = slugIdFromServer || (router.query.slugId as string);
 
   const [activeTab, setActiveTab] = useActiveTab("tab");
   const breakpoint = useBreakpoint();
@@ -275,4 +279,15 @@ export default function CommunityViewPage() {
       </PageWrapper>
     </PageLoader>
   );
+}
+
+export async function getServerSideProps({ query }: GetServerSidePropsContext) {
+  const { slugId } = query;
+
+  // Pass the pathname as props
+  return {
+    props: {
+      slugId: slugId as string,
+    },
+  };
 }

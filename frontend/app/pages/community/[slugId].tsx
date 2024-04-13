@@ -136,7 +136,7 @@ export default function CommunityViewPage({
     );
   });
   return (
-    <PageLoader isLoading={isLoading || isFetching}>
+    <PageLoader isLoading={isLoading || isFetching} text="fetching data...">
       {community && (
         <PageWrapper props={{ minH: "var(--chakra-vh,100vh)" }}>
           <Head>

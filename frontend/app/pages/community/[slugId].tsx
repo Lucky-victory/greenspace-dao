@@ -61,6 +61,8 @@ export default function CommunityViewPage({
     isLoading,
     isFetching,
   } = useGetCommunityQuery({ spaceIdOrId: slugId });
+  const community = communityData?.data;
+  // console.log({ community, communityData, slugIdFromServer, slugId });
   useEffect(() => {
     if (smallerBreakPoints.includes(breakpoint)) {
       setTabs((prev) => tabs.filter((tab) => tab.name !== "Members"));
@@ -73,17 +75,17 @@ export default function CommunityViewPage({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [breakpoint]);
 
-  const community = {
-    name: "Health Focus Community",
-    spaceId: "",
-    coverImage: "",
-    displayImage: "",
-    slug: "",
-    visibility: "public",
-    userId: "",
-    description:
-      "Health Focus Community is a community of people who are passionate about health and wellness. We are a community of people who are passionate about improving the health of their lives.",
-  };
+  // const community = {
+  //   name: "Health Focus Community",
+  //   spaceId: "",
+  //   coverImage: "",
+  //   displayImage: "",
+  //   slug: "",
+  //   visibility: "public",
+  //   userId: "",
+  //   description:
+  //     "Health Focus Community is a community of people who are passionate about health and wellness. We are a community of people who are passionate about improving the health of their lives.",
+  // };
   const tabBtnStyles = {
     textDecor: "none!important",
     py: 2,
@@ -135,148 +137,165 @@ export default function CommunityViewPage({
   });
   return (
     <PageLoader isLoading={isLoading || isFetching}>
-      <PageWrapper props={{ minH: "var(--chakra-vh,100vh)" }}>
-        <Head>
-          <title>{community.name}</title>
-          <meta name="description" content={community.description} />
-          <meta property="og:title" content={community.name} />
-          <meta property="og:description" content={community.description} />
-          <meta property="og:type" content="website" />
-          <meta property="og:image" content={community.coverImage} />
-          <meta property="og:url" content="https://greenspacedao.xyz" />
-          <meta property="og:site_name" content="GreenspaceDAO" />
-          <meta property="og:locale" content="en_US" />
-          <meta property="og:locale:alternate" content="en" />
-          <meta property="og:locale:alternate" content="en_US" />
-          <meta property="og:locale:alternate" content="en_GB" />
-        </Head>
-        <Box>
-          {/* BANNER AREA */}
+      {community && (
+        <PageWrapper props={{ minH: "var(--chakra-vh,100vh)" }}>
+          <Head>
+            <title>{community?.name}</title>
+            <meta name="description" content={community?.description} />
+            <meta property="og:title" content={community?.name} />
+            <meta property="og:description" content={community?.description} />
+            <meta property="og:type" content="website" />
+            <meta property="og:image" content={community?.coverImage} />
+            <meta property="og:url" content="https://greenspacedao.xyz" />
+            <meta property="og:site_name" content="GreenspaceDAO" />
+            <meta property="og:locale" content="en_US" />
+            <meta property="og:locale:alternate" content="en" />
+            <meta property="og:locale:alternate" content="en_US" />
+            <meta property="og:locale:alternate" content="en_GB" />
+          </Head>
           <Box>
-            <Box h={{ lg: 250, base: 180 }} pos={"relative"} bg={"gs-gray.600"}>
-              <Image
-                alt="cover background"
-                src={
-                  community?.coverImage || "/assets/community-default-bg.png"
-                }
-                h={"full"}
-                w={"full"}
-                objectFit={"cover"}
-                opacity={0.75}
-              />
-              <Box pos={"absolute"} right={0} bottom={0} p={3}>
-                <HStack rounded={"full"} bg={"rgba(0,0,0,0.45)"} px={3} py={1}>
-                  <>
-                    {community?.visibility === "private" ? (
-                      <FiLock />
-                    ) : (
-                      <FiGlobe />
-                    )}
-                  </>
-                  <Text
-                    fontSize={"10px"}
-                    textTransform={"uppercase"}
-                    as={"span"}
-                  >
-                    {community?.visibility}
-                  </Text>
-                </HStack>
-              </Box>
-            </Box>
-            <Flex
-              mb={10}
-              flexDir={{ lg: "row", base: "column" }}
-              gap={5}
-              justify={{ lg: "flex-start", base: "center" }}
-              align={"center"}
-              pl={5}
-              mt={{ lg: -20, base: "-75px" }}
-              pos={"relative"}
-            >
+            {/* BANNER AREA */}
+            <Box>
               <Box
-                rounded={"full"}
-                w={{ lg: 150, base: 130 }}
-                h={{ lg: 150, base: 130 }}
-                boxShadow={"0 0 0 4px #8a8f91"}
-                bg={"gray.700 m,"}
-                overflow={"hidden"}
+                h={{ lg: 250, base: 180 }}
+                pos={"relative"}
+                bg={"gs-gray.600"}
               >
                 <Image
-                  alt=""
-                  src={community?.displayImage || "/assets/community-dp.png"}
+                  alt="cover background"
+                  src={
+                    community?.coverImage || "/assets/community-default-bg.png"
+                  }
                   h={"full"}
                   w={"full"}
                   objectFit={"cover"}
+                  opacity={0.75}
+                />
+                <Box pos={"absolute"} right={0} bottom={0} p={3}>
+                  <HStack
+                    rounded={"full"}
+                    bg={"rgba(0,0,0,0.45)"}
+                    px={3}
+                    py={1}
+                  >
+                    <>
+                      {community?.visibility === "private" ? (
+                        <FiLock />
+                      ) : (
+                        <FiGlobe />
+                      )}
+                    </>
+                    <Text
+                      fontSize={"10px"}
+                      textTransform={"uppercase"}
+                      as={"span"}
+                    >
+                      {community?.visibility}
+                    </Text>
+                  </HStack>
+                </Box>
+              </Box>
+              <Flex
+                mb={10}
+                flexDir={{ lg: "row", base: "column" }}
+                gap={5}
+                justify={{ lg: "flex-start", base: "center" }}
+                align={"center"}
+                pl={5}
+                mt={{ lg: -20, base: "-75px" }}
+                pos={"relative"}
+              >
+                <Box
+                  rounded={"full"}
+                  w={{ lg: 150, base: 130 }}
+                  h={{ lg: 150, base: 130 }}
+                  boxShadow={"0 0 0 4px #8a8f91"}
+                  bg={"gray.700 m,"}
+                  overflow={"hidden"}
+                >
+                  <Image
+                    alt=""
+                    src={community?.displayImage || "/assets/community-dp.png"}
+                    h={"full"}
+                    w={"full"}
+                    objectFit={"cover"}
+                  />
+                </Box>
+                <Heading
+                  as={"h1"}
+                  textAlign={"center"}
+                  mt={{ lg: 14, base: 0 }}
+                >
+                  {community?.name}
+                </Heading>
+              </Flex>
+            </Box>
+            <Flex direction={{ lg: "row", base: "column" }} gap={4}>
+              <Stack>
+                <Flex
+                  borderBottom={{ base: "2px", lg: "none" }}
+                  borderBottomColor={"gray.600"}
+                  pb={2}
+                  as={List}
+                  direction={{ lg: "column", base: "row" }}
+                  overflowX={"auto"}
+                  px={{ base: 2, lg: 4 }}
+                  gap={{ base: 3, lg: 4 }}
+                >
+                  {[tabButtons]}
+                </Flex>
+              </Stack>
+              <Box
+                flex={1}
+                px={4}
+                borderX={{ lg: "1px" }}
+                borderColor={{ lg: "gray.600" }}
+              >
+                <TabPanels
+                  activeTab={activeTab}
+                  spaceIdOrId={slugId}
+                  description={community?.description}
                 />
               </Box>
-              <Heading as={"h1"} textAlign={"center"} mt={{ lg: 14, base: 0 }}>
-                {community?.name}
-              </Heading>
+              <Box px={5} hideBelow={"lg"}>
+                <Box bg={"gray.900"} borderRadius={"15px"} minW={250}>
+                  <Heading
+                    size={"md"}
+                    fontWeight={500}
+                    borderBottom={"1px"}
+                    p={2}
+                    borderBottomColor={"gray.600"}
+                  >
+                    Members
+                  </Heading>
+                  <Stack p={4} as={List} divider={<Divider />}>
+                    {members?.length > 0 &&
+                      members.map((member, i) => {
+                        return (
+                          <ListItem key={"member" + i}>
+                            <HStack gap={4}>
+                              <Avatar size={"sm"} src={member?.avatar} />{" "}
+                              <Stack>
+                                <Link
+                                  href={"/user/" + member?.username}
+                                  textDecor={"none!important"}
+                                >
+                                  <Text fontWeight={500}>
+                                    {member?.fullName}
+                                  </Text>
+                                </Link>
+                              </Stack>
+                            </HStack>
+                          </ListItem>
+                        );
+                      })}
+                  </Stack>
+                </Box>
+              </Box>
             </Flex>
           </Box>
-          <Flex direction={{ lg: "row", base: "column" }} gap={4}>
-            <Stack>
-              <Flex
-                borderBottom={{ base: "2px", lg: "none" }}
-                borderBottomColor={"gray.600"}
-                pb={2}
-                as={List}
-                direction={{ lg: "column", base: "row" }}
-                overflowX={"auto"}
-                px={{ base: 2, lg: 4 }}
-                gap={{ base: 3, lg: 4 }}
-              >
-                {[tabButtons]}
-              </Flex>
-            </Stack>
-            <Box
-              flex={1}
-              px={4}
-              borderX={{ lg: "1px" }}
-              borderColor={{ lg: "gray.600" }}
-            >
-              <TabPanels
-                activeTab={activeTab}
-                spaceIdOrId={slugId}
-                description={community?.description}
-              />
-            </Box>
-            <Box px={5} hideBelow={"lg"}>
-              <Box bg={"gray.900"} borderRadius={"15px"} minW={250}>
-                <Heading
-                  size={"md"}
-                  fontWeight={500}
-                  borderBottom={"1px"}
-                  p={2}
-                  borderBottomColor={"gray.600"}
-                >
-                  Members
-                </Heading>
-                <Stack p={4} as={List} divider={<Divider />}>
-                  {members?.length > 0 &&
-                    members.map((member, i) => {
-                      return (
-                        <ListItem key={"member" + i}>
-                          <HStack gap={4}>
-                            <Avatar size={"sm"} src={member?.avatar} />{" "}
-                            <Stack>
-                              <Link
-                                href={"/user/" + member?.username}
-                                textDecor={"none!important"}
-                              >
-                                <Text fontWeight={500}>{member?.fullName}</Text>
-                              </Link>
-                            </Stack>
-                          </HStack>
-                        </ListItem>
-                      );
-                    })}
-                </Stack>
-              </Box>
-            </Box>
-          </Flex>
-        </Box>
-      </PageWrapper>
+        </PageWrapper>
+      )}
     </PageLoader>
   );
 }

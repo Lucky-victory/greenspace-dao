@@ -133,7 +133,10 @@ const ArticleView = () => {
                 w={"full"}
                 bg={"gray.900"}
                 alt=""
-                src={article?.image || "/images/placeholder-image.png"}
+                src={
+                  article?.image ||
+                  "/images/placeholder-image.png"
+                }
                 h={"auto"}
                 // maxH={{ lg: 500, base: 400 }}
                 // objectFit={'contain'}

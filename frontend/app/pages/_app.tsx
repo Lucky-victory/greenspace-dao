@@ -78,12 +78,12 @@ const config = createConfig({
 });
 
 export default function App({ Component, pageProps }: AppProps) {
-  const network = WalletAdapterNetwork.Devnet;
-  const endpoint = useMemo(() => clusterApiUrl(network), [network]);
-  const wallets = useMemo(
-    () => [new PhantomWalletAdapter(), new SolflareWalletAdapter({ network })],
-    [network]
-  );
+  // const network = WalletAdapterNetwork.Devnet;
+  // const endpoint = useMemo(() => clusterApiUrl(network), [network]);
+  // const wallets = useMemo(
+  //   () => [new PhantomWalletAdapter(), new SolflareWalletAdapter({ network })],
+  //   [network]
+  // );
   return (
     <>
       <style jsx global>

@@ -1,0 +1,12 @@
+We built the first community blockchain based project powered to promote healthy living around the world. People are becoming obsessed with living longer, but they don't know how, they are spending so much money on drugs and supplements, but we don't think they're approaching this correctly, so that's why we at RevitalizeAI have come up with this idea to focus on nutrition and fitness. Our project consists of user and nutrionist NFTs which will be minted for you depending on whatever option you sign up as, either as a user or nutritionist, we charge users a subscription fee to access our platform and enjoy our services, which include fitness and premium meal plans as well as consultation with nutritionists, when a nutritionist wants to sign up, they upload their credentials securely which we verify to see if they're legitimate before onboarding them, we also collate data from users to get the rate at which they age. Nutritionists can also create meal & fitness plans and write articles.
+
+We plan to continue building and possibly turn the project into a fully fledged startup and start reaching out to nutritionists on social media, and actively start looking for our first set of users. 
+
+
+
+
+// We built the first community blockchain based project powered to promote healthy living and achieve healthy locations where people live to a 100 years all around the world.
+// People are becoming obsessed with living longer, but they don't know how, they are spending so much money on drugs and supplements, but are they really doing it correctly? We don't think so, so that's why we at RevitalizeAI have come up with this idea to focus on nutrition and fitness. We bring together people from all around the world and build healthy communities, where people engage in healthy living all around the world.
+// Our project consists of user and nutrionist NFTs which will be minted for you depending on whatever option you sign up as, we charge users a subscription fee to access our platform
+nutritionistBadge = "https://bafybeihbll3mj2l44kqy67gbxwnvui2zqfdphzr5mr53mxto77hgo4umka.ipfs.dweb.link/nutritionist%20badge.png"
+userBadge = "https://bafybeicxroigojtsvluxivtdkgmhcjijhnlvco2prg57ws6k3hqetkvhzu.ipfs.dweb.link/user%20badge.png"

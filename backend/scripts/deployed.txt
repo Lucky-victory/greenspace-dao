@@ -1,0 +1,9 @@
+Deploying Contracts for Rtf....
+Deploying treasury for Rtf
+---- Treasury Contract was deployed to: ----  0x9E1eF5A92C9Bf97460Cd00C0105979153EA45b27
+Deploying Community contract for Rtf
+---- Community Contract for Rtf was deployed to Rtf testnet at this address: ----  0x763055Ca49aDB6b41Da2522Ab7E2C714601FaD88
+Deploying UserNFT for Rtf....
+---- UserNFT Contract was deployed to: ----  0xCCcE35FF7d1F1501Dc086ef232bC5d46cE5953C6
+Deploying NutritionistNFT for Rtf....
+---- NutritionistNFT Contract was deployed to: ----  0x1aC0a3a87A83a7605606A5f629717Ded061B1DDA

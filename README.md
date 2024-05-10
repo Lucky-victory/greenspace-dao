@@ -1,12 +1,12 @@
-# GreenspaceDAO x Ready to Fight Hack
+# GreenspaceDAO x Backdrop
 
 Video Demo - [Demo video](https://vimeo.com/939060983) <br />
-Live Link - [GreenspaceDAO dapp](https://rtfhack.vercel.app/) <br />
+Live Link - [GreenspaceDAO dapp]() <br />
 Pitch Deck - [Figma slides](https://www.figma.com/proto/kbNH39bNAHi5LMqBysGlHD/GreenSpaceDAO-Pitch-Deck?page-id=0%3A1&type=design&node-id=0-185&viewport=401%2C401%2C0.05&t=T8YMxu888hhtmNQn-8&scaling=scale-down-width&hide-ui=1) <br/>
 
 ## ✨ Description
 
-[GreenspaceDAO](https://rtfhack.vercel.app/) is the first community blockchain based project powered by community and built for community to promote healthy living and achieve healthy locations where people live up to 100 years all around the world. We are trying to make sure people live healthy by incorporating healthy living habits into their lifestyle and trying to make living healthy fun again by introducing community inclusive programs like weekly challenges where people can even try to compete against each other on a leaderboard, events, video call sessions with certified nutritionists and incentivizing these nutritionists as a focal point, to improve health, productivity and making our members live happier, more fulfilled lives with a sense of purpose and belonging in their community.
+[GreenspaceDAO]() is the first community blockchain based project powered by community and built for community to promote healthy living and achieve healthy locations where people live up to 100 years all around the world. We are trying to make sure people live healthy by incorporating healthy living habits into their lifestyle and trying to make living healthy fun again by introducing community inclusive programs like weekly challenges where people can even try to compete against each other on a leaderboard, events, video call sessions with certified nutritionists and incentivizing these nutritionists as a focal point, to improve health, productivity and making our members live happier, more fulfilled lives with a sense of purpose and belonging in their community.
 
 Think of what we're building as AA for longevity, it's not just about wanting to live longer but having a roadmap, a mission and a group to journey with and be accountable to.
 
@@ -45,14 +45,14 @@ Here's a breakdown of how it was built:
 
 ## Where we deployed to/contract details
 
-We created and deployed our smart contracts on the Ready to Fight Testnet Chain.
+We created and deployed our smart contracts on the Base Testnet Chain.
 
-### Ready to Fight Testnet Chain
+### Base Testnet Chain
 
-1. Treasury contract - 0x9E1eF5A92C9Bf97460Cd00C0105979153EA45b27 - [View source code](https://github.com/degencodebeast/rtfhack/blob/main/backend/contracts/Treasury.sol) | [View on Ready to Fight Chain](https://network.rtfight.com/address/0x9E1eF5A92C9Bf97460Cd00C0105979153EA45b27)
+1. Treasury contract - 0x9E1eF5A92C9Bf97460Cd00C0105979153EA45b27 - [View source code](https://github.com/degencodebeast/rtfhack/blob/main/backend/contracts/Treasury.sol) | [View on Base Chain](https://network.rtfight.com/address/0x9E1eF5A92C9Bf97460Cd00C0105979153EA45b27)
 
-2. CommunityNetwork contract - 0x3a65168B746766066288B83417329a7F901b5569 - [View source code](https://github.com/degencodebeast/rtfhack/blob/main/backend/contracts/CommunityNetwork.sol) | [View on Ready to Fight Chain](https://network.rtfight.com/address/0x3a65168B746766066288B83417329a7F901b5569)
+2. CommunityNetwork contract - 0x3a65168B746766066288B83417329a7F901b5569 - [View source code](https://github.com/degencodebeast/rtfhack/blob/main/backend/contracts/CommunityNetwork.sol) | [View on Base Chain](https://network.rtfight.com/address/0x3a65168B746766066288B83417329a7F901b5569)
 
-3. NutritionistNFT contract - 0x6D919b8dC30BEf41b56Aa8b18b2052c9459F8E9A - [View source code](https://github.com/degencodebeast/rtfhack/blob/main/backend/contracts/NutritionistNFT.sol) | [View on Ready to Fight Chain](https://network.rtfight.com/address/0x6D919b8dC30BEf41b56Aa8b18b2052c9459F8E9A)
+3. NutritionistNFT contract - 0x6D919b8dC30BEf41b56Aa8b18b2052c9459F8E9A - [View source code](https://github.com/degencodebeast/rtfhack/blob/main/backend/contracts/NutritionistNFT.sol) | [View on Base Chain](https://network.rtfight.com/address/0x6D919b8dC30BEf41b56Aa8b18b2052c9459F8E9A)
 
-4. UserNFT contract - 0xA39d26482B5c226Fd02A5f3e159C72ee03d63Fc0 - [View source code](https://github.com/degencodebeast/rtfhack/blob/main/backend/contracts/UserNFT.sol) | [View on Ready to Fight Chain](https://network.rtfight.com/address/0xA39d26482B5c226Fd02A5f3e159C72ee03d63Fc0)
+4. UserNFT contract - 0xA39d26482B5c226Fd02A5f3e159C72ee03d63Fc0 - [View source code](https://github.com/degencodebeast/rtfhack/blob/main/backend/contracts/UserNFT.sol) | [View on Base Chain](https://network.rtfight.com/address/0xA39d26482B5c226Fd02A5f3e159C72ee03d63Fc0)

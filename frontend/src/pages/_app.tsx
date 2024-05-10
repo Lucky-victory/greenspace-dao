@@ -8,17 +8,18 @@ import { DynamicWagmiConnector } from "@dynamic-labs/wagmi-connector";
 import { createConfig, WagmiProvider } from "wagmi";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { http } from "viem";
-import { mainnet } from "viem/chains";
+import { mainnet, base, baseSepolia } from "viem/chains";
 import WalletProvider from "src/context/WalletProvider";
 
 import { EthereumWalletConnectors } from "@dynamic-labs/ethereum";
 import { DYNAMIC_KEY } from "src/config/constants";
 
 const config = createConfig({
-  chains: [mainnet],
+  chains: [base, baseSepolia],
   multiInjectedProviderDiscovery: false,
   transports: {
-    [mainnet.id]: http(),
+    [base.id]: http(),
+    [baseSepolia.id]: http(),
   },
 });
 
@@ -55,9 +56,3 @@ export default function App({ Component, pageProps }: AppProps) {
     </>
   );
 }
-
-
-
-
-
-

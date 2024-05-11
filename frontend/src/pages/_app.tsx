@@ -8,11 +8,12 @@ import { DynamicWagmiConnector } from "@dynamic-labs/wagmi-connector";
 import { createConfig, WagmiProvider } from "wagmi";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { http } from "viem";
-import { mainnet, base, baseSepolia } from "viem/chains";
+import { base, baseSepolia } from "viem/chains";
 import WalletProvider from "src/context/WalletProvider";
-
 import { EthereumWalletConnectors } from "@dynamic-labs/ethereum";
 import { DYNAMIC_KEY } from "src/config/constants";
+import "swiper/css";
+import "material-symbols";
 
 const config = createConfig({
   chains: [base, baseSepolia],
@@ -56,3 +57,5 @@ export default function App({ Component, pageProps }: AppProps) {
     </>
   );
 }
+
+

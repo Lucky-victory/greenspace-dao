@@ -20,6 +20,7 @@ import { LuMenu } from "react-icons/lu";
 // import RegisterForm from "./RegisterForm";
 import { useResize } from "src/hooks/common";
 import { DynamicWidget } from "@dynamic-labs/sdk-react-core";
+import RegisterForm from "../RegisterForm/RegisterForm";
 
 export function HeaderNav() {
   const { isMobileSize, isTabletSize } = useResize();
@@ -47,7 +48,7 @@ export function HeaderNav() {
     },
   };
 
-  //   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const {
     isOpen: isMobileNavbarOpen,
     onToggle: onMobileNavbarToggle,
@@ -98,6 +99,7 @@ export function HeaderNav() {
           pr={8}
           py={2}
           justify={"flex-end"}
+          onClick={() => onOpen()}
         >
           {!(isMobileSize || isTabletSize) && <DynamicWidget />}
 
@@ -124,6 +126,7 @@ export function HeaderNav() {
                 minW={{ base: 150, lg: 350 }}
                 p={2}
                 // justify={"center"}
+                onClick={() => onOpen()}
               >
                 <DynamicWidget />
               </HStack>
@@ -131,7 +134,7 @@ export function HeaderNav() {
           </DrawerContent>
         </Drawer>
       )}
-      {/* <RegisterForm isOpen={isOpen} onClose={onClose} /> */}
+      <RegisterForm isOpen={isOpen} onClose={onClose} />
     </>
   );
 }

@@ -1,12 +1,12 @@
-import { db } from "@/db";
-import { communities, communityMembers } from "@/db/schema";
+import { db } from "src/db";
+import { communities, communityMembers } from "src/db/schema";
 import {
   HTTP_METHOD_CB,
   errorHandlerCallback,
   flattenArray,
   mainHandler,
   successHandlerCallback,
-} from "@/utils";
+} from "src/utils";
 import { eq, or } from "drizzle-orm";
 import { NextApiRequest, NextApiResponse } from "next";
 

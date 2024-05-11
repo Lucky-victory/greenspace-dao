@@ -1,11 +1,11 @@
-import { db } from "@/db";
-import { appointments } from "@/db/schema";
+import { db } from "src/db";
+import { appointments } from "src/db/schema";
 import {
   HTTP_METHOD_CB,
   errorHandlerCallback,
   mainHandler,
   successHandlerCallback,
-} from "@/utils";
+} from "src/utils";
 import { eq, or } from "drizzle-orm";
 import isEmpty from "just-is-empty";
 import { NextApiRequest, NextApiResponse } from "next";

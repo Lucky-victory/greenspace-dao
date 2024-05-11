@@ -1,11 +1,11 @@
-import { db } from "@/db";
-import { meetingRecords, meetings } from "@/db/schema";
+import { db } from "src/db";
+import { meetingRecords, meetings } from "src/db/schema";
 import {
   HTTP_METHOD_CB,
   errorHandlerCallback,
   mainHandler,
   successHandlerCallback,
-} from "@/utils";
+} from "src/utils";
 import { NextApiRequest, NextApiResponse } from "next";
 
 export default async function handler(

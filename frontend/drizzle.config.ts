@@ -1,4 +1,4 @@
-import { connectionUri } from "@/db";
+import { connectionUri } from "src/db";
 import type { Config } from "drizzle-kit";
 export default {
   out: "./drizzle",

@@ -1,6 +1,6 @@
-import { HTTP_METHOD_CB, mainHandler } from "@/utils";
+import { HTTP_METHOD_CB, mainHandler } from "src/utils";
 import { NextApiRequest, NextApiResponse } from "next";
-import { initial_condition } from "@/utils/prompts";
+import { initial_condition } from "src/utils/prompts";
 import OpenAI from "openai";
 require("dotenv").config();
 

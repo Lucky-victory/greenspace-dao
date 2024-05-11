@@ -1,6 +1,6 @@
 // This will be replaced with plunk api
 
-import { EmailTemplate } from "@/components/EmailTemplate";
+import { EmailTemplate } from "src/components/EmailTemplate";
 import { NextApiRequest, NextApiResponse } from "next";
 import { Resend } from "resend";
 const { RESEND_API_KEY } = process.env;

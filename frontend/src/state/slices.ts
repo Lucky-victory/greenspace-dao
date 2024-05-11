@@ -1,4 +1,4 @@
-import { communityMessages } from "@/db/schema";
+import { communityMessages } from "src/db/schema";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { GreenSpaceDAOApi } from "./services";
 

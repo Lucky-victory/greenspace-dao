@@ -1,5 +1,5 @@
-import { EmailTemplate } from "@/components/NutritionistApplyEmailTemplate";
-import { mainHandler, HTTP_METHOD_CB } from "@/utils";
+import { EmailTemplate } from "src/components/NutritionistApplyEmailTemplate";
+import { mainHandler, HTTP_METHOD_CB } from "src/utils";
 import { NextApiRequest, NextApiResponse } from "next";
 import { Resend } from "resend";
 const { RESEND_API_KEY } = process.env;

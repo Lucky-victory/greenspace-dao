@@ -1,12 +1,12 @@
-import { db } from "@/db";
-import { appointments } from "@/db/schema";
-import { APPOINTMENT_STATUS } from "@/types/shared";
+import { db } from "src/db";
+import { appointments } from "src/db/schema";
+import { APPOINTMENT_STATUS } from "src/types/shared";
 import {
   HTTP_METHOD_CB,
   errorHandlerCallback,
   mainHandler,
   successHandlerCallback,
-} from "@/utils";
+} from "src/utils";
 import { and, eq, lt, lte } from "drizzle-orm";
 import { timestamp } from "drizzle-orm/mysql-core";
 import isEmpty from "just-is-empty";

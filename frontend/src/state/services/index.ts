@@ -1,4 +1,4 @@
-import { objectToSearchParams } from "@/utils";
+import { objectToSearchParams } from "src/utils";
 import { fetchBaseQuery, createApi } from "@reduxjs/toolkit/query/react";
 import {
   APIResponse,
@@ -16,7 +16,7 @@ import {
   NewArticle,
   NewFitnessPlan,
   NewMealPlan,
-} from "@/types/shared";
+} from "src/types/shared";
 import { update } from "../slices";
 
 export const GreenSpaceDAOApi = createApi({

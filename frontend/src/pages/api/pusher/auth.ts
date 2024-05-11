@@ -1,11 +1,11 @@
 // TODO: implement authentication and authorization logic
-import { getPusherInstance } from "@/lib/pusher/server";
+import { getPusherInstance } from "src/lib/pusher/server";
 import {
   HTTP_METHOD_CB,
   errorHandlerCallback,
   mainHandler,
   successHandlerCallback,
-} from "@/utils";
+} from "src/utils";
 import { and, eq, lt, lte } from "drizzle-orm";
 import { timestamp } from "drizzle-orm/mysql-core";
 import isEmpty from "just-is-empty";

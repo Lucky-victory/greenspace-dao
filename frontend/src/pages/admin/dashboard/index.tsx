@@ -1,5 +1,5 @@
-import DashboardEmptyArea from "@/components/DashboardEmptyArea";
-import DashboardLayout from "@/components/AdminDashboardLayout";
+import DashboardEmptyArea from "src/components/DashboardEmptyArea";
+import DashboardLayout from "src/components/AdminDashboardLayout";
 import { Flex, Heading } from "@chakra-ui/react";
 
 export default function AdminDashboardPage() {

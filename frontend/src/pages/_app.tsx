@@ -30,7 +30,7 @@ export default function App({ Component, pageProps }: AppProps) {
       <style jsx global>
         {`
           :root {
-            --font-rubik: ${fonts.poppins.style.fontFamily};
+            --font-poppins: ${fonts.poppins.style.fontFamily};
           }
         `}
       </style>
@@ -55,9 +55,3 @@ export default function App({ Component, pageProps }: AppProps) {
     </>
   );
 }
-
-
-
-
-
-

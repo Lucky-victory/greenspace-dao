@@ -1,11 +1,11 @@
-import { db } from "@/db";
-import { users } from "@/db/schema";
+import { db } from "src/db";
+import { users } from "src/db/schema";
 import {
   HTTP_METHOD_CB,
   errorHandlerCallback,
   mainHandler,
   successHandlerCallback,
-} from "@/utils";
+} from "src/utils";
 import { and, eq, or } from "drizzle-orm";
 import { NextApiRequest, NextApiResponse } from "next";
 

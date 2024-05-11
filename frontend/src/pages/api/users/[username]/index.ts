@@ -1,17 +1,17 @@
-import { db } from "@/db";
-import { users } from "@/db/schema";
+import { db } from "src/db";
+import { users } from "src/db/schema";
 import {
   HTTP_METHOD_CB,
   errorHandlerCallback,
   mainHandler,
   successHandlerCallback,
-} from "@/utils";
+} from "src/utils";
 import { NextApiRequest, NextApiResponse } from "next";
 
 import { eq, or } from "drizzle-orm";
 
 import isEmpty from "just-is-empty";
-import { IS_DEV } from "@/utils";
+import { IS_DEV } from "src/utils";
 
 export default async function handler(
   req: NextApiRequest,

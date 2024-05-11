@@ -2,8 +2,8 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import NextAuth, { DefaultSession, Session } from "next-auth";
 import Moralis from "moralis";
 import { JWT } from "next-auth/jwt";
-import { db } from "@/db";
-import { users } from "@/db/schema";
+import { db } from "src/db";
+import { users } from "src/db/schema";
 import { eq } from "drizzle-orm";
 
 export default NextAuth({

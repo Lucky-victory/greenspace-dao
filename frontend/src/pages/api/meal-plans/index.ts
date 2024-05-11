@@ -1,16 +1,16 @@
-import { db } from "@/db";
-import { mealPlans } from "@/db/schema";
+import { db } from "src/db";
+import { mealPlans } from "src/db/schema";
 import {
   HTTP_METHOD_CB,
   errorHandlerCallback,
   mainHandler,
   successHandlerCallback,
-} from "@/utils";
+} from "src/utils";
 import { NextApiRequest, NextApiResponse } from "next";
 
-import { IS_DEV } from "@/utils";
+import { IS_DEV } from "src/utils";
 import { and, desc, eq, or } from "drizzle-orm";
-import { PostStatus } from "@/types/shared";
+import { PostStatus } from "src/types/shared";
 export const config = {
   api: {
     bodyParser: {

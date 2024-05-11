@@ -1,4 +1,4 @@
-import { appointments } from "@/db/schema";
+import { appointments } from "src/db/schema";
 
 export type APIResponse<T = null> = {
   data: T;

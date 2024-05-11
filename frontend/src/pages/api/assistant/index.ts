@@ -1,5 +1,5 @@
-import { db } from "@/db";
-import { global, users } from "@/db/schema";
+import { db } from "src/db";
+import { global, users } from "src/db/schema";
 import { eq, or } from "drizzle-orm";
 import type { Server as HTTPServer } from "http";
 import type { Socket as NetSocket } from "net";

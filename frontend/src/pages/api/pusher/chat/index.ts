@@ -1,15 +1,15 @@
-import { db } from "@/db";
-import { communities, communityMessages } from "@/db/schema";
+import { db } from "src/db";
+import { communities, communityMessages } from "src/db/schema";
 import {
   HTTP_METHOD_CB,
   errorHandlerCallback,
   mainHandler,
   successHandlerCallback,
-} from "@/utils";
+} from "src/utils";
 import { eq, or } from "drizzle-orm";
 import { NextApiRequest, NextApiResponse } from "next";
 
-import { getPusherInstance } from "@/lib/pusher/server";
+import { getPusherInstance } from "src/lib/pusher/server";
 const pusherServer = getPusherInstance();
 
 export default async function handler(

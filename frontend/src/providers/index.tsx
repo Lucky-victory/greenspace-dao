@@ -1,8 +1,8 @@
 /* eslint-disable react/jsx-no-comment-textnodes */
 import { ThirdwebProvider } from "@thirdweb-dev/react";
-import { AppWrapper } from "@/context/state";
+import { AppWrapper } from "src/context/state";
 import { Provider as ReduxProvider } from "react-redux";
-import store from "@/state/store";
+import store from "src/state/store";
 function AppProviders({ children }: { children: React.ReactNode }) {
   return (
     <AppWrapper>

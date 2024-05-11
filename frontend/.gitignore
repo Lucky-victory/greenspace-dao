@@ -8,11 +8,11 @@
 
 # testing
 /coverage
-
+*-lock.yaml
 # next.js
 /.next/
 /out/
-
+.env
 # production
 /build
 
@@ -33,5 +33,4 @@ yarn-error.log*
 
 # typescript
 *.tsbuildinfo
-
-.env
+next-env.d.ts

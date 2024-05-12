@@ -23,7 +23,7 @@ import { NewArticle, PostStatus } from "src/types/shared";
 import { useAddArticleMutation } from "src/state/services";
 import { shortenText } from "src/utils";
 import { useAppContext } from "src/context/state";
-import { useAuth } from "src/hooks";
+import { useAuth } from "src/hooks/common";
 import { useStorageUpload } from "@thirdweb-dev/react";
 import { resolveIPFSURI } from "src/helpers";
 

@@ -2,14 +2,13 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { signIn, useSession } from "next-auth/react";
 import { USER_SESSION } from "src/state/types";
-import base58 from "bs58";
-import { useWallet } from "@solana/wallet-adapter-react";
+
 import { apiPost } from "src/utils";
 type UpdateSession = (data?: any) => Promise<USER_SESSION | null>;
 
-import { MetaMaskConnector } from "wagmi/connectors/metaMask";
+// import { MetaMaskConnector } from "wagmi/connectors/metaMask";
 import { useAccount, useConnect, useSignMessage, useDisconnect } from "wagmi";
-import { useAuthRequestChallengeEvm } from "@moralisweb3/next";
+// import { useAuthRequestChallengeEvm } from "@moralisweb3/next";
 import { useNetwork } from "wagmi";
 
 export const useWalletAccount = () => {

@@ -14,7 +14,7 @@ import {
   useBreakpoint,
 } from "@chakra-ui/react";
 import PageWrapper from "src/components/PageWrapper";
-import { useActiveTab } from "src/hooks";
+import { useActiveTab } from "src/hooks/common";
 import { Link } from "@chakra-ui/next-js";
 import { FiGlobe, FiLock } from "react-icons/fi";
 import { useEffect, useState } from "react";

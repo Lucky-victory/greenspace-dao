@@ -40,7 +40,7 @@ import SwiperMain from "swiper";
 import Icon from "../Icon";
 import NutritionistForm from "src/components/NutritionistForm";
 import { countries } from "src/utils/countries";
-import { useCustomSign, useDebounce } from "src/hooks";
+import { useCustomSign, useDebounce } from "src/hooks/common";
 import { communityAbi } from "../../abis";
 import { communityAddr } from "src/utils/constants";
 import { useStorageUpload } from "@thirdweb-dev/react";

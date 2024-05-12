@@ -1,4 +1,4 @@
-import { useResize } from "src/hooks";
+import { useResize } from "src/hooks/common";
 import { Link } from "@chakra-ui/next-js";
 import {
   Box,

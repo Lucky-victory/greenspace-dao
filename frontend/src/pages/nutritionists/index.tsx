@@ -1,6 +1,6 @@
 import { HeaderNav } from "src/components/HeaderNav";
 import PageWrapper from "src/components/PageWrapper";
-import { useAuth } from "src/hooks";
+import { useAuth } from "src/hooks/common";
 import { useCreateAppointmentMutation } from "src/state/services";
 import { NewAppointment, Nutritionist } from "src/state/types";
 import {

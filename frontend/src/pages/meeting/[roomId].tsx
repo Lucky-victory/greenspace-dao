@@ -37,7 +37,7 @@ import {
 } from "src/state/services";
 import isEmpty from "just-is-empty";
 import { MEETING, TPeerMetadata } from "src/types";
-import { useAuth } from "src/hooks";
+import { useAuth } from "src/hooks/common";
 import PageLoader from "src/components/PageLoader";
 
 interface Props {

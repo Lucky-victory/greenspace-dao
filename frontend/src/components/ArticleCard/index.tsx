@@ -32,7 +32,7 @@ const ArticleCard = ({ article }: { article: Article | Partial<Article> }) => {
         src={article?.image || "/images/placeholder-image.png"}
         objectFit={"cover"}
         rounded={"inherit"}
-        placeholder="blur"
+        
         w={"full"}
         h={200}
       />

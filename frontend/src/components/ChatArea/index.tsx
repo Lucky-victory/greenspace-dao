@@ -16,7 +16,7 @@ import { FiMessageCircle, FiSend } from "react-icons/fi";
 import { Room } from "@huddle01/web-core";
 import { TPeerMetadata } from "src/types";
 import { BsChatDots } from "react-icons/bs";
-import ChatInput from "./ChatInput";
+import ChatInput from "src/components/ChatInput";
 import Linkify from "linkify-react";
 export type TMessage = {
   text: string;

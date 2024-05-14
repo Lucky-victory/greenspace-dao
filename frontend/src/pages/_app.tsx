@@ -5,22 +5,15 @@ import { fonts } from "src/lib/fonts";
 import theme from "src/config/theme";
 import { DynamicContextProvider } from "@dynamic-labs/sdk-react-core";
 import { DynamicWagmiConnector } from "@dynamic-labs/wagmi-connector";
-import { createConfig, WagmiProvider } from "wagmi";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { http } from "viem";
-import { mainnet } from "viem/chains";
+import { WagmiProvider } from "wagmi";
 import WalletProvider from "src/context/WalletProvider";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import { EthereumWalletConnectors } from "@dynamic-labs/ethereum";
-import { DYNAMIC_KEY } from "src/config/constants";
+import {  ENV_CONFIG } from "src/config/constants";
+import { config } from "src/config/wagmi";
 
-const config = createConfig({
-  chains: [mainnet],
-  multiInjectedProviderDiscovery: false,
-  transports: {
-    [mainnet.id]: http(),
-  },
-});
+
 
 const queryClient = new QueryClient();
 
@@ -37,7 +30,7 @@ export default function App({ Component, pageProps }: AppProps) {
       <ChakraProvider theme={theme}>
         <DynamicContextProvider
           settings={{
-            environmentId: DYNAMIC_KEY,
+            environmentId: ENV_CONFIG.DYNAMIC_ENVIRONMENT_ID!,
             walletConnectors: [EthereumWalletConnectors],
           }}
         >

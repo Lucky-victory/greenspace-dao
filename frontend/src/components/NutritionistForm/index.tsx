@@ -9,7 +9,6 @@ import {
   uploadPromptToIpfs,
   uploadToThirdWeb,
 } from "src/helpers";
-import { toast } from "react-toastify";
 import axios from "axios";
 import {
   Box,

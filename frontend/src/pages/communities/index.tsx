@@ -27,12 +27,15 @@ import { useContext, useEffect, useState } from "react";
 import BoringAvatar from "boring-avatars";
 //@ts-ignore
 import DatePicker from "react-datepicker";
-import { Community } from "src/types/state";
+import { Community } from "src/types/shared";
 import { useAppContext } from "src/context/state";
 import { useRouter } from "next/router";
 import Footer from "src/components/Footer";
+import { useGetCommunitiesQuery } from "src/state/services";
 
 export default function CommunitiesPage() {
+  const {data,isLoading}=useGetCommunitiesQuery({})
+  const communities=data?.data!
   // const toast = useToast({
   //   duration: 3000,
   //   position: 'top',
@@ -40,14 +43,12 @@ export default function CommunitiesPage() {
   //   title: 'Your appointment was booked successfully',
   // });
   // const { isOpen, onOpen, onClose } = useDisclosure();
-  const [selectedCommunity, setSelectedCommunity] = useState<Community | null>(
-    null
-  );
+
   const router = useRouter();
-  const { communities, setCommunity } = useAppContext();
+  
   const handleJoin = (community: Community | null) => {
-    setCommunity(community);
-    router.push("/community/" + community?.slug);
+    
+    router.push("/community/" + community?.spaceId);
   };
 
   return (
@@ -75,7 +76,7 @@ export default function CommunitiesPage() {
                 Find people with similar interest
               </Heading>
               <Flex gap={6} wrap={"wrap"}>
-                {communities?.map((c, i) => {
+                {communities?.map((comm, i) => {
                   return (
                     <Box
                       maxW={{ lg: "50%" }}
@@ -88,8 +89,8 @@ export default function CommunitiesPage() {
                       minW={500}
                     >
                       <Flex align={"start"} gap={4} mb={5}>
-                        {c.cover && <Avatar size={"lg"} src={c.cover} />}
-                        {!c.cover && (
+                        {comm.displayImage && <Avatar size={"lg"} src={comm.displayImage} />}
+                        {!comm.displayImage && (
                           <BoringAvatar
                             variant="sunset"
                             colors={[
@@ -108,7 +109,7 @@ export default function CommunitiesPage() {
                             mb={2}
                             size={"md"}
                           >
-                            {c.name}
+                            {comm.name}
                           </Heading>
                           {/* <Text
                          as={Flex}
@@ -121,7 +122,7 @@ export default function CommunitiesPage() {
                        </Text> */}
                         </Box>
                         <Button
-                          onClick={() => handleJoin(c)}
+                          onClick={() => handleJoin(comm)}
                           ml={"auto"}
                           // className='bg-primaryYellow text-primaryGreen'
                           gap={2}
@@ -131,7 +132,7 @@ export default function CommunitiesPage() {
                           <Icon size={24} name="group_add" /> Join Community
                         </Button>
                       </Flex>
-                      {c?.description && (
+                      {comm?.description && (
                         <Box>
                           <Heading
                             mb={3}
@@ -142,7 +143,7 @@ export default function CommunitiesPage() {
                             Description
                           </Heading>
                           <Text pb={4} color={"gray.100"}>
-                            {c.description}
+                            {comm.description}
                           </Text>
                         </Box>
                       )}

@@ -8,14 +8,13 @@ type UpdateSession = (data?: any) => Promise<USER_SESSION | null>;
 
 // import { MetaMaskConnector } from "wagmi/connectors/metaMask";
 import { useAccount, useConnect, useSignMessage, useDisconnect } from "wagmi";
-// import { useAuthRequestChallengeEvm } from "@moralisweb3/next";
-import { useNetwork } from "wagmi";
+
 
 export const useWalletAccount = () => {
   const [_address, setAddress] = useState<string | null>(null);
 
   const { connectAsync } = useConnect();
-  const { isLoading } = useDisconnect();
+  // const { isLoading } = useDisconnect();
   const { isConnected, address } = useAccount();
 
   //const { publicKey } = useWallet();
@@ -33,17 +32,19 @@ export const useWalletAccount = () => {
 export function useCustomSign() {
   //const { publicKey, signMessage } = useWallet();
   // const { connectAsync } = useConnect();
-  const { data, error, isLoading, signMessageAsync } = useSignMessage({
+  const { data, error, signMessageAsync } = useSignMessage({mutation:{
+
     onError(error, variables, context) {
       console.log({ error, variables, context });
     },
     onSuccess(data, variables, context) {
       console.log({ data, variables, context });
     },
+  }
   });
 
   const { isConnected, address } = useAccount();
-  const { chain } = useNetwork();
+  const { chain } = useAccount();
 
   // const { account, chain } = await connectAsync({
   //   connector: new MetaMaskConnector(),

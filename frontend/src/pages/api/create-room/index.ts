@@ -1,6 +1,7 @@
 import { AccessToken, Role } from "@huddle01/server-sdk/auth";
 import axios from "axios";
 import type { NextApiRequest, NextApiResponse } from "next";
+import { ENV_CONFIG } from "src/config/constants";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
@@ -16,7 +17,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       {
         headers: {
           "Content-Type": "application/json",
-          "x-api-key": process.env.HUDDLE_API_KEY as string,
+          "x-api-key": ENV_CONFIG.HUDDLE_API_KEY as string,
         },
       }
     );
@@ -37,7 +38,7 @@ export const createTokenForAdmin = async (
 ) => {
   try {
     const accessToken = new AccessToken({
-      apiKey: process.env.HUDDLE_API_KEY!,
+      apiKey: ENV_CONFIG.HUDDLE_API_KEY!,
       roomId: roomId as string,
       options: { metadata: metadata },
       role: Role.HOST,

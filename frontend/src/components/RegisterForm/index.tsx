@@ -5,14 +5,7 @@ import { FieldValues, SubmitErrorHandler, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 import { useAppContext } from "src/context/state";
-import {
-  useContractWrite,
-  usePrepareContractWrite,
-  useWaitForTransaction,
-  useAccount,
-  useConfig,
-  useNetwork,
-} from "wagmi";
+
 
 import { ethers } from "ethers";
 import {
@@ -41,7 +34,7 @@ import Icon from "../Icon";
 import NutritionistForm from "src/components/NutritionistForm";
 import { countries } from "src/utils/countries";
 import { useCustomSign, useDebounce } from "src/hooks/common";
-import { communityAbi } from "../../abis";
+import { communityAbi } from "../../../abis";
 import { communityAddr } from "src/utils/constants";
 import { useStorageUpload } from "@thirdweb-dev/react";
 import {
@@ -51,13 +44,10 @@ import {
 import { generateUsername } from "src/utils";
 
 import { parseEther, parseGwei } from "viem";
-import {
-  getNetwork,
-  readContract,
-  watchNetwork,
-  writeContract,
-} from "@wagmi/core";
-import { useWallet } from "@solana/wallet-adapter-react";
+
+import { useAccount } from "wagmi";
+import { simulateContract , writeContract,} from "@wagmi/core";
+import { config } from "src/config/wagmi";
 
 const RegisterForm = ({
   isOpen,
@@ -130,14 +120,17 @@ const RegisterForm = ({
   const registerUserTx = async () => {
     try {
       setInTx(true);
-      const { hash } = await writeContract({
+      const {request}=await simulateContract(config,{
         address: communityAddr,
         abi: communityAbi as readonly unknown[],
         functionName: "registerUser",
         args: [cid, allTokensData.userNftUri],
         //@ts-ignore
         value: parseEther(debouncedAmount || "0"),
-      });
+      }
+
+      )
+      const hash  = await writeContract(config,request);
 
       //toast.success("Registration Successful on Avalanche");
 
@@ -219,7 +212,7 @@ const RegisterForm = ({
         // console.log(chainId);
 
         setCid(cid[0]);
-        setUser({
+        setUser?.({
           ...user,
           userAddress: address,
           userCidData: cid[0],

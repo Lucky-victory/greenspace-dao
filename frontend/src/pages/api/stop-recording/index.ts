@@ -1,13 +1,13 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { Recorder } from "@huddle01/server-sdk/recorder";
 import axios from "axios";
+import { ENV_CONFIG } from "src/config/constants";
 
 interface Recordings {
   id: string;
   recordingUrl: string;
   recordingSize: number;
 }
-const { NEXT_PUBLIC_HUDDLE_PROJECT_ID, HUDDLE_API_KEY } = process.env;
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
@@ -15,7 +15,7 @@ export default async function handler(
   const { roomId } = req.query;
 
   //checking for project credentials
-  if (!NEXT_PUBLIC_HUDDLE_PROJECT_ID && !HUDDLE_API_KEY) {
+  if (!ENV_CONFIG.HUDDLE_PROJECT_ID && !ENV_CONFIG.HUDDLE_API_KEY) {
     return res
       .status(400)
       .json({ error: "NEXT_PUBLIC_PROJECT_ID and API_KEY are required" });
@@ -23,8 +23,8 @@ export default async function handler(
 
   //creating the Recorder class instance
   const recorder = new Recorder(
-    NEXT_PUBLIC_HUDDLE_PROJECT_ID!,
-    HUDDLE_API_KEY!
+    ENV_CONFIG.HUDDLE_PROJECT_ID!,
+    ENV_CONFIG.HUDDLE_API_KEY!
   );
 
   //stopping the recording
@@ -42,7 +42,7 @@ export default async function handler(
       "https://api.huddle01.com/api/v1/get-recordings",
       {
         headers: {
-          "x-api-key": HUDDLE_API_KEY!,
+          "x-api-key": ENV_CONFIG.HUDDLE_API_KEY!,
         },
       }
     );

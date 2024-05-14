@@ -5,7 +5,7 @@ const config = {
   useSystemColorMode: false,
 };
 
-const theme = extendTheme({
+export const theme = extendTheme({
   fonts: {
     heading: "var(--font-poppins)",
     body: "var(--font-poppins)",

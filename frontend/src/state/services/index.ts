@@ -16,6 +16,7 @@ import {
   NewArticle,
   NewFitnessPlan,
   NewMealPlan,
+  Community,
 } from "src/types/shared";
 import { update } from "../slices";
 
@@ -261,8 +262,8 @@ export const GreenSpaceDAOApi = createApi({
     }),
     // TODO: Add return types
     getCommunities: builder.query<
-      Partial<APIResponse<any[]>>,
-      { status?: string } & Record<string, any>
+      Partial<APIResponse<Community[]>>,
+      { status?: string } 
     >({
       query: (params) => {
         return {

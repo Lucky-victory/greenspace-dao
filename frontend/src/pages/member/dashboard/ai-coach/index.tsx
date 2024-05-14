@@ -3,9 +3,9 @@ import io, { Socket } from "socket.io-client";
 
 // INSTALL npm install -D @tailwindcss/typography to properly display tables and such in md
 
-import ChatBubble from "src/components/ChatBubble";
-import MessageButton from "src/components/MessageButton";
-import SamplePromptsCard from "src/components/SamplePromptsCard";
+import ChatBubble from "src/components/MemberAICoach/ChatBubble";
+import MessageButton from "src/components/MemberAICoach/MessageButton";
+import SamplePromptsCard from "src/components/MemberAICoach/SamplePromptsCard";
 import { DefaultEventsMap } from "@socket.io/component-emitter";
 import isEmpty from "just-is-empty";
 import OpenAI from "openai";

@@ -25,11 +25,11 @@ import {
   useRoom,
   useActivePeers,
 } from "@huddle01/react/hooks";
-import MeetingHeader from "src/components/MeetingHeader";
+import MeetingHeader from "src/components/Huddle/MeetingHeader";
 import { KeyboardEvent, useEffect, useRef, useState } from "react";
-import RemotePeer from "src/components/RemotePeer";
-import LocalPeer from "src/components/LocalPeer";
-import { ChatArea } from "src/components/ChatArea";
+import RemotePeer from "src/components/Huddle/RemotePeer";
+import LocalPeer from "src/components/Huddle/LocalPeer";
+import { ChatArea } from "src/components/Huddle/ChatArea";
 import PageWrapper from "src/components/PageWrapper";
 import {
   useCreateTokenMutation,

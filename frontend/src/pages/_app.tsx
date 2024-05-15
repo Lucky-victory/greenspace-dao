@@ -1,15 +1,13 @@
+import {PrivyProvider, usePrivy} from '@privy-io/react-auth';
 import "src/styles/globals.css";
 import type { AppProps } from "next/app";
 import { ChakraProvider } from "@chakra-ui/react";
 import { fonts } from "src/lib/fonts";
 import theme from "src/config/theme";
-import { DynamicContextProvider } from "@dynamic-labs/sdk-react-core";
-import { DynamicWagmiConnector } from "@dynamic-labs/wagmi-connector";
 import { WagmiProvider } from "wagmi";
 import WalletProvider from "src/context/WalletProvider";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
-import { EthereumWalletConnectors } from "@dynamic-labs/ethereum";
 import {  ENV_CONFIG } from "src/config/constants";
 import { config } from "src/config/wagmi";
 
@@ -27,24 +25,20 @@ export default function App({ Component, pageProps }: AppProps) {
           }
         `}
       </style>
-      <ChakraProvider theme={theme}>
-        <DynamicContextProvider
-          settings={{
-            environmentId: ENV_CONFIG.DYNAMIC_ENVIRONMENT_ID!,
-            walletConnectors: [EthereumWalletConnectors],
-          }}
-        >
           <WagmiProvider config={config}>
             <QueryClientProvider client={queryClient}>
-              <DynamicWagmiConnector>
+      <PrivyProvider appId={ENV_CONFIG.PRIVY_APP_ID!}>
+      <ChakraProvider theme={theme}>
                 <WalletProvider>
+
                   <Component {...pageProps} />
                 </WalletProvider>
-              </DynamicWagmiConnector>
+              
+    
+      </ChakraProvider>
+      </PrivyProvider>
             </QueryClientProvider>
           </WagmiProvider>
-        </DynamicContextProvider>
-      </ChakraProvider>
     </>
   );
 }

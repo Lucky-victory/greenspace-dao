@@ -19,7 +19,7 @@ import { Link } from "@chakra-ui/next-js";
 import { LuMenu } from "react-icons/lu";
 // import RegisterForm from "./RegisterForm";
 import { useResize } from "src/hooks/common";
-import { DynamicWidget } from "@dynamic-labs/sdk-react-core";
+// import { DynamicWidget } from "@dynamic-labs/sdk-react-core";
 
 export function HeaderNav() {
   const { isMobileSize, isTabletSize } = useResize();
@@ -99,7 +99,7 @@ export function HeaderNav() {
           py={2}
           justify={"flex-end"}
         >
-          {!(isMobileSize || isTabletSize) && <DynamicWidget />}
+          {!(isMobileSize || isTabletSize) && <Button >Conn</Button>}
 
           {(isMobileSize || isTabletSize) && (
             <IconButton ml={3} onClick={onMobileNavbarToggle} fontSize={24} aria-label="toggle mobile menu">
@@ -125,7 +125,7 @@ export function HeaderNav() {
                 p={2}
                 // justify={"center"}
               >
-                <DynamicWidget />
+               <Button >Conn</Button>
               </HStack>
             </DrawerBody>
           </DrawerContent>

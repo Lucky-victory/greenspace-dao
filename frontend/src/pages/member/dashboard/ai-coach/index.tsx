@@ -9,11 +9,12 @@ import SamplePromptsCard from "src/components/MemberAICoach/SamplePromptsCard";
 import { DefaultEventsMap } from "@socket.io/component-emitter";
 import isEmpty from "just-is-empty";
 import OpenAI from "openai";
-import { TextContentBlock } from "openai/resources/beta/threads/messages/messages.mjs";
+import { TextContentBlock } from "openai/resources/beta/threads/messages";
 // import { useAccount } from "wagmi";
 import DashBoardLayout from "src/components/MemberDashboardLayout";
-import { useWallet } from "@solana/wallet-adapter-react";
+
 import { Box, Textarea } from "@chakra-ui/react";
+import { useAuth } from "src/hooks/common";
 
 const samplePrompts = [
   "What nutrition is best for a female BMI of 20?",
@@ -31,8 +32,9 @@ interface ChatState {
 }
 
 const AiCoachPage = () => {
-  const { publicKey } = useWallet();
-  const address = publicKey?.toBase58();
+  // const { publicKey } = useWallet();
+  const {session} = useAuth()
+  const address=session?.user?.address
   const [state, updateState] = useReducer(
     (current: ChatState, update: Partial<ChatState>): ChatState => ({
       ...current,

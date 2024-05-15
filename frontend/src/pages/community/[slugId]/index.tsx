@@ -18,7 +18,7 @@ import { useActiveTab } from "src/hooks/common";
 import { Link } from "@chakra-ui/next-js";
 import { FiGlobe, FiLock } from "react-icons/fi";
 import { useEffect, useState } from "react";
-import TabPanels from "src/components/community-page/TabPanels";
+import TabPanels from "src/components/CommunityPage/TabPanels";
 import { useRouter } from "next/router";
 import Head from "next/head";
 import PageLoader from "src/components/PageLoader";

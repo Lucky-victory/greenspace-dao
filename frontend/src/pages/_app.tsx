@@ -4,7 +4,6 @@ import type { AppProps } from "next/app";
 import { ChakraProvider } from "@chakra-ui/react";
 import { fonts } from "src/lib/fonts";
 import theme from "src/config/theme";
-<<<<<<< HEAD
 import { WagmiProvider } from "wagmi";
 import WalletProvider from "src/context/WalletProvider";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -24,26 +23,6 @@ const huddleClient = new HuddleClient({
     activeSpeakers: {
       size: 8,
     },
-=======
-import { DynamicContextProvider } from "@dynamic-labs/sdk-react-core";
-import { DynamicWagmiConnector } from "@dynamic-labs/wagmi-connector";
-import { createConfig, WagmiProvider } from "wagmi";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { http } from "viem";
-import { base, baseSepolia } from "viem/chains";
-import WalletProvider from "src/context/WalletProvider";
-import { EthereumWalletConnectors } from "@dynamic-labs/ethereum";
-import { DYNAMIC_KEY } from "src/config/constants";
-import "swiper/css";
-import "material-symbols";
-
-const config = createConfig({
-  chains: [base, baseSepolia],
-  multiInjectedProviderDiscovery: false,
-  transports: {
-    [base.id]: http(),
-    [baseSepolia.id]: http(),
->>>>>>> upstream/main
   },
 });
 
@@ -88,8 +67,3 @@ export default function App({ Component, pageProps }: AppProps) {
     </>
   );
 }
-<<<<<<< HEAD
-=======
-
-
->>>>>>> upstream/main

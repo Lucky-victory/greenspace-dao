@@ -141,6 +141,7 @@ console.log({u,a});
         </Drawer>
       )}
       <RegisterForm isOpen={isOpen} onClose={onClose} />
+      <RegisterForm isOpen={isOpen} onClose={onClose} />
     </>
   );
 }

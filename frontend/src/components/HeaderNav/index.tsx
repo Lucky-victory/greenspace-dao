@@ -19,10 +19,19 @@ import { Link } from "@chakra-ui/next-js";
 import { LuMenu } from "react-icons/lu";
 // import RegisterForm from "./RegisterForm";
 import { useResize } from "src/hooks/common";
+import { CustomConnectButton } from "src/components/Auth/ConnectButton";
+import { ConnectOrLogout } from "../Auth/ConnectOrRegister";
+import { useWallet } from "src/context/WalletProvider";
+import { useAccount } from "wagmi";
+import RegisterForm from "../RegisterForm";
 // import { DynamicWidget } from "@dynamic-labs/sdk-react-core";
 
 export function HeaderNav() {
   const { isMobileSize, isTabletSize } = useResize();
+const u=useWallet()
+const a=useAccount()
+
+console.log({u,a});
 
   const linkStyles = {
     display: isMobileSize || isTabletSize ? "block" : "inline-block",
@@ -47,7 +56,7 @@ export function HeaderNav() {
     },
   };
 
-  //   const { isOpen, onOpen, onClose } = useDisclosure();
+    const { isOpen, onOpen, onClose } = useDisclosure();
   const {
     isOpen: isMobileNavbarOpen,
     onToggle: onMobileNavbarToggle,
@@ -99,7 +108,7 @@ export function HeaderNav() {
           py={2}
           justify={"flex-end"}
         >
-          {!(isMobileSize || isTabletSize) && <Button >Conn</Button>}
+          {!(isMobileSize || isTabletSize) && <ConnectOrLogout openModal={onOpen}/>}
 
           {(isMobileSize || isTabletSize) && (
             <IconButton ml={3} onClick={onMobileNavbarToggle} fontSize={24} aria-label="toggle mobile menu">
@@ -131,7 +140,7 @@ export function HeaderNav() {
           </DrawerContent>
         </Drawer>
       )}
-      {/* <RegisterForm isOpen={isOpen} onClose={onClose} /> */}
+      <RegisterForm isOpen={isOpen} onClose={onClose} />
     </>
   );
 }

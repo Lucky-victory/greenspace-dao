@@ -10,8 +10,21 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import {  ENV_CONFIG } from "src/config/constants";
 import { config } from "src/config/wagmi";
-
-
+import store from 'src/state/store';
+import { ThirdwebProvider } from '@thirdweb-dev/react';
+import "swiper/css";
+import { Provider as ReduxProvider } from'react-redux';
+import { HuddleClient } from '@huddle01/web-core';
+import { HuddleProvider } from '@huddle01/react';
+const huddleClient = new HuddleClient({
+  projectId: process.env.NEXT_PUBLIC_HUDDLE_PROJECT_ID!,
+  options: {
+    // `activeSpeakers` will be most active `n` number of peers, by default it's 8
+    activeSpeakers: {
+      size: 8,
+    },
+  },
+});
 
 const queryClient = new QueryClient();
 
@@ -25,9 +38,18 @@ export default function App({ Component, pageProps }: AppProps) {
           }
         `}
       </style>
+      <PrivyProvider appId={'clw70y3a00bmgdawm15h730dd'} config={{appearance:{
+        theme:'dark'
+      }}}>
           <WagmiProvider config={config}>
+                <ReduxProvider store={store}>
+        <ThirdwebProvider
+          clientId="7d6dd3b28e4d16bb007c78b1f6c90b04"
+          activeChain="sepolia"
+        >
             <QueryClientProvider client={queryClient}>
-      <PrivyProvider appId={ENV_CONFIG.PRIVY_APP_ID!}>
+          <HuddleProvider client={huddleClient}>
+                 
       <ChakraProvider theme={theme}>
                 <WalletProvider>
 
@@ -36,9 +58,12 @@ export default function App({ Component, pageProps }: AppProps) {
               
     
       </ChakraProvider>
-      </PrivyProvider>
+                  </HuddleProvider>
             </QueryClientProvider>
+        </ThirdwebProvider>
+      </ReduxProvider>
           </WagmiProvider>
+      </PrivyProvider>
     </>
   );
 }

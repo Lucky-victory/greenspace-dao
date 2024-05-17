@@ -7,7 +7,7 @@ const {login}=useLogin()
     function handleClick(){
     login()
     }
-    return <Button variant={'outline'} onClick={handleClick}>
+    return <Button rounded={'full'} colorScheme="black" variant={'outline'} onClick={handleClick}>
         Log-In
     </Button>
 }

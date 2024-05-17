@@ -50,6 +50,23 @@ import { simulateContract , writeContract,} from "@wagmi/core";
 import { config } from "src/config/wagmi";
 import { useLogin, useSignMessage } from "@privy-io/react-auth";
 
+export interface RegisterFormFields {
+  fullName: string;
+  sex: string;
+  country?: string;
+  weight: string;
+  height: string;
+  diet: string;
+  active: string;
+  sitting: string;
+  alcohol: string;
+  smoke: string;
+  sleepLength: string;
+  overallHealth: string;
+  birthDate: string;
+  smokingStopped?: string;  // Optional fields are marked with a question mark
+  smokingLength?: string;  // Optional fields are marked with a question mark
+}
 const RegisterForm = ({
   isOpen,
   onClose,
@@ -65,10 +82,7 @@ const RegisterForm = ({
   // const { publicKey } = useWallet();
   // const address = publicKey?.toBase58();
   const { address } = useAccount();
-  //const [sendUserToAI] = useSendUserInfoToAIMutation();
-  // const { chain } = useNetwork();
-  // const chainId = chain?.id;
-  // const { signCustomMessage, setSigned, signed } = useCustomSign();
+  
   const [sendUserToAI, { data: userAIdataResponse }] =
   useSendUserInfoToAIMutation();
   const userAIdata = userAIdataResponse?.data;
@@ -110,24 +124,27 @@ const RegisterForm = ({
     smokingLength: Yup.string(),
   });
   const formOptions = { resolver: yupResolver(validationSchema) };
-  const { register, handleSubmit, formState, reset,watch } = useForm(formOptions);
-const formValues=watch()
+  const { register, handleSubmit, formState, reset } = useForm(formOptions);
+  
+const [formData,setFormData]=useState<RegisterFormFields|null>(null)
+
   const {login} = useLogin({
     onComplete:async function (user, isNewUser, wasAlreadyAuthenticated, loginMethod, loginAccount) {
+      // TODO: Add logic to handle new user, if the user does not exist, trigger them to register by redirecting them to an onboarding page oor modal.
+      console.log({ user, isNewUser, wasAlreadyAuthenticated, loginMethod, loginAccount });
       if(isNewUser) {
-        console.log({ user, isNewUser, wasAlreadyAuthenticated, loginMethod, loginAccount });
         await createUser({
-          fullName: formValues?.fullName,
+          fullName: formData?.fullName,
           address: address!, 
           userType: selectedUserType,
         }).unwrap();
-        sendUserToAI(formValues);
+        sendUserToAI(formData);
       }
         setUser?.({
           ...user,
           userAddress: address,
           userCidData: cid,
-          name: formValues?.fullName,
+          name: formData?.fullName,
         });
     },
   })
@@ -207,7 +224,7 @@ const formValues=watch()
           smokingStopped: data.smokingStopped,
           smokingLength: data.smokingLength,
         };
-
+setFormData(formDataObject)
         const dataToUpload = [formDataObject];
         const cid = await upload({ data: dataToUpload });
         console.log("The index of 0 in the cid array: ", cid[0]);

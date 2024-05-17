@@ -134,13 +134,13 @@ console.log({u,a});
                 p={2}
                 // justify={"center"}
               >
-               <Button >Conn</Button>
+              <ConnectOrLogout openModal={onOpen}/>
               </HStack>
             </DrawerBody>
           </DrawerContent>
         </Drawer>
       )}
-      <RegisterForm isOpen={isOpen} onClose={onClose} />
+      {/* <RegisterForm isOpen={isOpen} onClose={onClose} /> */}
       <RegisterForm isOpen={isOpen} onClose={onClose} />
     </>
   );

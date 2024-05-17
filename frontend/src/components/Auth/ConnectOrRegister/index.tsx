@@ -12,7 +12,7 @@ const {address}=useWallet()
         <>
         {(ready && !address)&&<CustomConnectButton/>}
         {(ready && address && !user)&& <LoginAndRegisterButtons openModal={openModal}/>  }
-        
+        {(ready && address && user)&& <LogoutButton />  }
         </>
     )
 }

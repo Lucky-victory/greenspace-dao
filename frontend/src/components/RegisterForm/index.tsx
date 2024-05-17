@@ -134,7 +134,7 @@ const [formData,setFormData]=useState<RegisterFormFields|null>(null)
       console.log({ user, isNewUser, wasAlreadyAuthenticated, loginMethod, loginAccount });
       if(isNewUser) {
         await createUser({
-          fullName: formData?.fullName,
+          fullName: formData?.fullName,authId:user?.id,
           address: address!, 
           userType: selectedUserType,
         }).unwrap();

@@ -3,11 +3,12 @@ import { HStack, Input, Button } from "@chakra-ui/react";
 import { FiSend } from "react-icons/fi";
 import { FormEventHandler, FormEvent } from "react";
 import { USER_SESSION } from "src/state/types";
+import { User } from "@privy-io/react-auth";
 export default function CommunityChatInput({
   spaceIdOrId,
   user,
 }: {
-  user: USER_SESSION["user"] | null;
+  user: User | null;
   spaceIdOrId: string;
 }) {
   /**
@@ -36,7 +37,7 @@ export default function CommunityChatInput({
       await fetch(`/api/pusher/chat?communityId=${spaceIdOrId}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message, userId: user?.authId }),
+        body: JSON.stringify({ message, userId: user?.id }),
       });
     } catch (error) {}
   }

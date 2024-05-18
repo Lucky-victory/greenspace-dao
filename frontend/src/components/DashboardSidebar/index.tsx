@@ -1,17 +1,8 @@
-import { useResize } from "src/hooks";
 import { Link } from "@chakra-ui/next-js";
-import {
-  Box,
-  Flex,
-  Icon,
-  Image,
-  List,
-  ListItem,
-  Stack,
-  Text,
-} from "@chakra-ui/react";
+import { Box, Flex, Icon, Image, List, ListItem, Stack, Text } from "@chakra-ui/react";
 import { usePathname } from "next/navigation";
 import { IconType } from "react-icons";
+import { useResize } from "src/hooks/common";
 export default function DashboardSideNav(props: {
   entryPath?: string;
   links: Array<{
@@ -36,8 +27,7 @@ export default function DashboardSideNav(props: {
       (beforeLastPart == link.url && link?.child?.includes(lastPart)) ||
       (link?.url === "overview" && lastPart === "dashboard");
 
-    const buildLink = (entry: string, url: string) =>
-      url.toLowerCase() === "overview" ? entry + "" : entry + url;
+    const buildLink = (entry: string, url: string) => (url.toLowerCase() === "overview" ? entry + "" : entry + url);
     const activeStyles = {
       bg: "gs-yellow.900",
       fontWeight: 500,
@@ -98,14 +88,7 @@ export default function DashboardSideNav(props: {
               height={40 + "px"}
             />
           )}
-          {!isMobileSize && (
-            <Image
-              alt=""
-              src="/white-logo.svg"
-              width={170}
-              height={60 + "px"}
-            />
-          )}
+          {!isMobileSize && <Image alt="" src="/white-logo.svg" width={170} height={60 + "px"} />}
         </Link>
       </Box>
       <Flex direction={"column"} as={List} gap={4}>

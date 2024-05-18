@@ -1,9 +1,4 @@
-import {
-  generateCommunityId,
-  generateNumId,
-  generateUrlSafeId,
-  generateUsername,
-} from "src/utils";
+import { generateCommunityId, generateNumId, generateUrlSafeId, generateUsername } from "src/utils";
 import { relations } from "drizzle-orm";
 import {
   index,
@@ -36,9 +31,7 @@ export const articles = mysqlTable(
     image: mediumtext("image"),
     slug: varchar("slug", { length: 255 }).notNull(),
     content: longtext("content"),
-    status: mysqlEnum("status", ["published", "draft", "deleted"]).default(
-      "draft"
-    ),
+    status: mysqlEnum("status", ["published", "draft", "deleted"]).default("draft"),
     views: int("views").default(0),
     userId: varchar("user_id", { length: 255 }),
 
@@ -60,9 +53,7 @@ export const mealPlans = mysqlTable(
     image: mediumtext("image"),
     slug: varchar("slug", { length: 255 }).notNull(),
     content: longtext("content"),
-    status: mysqlEnum("status", ["published", "draft", "deleted"]).default(
-      "draft"
-    ),
+    status: mysqlEnum("status", ["published", "draft", "deleted"]).default("draft"),
     views: int("views").default(0),
     time: varchar("time", {
       enum: ["breakfast", "lunch", "dinner", "snack"],
@@ -88,9 +79,7 @@ export const fitnessPlans = mysqlTable(
     image: mediumtext("image"),
     slug: varchar("slug", { length: 255 }).notNull(),
     content: longtext("content"),
-    status: mysqlEnum("status", ["published", "draft", "deleted"]).default(
-      "draft"
-    ),
+    status: mysqlEnum("status", ["published", "draft", "deleted"]).default("draft"),
     userId: varchar("user_id", { length: 255 }),
     createdAt: timestamp("created_at").defaultNow(),
     updatedAt: timestamp("updated_at").onUpdateNow(),
@@ -108,20 +97,14 @@ export const nutritionists = mysqlTable("Nutritionists", {
   username: varchar("username", { length: 50 })
     .unique()
     .$defaultFn(() => generateUsername("GN_")),
-  userType: mysqlEnum("user_type", ["member", "nutritionist"])
-    .default("nutritionist")
-    .notNull(),
+  userType: mysqlEnum("user_type", ["member", "nutritionist"]).default("nutritionist").notNull(),
   sex: mysqlEnum("sex", ["male", "female", "other"]),
   birthDate: datetime("birth_date"),
   fullName: varchar("full_name", { length: 255 }),
   avatar: varchar("avatar", { length: 255 }),
   authId: varchar("auth_id", { length: 255 }).$defaultFn(generateUrlSafeId),
   emailVerified: boolean("email_verified").default(false),
-  verificationStatus: mysqlEnum("verification_status", [
-    "verified",
-    "pending",
-    "rejected",
-  ]).default("pending"),
+  verificationStatus: mysqlEnum("verification_status", ["verified", "pending", "rejected"]).default("pending"),
   updatedAt: timestamp("updated_at").onUpdateNow(),
   createdAt: timestamp("created_at").defaultNow(),
 });
@@ -135,17 +118,12 @@ export const users = mysqlTable(
     authId: varchar("auth_id", { length: 255 }).$defaultFn(generateUrlSafeId),
     emailVerified: boolean("email_verified").default(false),
     fullName: varchar("full_name", { length: 120 }),
-    username: varchar("username", { length: 50 })
-      .unique()
-      .notNull()
-      .$defaultFn(generateUsername),
+    username: varchar("username", { length: 50 }).unique().notNull().$defaultFn(generateUsername),
     password: varchar("password", { length: 255 }),
     email: varchar("email", { length: 255 }).unique(),
     address: varchar("address", { length: 100 }).default(""),
     avatar: varchar("avatar", { length: 255 }),
-    userType: mysqlEnum("user_type", ["member", "nutritionist"])
-      .default("member")
-      .notNull(),
+    userType: mysqlEnum("user_type", ["member", "nutritionist"]).default("member").notNull(),
     role: mysqlEnum("role", ["admin", "user"]).default("user"),
     createdAt: timestamp("created_at").defaultNow(),
     updatedAt: timestamp("updated_at").onUpdateNow(),
@@ -180,9 +158,7 @@ export const meetings = mysqlTable(
   {
     id: int("id").autoincrement().primaryKey(),
     title: varchar("title", { length: 255 }),
-    meetId: varchar("meet_id", { length: 255 }).$defaultFn(() =>
-      generateUrlSafeId(14)
-    ),
+    meetId: varchar("meet_id", { length: 255 }).$defaultFn(() => generateUrlSafeId(14)),
     startTime: datetime("start_time"),
     endTime: datetime("end_time"),
     roomId: varchar("room_id", { length: 100 }).notNull(),
@@ -198,9 +174,7 @@ export const meetings = mysqlTable(
 export const communities = mysqlTable("Communities", {
   id: int("id").autoincrement().primaryKey(),
   spaceId: varchar("space_id", { length: 150 }).$defaultFn(generateCommunityId),
-  status: mysqlEnum("status", ["published", "draft", "deleted"]).default(
-    "published"
-  ),
+  status: mysqlEnum("status", ["published", "draft", "deleted"]).default("published"),
   views: int("views").default(0),
   name: varchar("name", { length: 255 }).notNull(),
   description: text("description"),
@@ -232,9 +206,7 @@ export const communityEvents = mysqlTable("CommunityEvents", {
   id: int("id").autoincrement().primaryKey(),
   title: varchar("title", { length: 255 }).notNull(),
   details: mediumtext("details"),
-  slugId: varchar("slug_id", { length: 255 }).$defaultFn(() =>
-    generateUrlSafeId(14)
-  ),
+  slugId: varchar("slug_id", { length: 255 }).$defaultFn(() => generateUrlSafeId(14)),
   coverImage: mediumtext("cover_image"),
   communityId: int("community_id"),
   startDate: datetime("start_date"),
@@ -250,9 +222,7 @@ export const communityEvents = mysqlTable("CommunityEvents", {
 export const communityChallenges = mysqlTable("CommunityChallenges", {
   id: int("id").autoincrement().primaryKey(),
   title: varchar("title", { length: 255 }).notNull(),
-  slugId: varchar("slug_id", { length: 255 }).$defaultFn(() =>
-    generateUrlSafeId(14)
-  ),
+  slugId: varchar("slug_id", { length: 255 }).$defaultFn(() => generateUrlSafeId(14)),
   details: mediumtext("details"),
   coverImage: mediumtext("cover_image"),
   communityId: int("community_id"),
@@ -295,16 +265,8 @@ export const appointments = mysqlTable("Appointments", {
   id: int("id").autoincrement().primaryKey(),
   requestedBy: varchar("requested_by", { length: 155 }),
   nutritionistId: varchar("nutritionist_id", { length: 155 }),
-  status: mysqlEnum("status", [
-    "pending",
-    "accepted",
-    "rejected",
-    "expired",
-    "completed",
-  ]).default("pending"),
-  slugId: varchar("slug_id", { length: 255 }).$defaultFn(() =>
-    generateUrlSafeId(14)
-  ),
+  status: mysqlEnum("status", ["pending", "accepted", "rejected", "expired", "completed"]).default("pending"),
+  slugId: varchar("slug_id", { length: 255 }).$defaultFn(() => generateUrlSafeId(14)),
   startTime: datetime("start_time"),
   endTime: datetime("end_time"),
   duration: int("duration"),
@@ -318,19 +280,16 @@ export const meetingParticipants = mysqlTable("MeetingParticipants", {
 });
 
 // relations
-export const appointmentsRelations = relations(
-  appointments,
-  ({ one, many }) => ({
-    requestedBy: one(users, {
-      fields: [appointments.requestedBy],
-      references: [users.authId],
-    }),
-    nutritionist: one(nutritionists, {
-      fields: [appointments.nutritionistId],
-      references: [nutritionists.authId],
-    }),
-  })
-);
+export const appointmentsRelations = relations(appointments, ({ one, many }) => ({
+  requestedBy: one(users, {
+    fields: [appointments.requestedBy],
+    references: [users.authId],
+  }),
+  nutritionist: one(nutritionists, {
+    fields: [appointments.nutritionistId],
+    references: [nutritionists.authId],
+  }),
+}));
 export const communityRelations = relations(communities, ({ one, many }) => ({
   events: many(communityEvents),
   challenges: many(communityChallenges),
@@ -341,95 +300,71 @@ export const communityRelations = relations(communities, ({ one, many }) => ({
     references: [users.authId],
   }),
 }));
-export const communityChallengesRelations = relations(
-  communityChallenges,
-  ({ one, many }) => ({
-    tags: many(communityChallengesTags),
-    community: one(communities, {
-      fields: [communityChallenges.communityId],
-      references: [communities.id],
-    }),
-  })
-);
-export const communityChallengesTagsRelations = relations(
-  communityChallengesTags,
-  ({ one, many }) => ({
-    challenges: one(communityChallenges, {
-      fields: [communityChallengesTags.challengeId],
-      references: [communityChallenges.id],
-    }),
-  })
-);
-export const communityEventsTagsRelations = relations(
-  communityEventsTags,
-  ({ one, many }) => ({
-    challenges: one(communityEvents, {
-      fields: [communityEventsTags.eventId],
-      references: [communityEvents.id],
-    }),
-  })
-);
-export const communityEventsRelations = relations(
-  communityEvents,
-  ({ one, many }) => ({
-    tags: many(communityEventsTags),
-    community: one(communities, {
-      fields: [communityEvents.communityId],
-      references: [communities.id],
-    }),
-  })
-);
-export const communityMembersRelations = relations(
-  communityMembers,
-  ({ one, many }) => ({
-    user: one(users, {
-      fields: [communityMembers.userId],
-      references: [users.authId],
-    }),
+export const communityChallengesRelations = relations(communityChallenges, ({ one, many }) => ({
+  tags: many(communityChallengesTags),
+  community: one(communities, {
+    fields: [communityChallenges.communityId],
+    references: [communities.id],
+  }),
+}));
+export const communityChallengesTagsRelations = relations(communityChallengesTags, ({ one, many }) => ({
+  challenges: one(communityChallenges, {
+    fields: [communityChallengesTags.challengeId],
+    references: [communityChallenges.id],
+  }),
+}));
+export const communityEventsTagsRelations = relations(communityEventsTags, ({ one, many }) => ({
+  challenges: one(communityEvents, {
+    fields: [communityEventsTags.eventId],
+    references: [communityEvents.id],
+  }),
+}));
+export const communityEventsRelations = relations(communityEvents, ({ one, many }) => ({
+  tags: many(communityEventsTags),
+  community: one(communities, {
+    fields: [communityEvents.communityId],
+    references: [communities.id],
+  }),
+}));
+export const communityMembersRelations = relations(communityMembers, ({ one, many }) => ({
+  user: one(users, {
+    fields: [communityMembers.userId],
+    references: [users.authId],
+  }),
 
-    community: one(communities, {
-      fields: [communityMembers.communityId],
-      references: [communities.id],
-    }),
-  })
-);
-export const messageAttachmentsRelations = relations(
-  messageAttachments,
-  ({ one, many }) => ({
-    message: one(communityMessages, {
-      fields: [messageAttachments.messageId],
-      references: [communityMessages.id],
-    }),
-  })
-);
-export const communityMessagesRelations = relations(
-  communityMessages,
-  ({ one, many }) => ({
-    author: one(users, {
-      fields: [communityMessages.userId],
-      references: [users.authId],
-    }),
-    community: one(communities, {
-      fields: [communityMessages.communityId],
-      references: [communities.id],
-    }),
-    attachments: many(messageAttachments),
-  })
-);
+  community: one(communities, {
+    fields: [communityMembers.communityId],
+    references: [communities.id],
+  }),
+}));
+export const messageAttachmentsRelations = relations(messageAttachments, ({ one, many }) => ({
+  message: one(communityMessages, {
+    fields: [messageAttachments.messageId],
+    references: [communityMessages.id],
+  }),
+}));
+export const communityMessagesRelations = relations(communityMessages, ({ one, many }) => ({
+  author: one(users, {
+    fields: [communityMessages.userId],
+    references: [users.authId],
+  }),
+  community: one(communities, {
+    fields: [communityMessages.communityId],
+    references: [communities.id],
+  }),
+  attachments: many(messageAttachments),
+}));
 
-export const meetingParticipantsRelations = relations(
-  meetingParticipants,
-  ({ one }) => ({
-    user: one(users, {
-      fields: [meetingParticipants.userId],
-      references: [users.authId],
-    }),
-    meeting: one(meetings, {
-      fields: [meetingParticipants.meetingId],
-      references: [meetings.id],
-    }),
-  })
-);
+export const meetingParticipantsRelations = relations(meetingParticipants, ({ one }) => ({
+  user: one(users, {
+    fields: [meetingParticipants.userId],
+    references: [users.authId],
+  }),
+  meeting: one(meetings, {
+    fields: [meetingParticipants.meetingId],
+    references: [meetings.id],
+  }),
+}));
 export const meetingRelations = relations(meetings, ({ one, many }) => ({
   records: many(meetingRecords),
   author: one(users, {
@@ -443,21 +378,18 @@ export const meetingRelations = relations(meetings, ({ one, many }) => ({
   //   references: [users.authId],
   // }),
 }));
-export const meetingRecordsRelations = relations(
-  meetingRecords,
-  ({ one, many }) => ({
-    records: many(meetingRecords),
-    author: one(users, {
-      fields: [meetingRecords.userId],
-      references: [users.authId],
-    }),
-    // // this and the above references a user, this for a local auth, while the other is for a third party auth
-    // author: one(users, {
-    //   fields: [meetingRecords.userId],
-    //   references: [users.id],
-    // }),
-  })
-);
+export const meetingRecordsRelations = relations(meetingRecords, ({ one, many }) => ({
+  records: many(meetingRecords),
+  author: one(users, {
+    fields: [meetingRecords.userId],
+    references: [users.authId],
+  }),
+  // // this and the above references a user, this for a local auth, while the other is for a third party auth
+  // author: one(users, {
+  //   fields: [meetingRecords.userId],
+  //   references: [users.id],
+  // }),
+}));
 export const userRelations = relations(users, ({ one, many }) => ({
   fitnessPlans: many(fitnessPlans),
   mealPlans: many(mealPlans),
@@ -478,12 +410,9 @@ export const mealPlansRelations = relations(mealPlans, ({ one, many }) => ({
     references: [users.authId],
   }),
 }));
-export const fitnessPlansRelations = relations(
-  fitnessPlans,
-  ({ one, many }) => ({
-    author: one(users, {
-      fields: [fitnessPlans.userId],
-      references: [users.authId],
-    }),
-  })
-);
+export const fitnessPlansRelations = relations(fitnessPlans, ({ one, many }) => ({
+  author: one(users, {
+    fields: [fitnessPlans.userId],
+    references: [users.authId],
+  }),
+}));

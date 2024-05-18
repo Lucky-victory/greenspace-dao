@@ -5,14 +5,7 @@ import { FieldValues, SubmitErrorHandler, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 import { useAppContext } from "src/context/state";
-import {
-  useContractWrite,
-  usePrepareContractWrite,
-  useWaitForTransaction,
-  useAccount,
-  useConfig,
-  useNetwork,
-} from "wagmi";
+import { useAccount } from "wagmi";
 
 import { ethers } from "ethers";
 import {
@@ -44,32 +37,14 @@ import { useCustomSign, useDebounce } from "src/hooks";
 import { communityAbi } from "../../abis";
 import { communityAddr } from "src/utils/constants";
 import { useStorageUpload } from "@thirdweb-dev/react";
-import {
-  useAddUserMutation,
-  useSendUserInfoToAIMutation,
-} from "src/state/services";
+import { useAddUserMutation, useSendUserInfoToAIMutation } from "src/state/services";
 import { generateUsername } from "src/utils";
 
-import { parseEther, parseGwei } from "viem";
-import {
-  getNetwork,
-  readContract,
-  watchNetwork,
-  writeContract,
-} from "@wagmi/core";
-import { useWallet } from "@solana/wallet-adapter-react";
+import { parseEther } from "viem";
+import { writeContract } from "@wagmi/core";
 
-const RegisterForm = ({
-  isOpen,
-  onClose,
-}: {
-  isOpen: boolean;
-  onClose: () => void;
-}) => {
-  const [
-    createUser,
-    { data: createdUser, isLoading: isCreatingUser, isSuccess },
-  ] = useAddUserMutation();
+const RegisterForm = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) => {
+  const [createUser, { data: createdUser, isLoading: isCreatingUser, isSuccess }] = useAddUserMutation();
   // const { publicKey } = useWallet();
   // const address = publicKey?.toBase58();
   const { address } = useAccount();
@@ -77,8 +52,7 @@ const RegisterForm = ({
   // const { chain } = useNetwork();
   // const chainId = chain?.id;
   const { signCustomMessage, setSigned, signed } = useCustomSign();
-  const [sendUserToAI, { data: userAIdataResponse }] =
-    useSendUserInfoToAIMutation();
+  const [sendUserToAI, { data: userAIdataResponse }] = useSendUserInfoToAIMutation();
   const userAIdata = userAIdataResponse?.data;
 
   const toast = useToast({
@@ -93,8 +67,7 @@ const RegisterForm = ({
   const swiperRef = useRef<SwiperRef>();
   const swiperNestedRef = useRef<SwiperRef>();
   const [activeSlideIndex, setActiveSlideIndex] = useState(0);
-  const [selectedUserType, setSelectedUserType] =
-    useState<RegisterType>("member");
+  const [selectedUserType, setSelectedUserType] = useState<RegisterType>("member");
   const { user, setUser, allTokensData } = useAppContext();
   const [amount, setAmount] = useState("0.01");
   const debouncedAmount = useDebounce<string>(amount, 500);
@@ -292,31 +265,14 @@ const RegisterForm = ({
   const swiperNestedPrev = () => {
     swiperNestedRef.current?.swiper.slidePrev();
   };
-  const overallHealthOptions = [
-    "Excellent",
-    "Very good",
-    "Good",
-    "Fair",
-    "Poor",
-  ];
-  const smokingOptions = [
-    "less than 5 cigarettes",
-    "5 to 10 cigarettes",
-    "11 to 20 cigarettes",
-    "above 20 cigarettes",
-  ];
+  const overallHealthOptions = ["Excellent", "Very good", "Good", "Fair", "Poor"];
+  const smokingOptions = ["less than 5 cigarettes", "5 to 10 cigarettes", "11 to 20 cigarettes", "above 20 cigarettes"];
   // useEffect(() => {
   //   setSelectedUserType(selectedUserType);
   // }, [selectedUserType]);
   return (
     <>
-      <Modal
-        scrollBehavior="inside"
-        blockScrollOnMount={false}
-        isOpen={isOpen}
-        onClose={onClose}
-        size={"lg"}
-      >
+      <Modal scrollBehavior="inside" blockScrollOnMount={false} isOpen={isOpen} onClose={onClose} size={"lg"}>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader fontSize={{ lg: "3xl", base: "xl" }}>
@@ -333,19 +289,11 @@ const RegisterForm = ({
               )}
               <span>Register</span>
             </HStack>
-            {hasError &&
-              activeSlideIndex > 0 &&
-              selectedUserType !== "nutritionist" && (
-                <Text
-                  color="red.600"
-                  my={1}
-                  fontWeight={"medium"}
-                  fontSize={"md"}
-                  as={"span"}
-                >
-                  Please fill out all fields
-                </Text>
-              )}
+            {hasError && activeSlideIndex > 0 && selectedUserType !== "nutritionist" && (
+              <Text color="red.600" my={1} fontWeight={"medium"} fontSize={"md"} as={"span"}>
+                Please fill out all fields
+              </Text>
+            )}
           </ModalHeader>
           <ModalCloseButton />
           <ModalBody>
@@ -358,41 +306,21 @@ const RegisterForm = ({
               allowTouchMove={false}
             >
               <SwiperSlide>
-                <NewUserType
-                  onClick={() => swiperRef.current?.swiper.slideNext()}
-                  getValue={setSelectedUserType}
-                />
+                <NewUserType onClick={() => swiperRef.current?.swiper.slideNext()} getValue={setSelectedUserType} />
               </SwiperSlide>
               <SwiperSlide>
                 {selectedUserType == "member" && activeSlideIndex > 0 && (
                   <form onSubmit={handleSubmit(onValidSubmit, onInvalidSubmit)}>
-                    <Swiper
-                      nested
-                      allowTouchMove={false}
-                      ref={swiperNestedRef as RefObject<SwiperRef>}
-                    >
+                    <Swiper nested allowTouchMove={false} ref={swiperNestedRef as RefObject<SwiperRef>}>
                       <SwiperSlide>
                         <Stack spacing={5}>
                           <div>
-                            <Input
-                              className=" w-full max-w-[100%]"
-                              {...register("fullName")}
-                              placeholder="Full name"
-                            />
-                            <div className="text-red-500">
-                              {errors.fullName?.message}
-                            </div>
+                            <Input className=" w-full max-w-[100%]" {...register("fullName")} placeholder="Full name" />
+                            <div className="text-red-500">{errors.fullName?.message}</div>
                           </div>
                           <div>
-                            <Input
-                              type="date"
-                              id="start"
-                              {...register("birthDate")}
-                              className=" w-full max-w-[100%]"
-                            />
-                            <div className="text-red-500">
-                              {errors.birthDate?.message}
-                            </div>
+                            <Input type="date" id="start" {...register("birthDate")} className=" w-full max-w-[100%]" />
+                            <div className="text-red-500">{errors.birthDate?.message}</div>
                           </div>
                           <div>
                             <Select
@@ -406,17 +334,12 @@ const RegisterForm = ({
                               </option>
 
                               {countries.map((country, i) => (
-                                <option
-                                  key={"country" + i}
-                                  value={country.name}
-                                >
+                                <option key={"country" + i} value={country.name}>
                                   {country.name}
                                 </option>
                               ))}
                             </Select>
-                            <div className="text-red-500">
-                              {errors.country?.message}
-                            </div>
+                            <div className="text-red-500">{errors.country?.message}</div>
                           </div>
                           <div>
                             <Select
@@ -431,17 +354,12 @@ const RegisterForm = ({
                               <option value="name">Male</option>
                               <option value="female">Female</option>
                             </Select>
-                            <div className="text-red-500">
-                              {errors.sex?.message}
-                            </div>
+                            <div className="text-red-500">{errors.sex?.message}</div>
                           </div>
                         </Stack>
 
                         <HStack my={6} justify={"flex-end"}>
-                          <Button
-                            colorScheme="gray"
-                            onClick={() => swiperNestedNext()}
-                          >
+                          <Button colorScheme="gray" onClick={() => swiperNestedNext()}>
                             Next
                           </Button>
                         </HStack>
@@ -455,9 +373,7 @@ const RegisterForm = ({
                               {...register("weight")}
                               placeholder="What's your weight in kg?"
                             />
-                            <div className="text-red-500">
-                              {errors.weight?.message}
-                            </div>
+                            <div className="text-red-500">{errors.weight?.message}</div>
                           </div>
                           <div>
                             <Input
@@ -465,9 +381,7 @@ const RegisterForm = ({
                               {...register("height")}
                               placeholder="What's your height in feet and inches?"
                             />
-                            <div className="text-red-500">
-                              {errors.height?.message}
-                            </div>
+                            <div className="text-red-500">{errors.height?.message}</div>
                           </div>
                           <div>
                             <Select
@@ -485,16 +399,10 @@ const RegisterForm = ({
                                 </option>
                               ))}
                             </Select>
-                            <div className="text-red-500">
-                              {errors.diet?.message}
-                            </div>
+                            <div className="text-red-500">{errors.diet?.message}</div>
                           </div>
                           <div>
-                            <Select
-                              {...register("active")}
-                              className="Select w-full max-w-[100%]"
-                              defaultValue=""
-                            >
+                            <Select {...register("active")} className="Select w-full max-w-[100%]" defaultValue="">
                               <option value="" disabled>
                                 How active are you on an average week?
                               </option>
@@ -502,24 +410,15 @@ const RegisterForm = ({
                               <option value="active">active</option>
                               <option value="very active">very active</option>
                             </Select>
-                            <div className="text-red-500">
-                              {errors.active?.message}
-                            </div>
+                            <div className="text-red-500">{errors.active?.message}</div>
                           </div>
                         </Stack>
 
                         <HStack gap={4} my={6} justify={"flex-end"}>
-                          <Button
-                            colorScheme="gray"
-                            variant={"outline"}
-                            onClick={() => swiperNestedPrev()}
-                          >
+                          <Button colorScheme="gray" variant={"outline"} onClick={() => swiperNestedPrev()}>
                             Back
                           </Button>
-                          <Button
-                            colorScheme="gray"
-                            onClick={() => swiperNestedNext()}
-                          >
+                          <Button colorScheme="gray" onClick={() => swiperNestedNext()}>
                             Next
                           </Button>
                         </HStack>
@@ -527,11 +426,7 @@ const RegisterForm = ({
                       <SwiperSlide>
                         <Stack spacing={4}>
                           <div>
-                            <Select
-                              {...register("sitting")}
-                              className="Select w-full max-w-[100%]"
-                              defaultValue=""
-                            >
+                            <Select {...register("sitting")} className="Select w-full max-w-[100%]" defaultValue="">
                               <option value="" disabled>
                                 How many hours a day are you sitting
                               </option>
@@ -541,51 +436,29 @@ const RegisterForm = ({
                                 </option>
                               ))}
                             </Select>
-                            <div className="text-red-500">
-                              {errors.sitting?.message}
-                            </div>
+                            <div className="text-red-500">{errors.sitting?.message}</div>
                           </div>
                           <div>
-                            <Select
-                              {...register("alcohol")}
-                              className="Select w-full max-w-[100%]"
-                              defaultValue=""
-                            >
+                            <Select {...register("alcohol")} className="Select w-full max-w-[100%]" defaultValue="">
                               <option value="" disabled>
                                 How much alcohol do you drink
                               </option>
-                              <option value="0 - 10 drinks a week">
-                                0 - 10 drinks a week
-                              </option>
-                              <option value="10 - 20 drinks a week">
-                                10 - 20 drinks a week
-                              </option>
-                              <option value="greater than 20 drinks a week">
-                                greater than 20 drinks a week
-                              </option>
+                              <option value="0 - 10 drinks a week">0 - 10 drinks a week</option>
+                              <option value="10 - 20 drinks a week">10 - 20 drinks a week</option>
+                              <option value="greater than 20 drinks a week">greater than 20 drinks a week</option>
                             </Select>
-                            <div className="text-red-500">
-                              {errors.alcohol?.message}
-                            </div>
+                            <div className="text-red-500">{errors.alcohol?.message}</div>
                           </div>
                           <div>
-                            <Select
-                              {...register("smoke")}
-                              className="Select w-full max-w-[100%]"
-                              defaultValue=""
-                            >
+                            <Select {...register("smoke")} className="Select w-full max-w-[100%]" defaultValue="">
                               <option value="" disabled>
                                 Do you smoke?
                               </option>
                               <option value="Never smoked">Never smoked</option>
                               <option value="Ex smoker">Ex smoker</option>
-                              <option value="Current smoker">
-                                Current smoker
-                              </option>
+                              <option value="Current smoker">Current smoker</option>
                             </Select>
-                            <div className="text-red-500">
-                              {errors.smoke?.message}
-                            </div>
+                            <div className="text-red-500">{errors.smoke?.message}</div>
                           </div>
                           <div>
                             <Select
@@ -594,34 +467,20 @@ const RegisterForm = ({
                               defaultValue=""
                             >
                               <option value="" disabled>
-                                If you are an ex-smoker, how many months ago did
-                                you stop?
+                                If you are an ex-smoker, how many months ago did you stop?
                               </option>
-                              <option value="less than 6 months ago">
-                                less than 6 months ago
-                              </option>
-                              <option value="six to twelve months ago">
-                                six to twelve months ago
-                              </option>
-                              <option value="more than twelve months ago">
-                                more than twelve months ago
-                              </option>
+                              <option value="less than 6 months ago">less than 6 months ago</option>
+                              <option value="six to twelve months ago">six to twelve months ago</option>
+                              <option value="more than twelve months ago">more than twelve months ago</option>
                             </Select>
                           </div>
                         </Stack>
 
                         <HStack gap={4} my={6} justify={"flex-end"}>
-                          <Button
-                            colorScheme="gray"
-                            variant={"outline"}
-                            onClick={() => swiperNestedPrev()}
-                          >
+                          <Button colorScheme="gray" variant={"outline"} onClick={() => swiperNestedPrev()}>
                             Back
                           </Button>
-                          <Button
-                            colorScheme="gray"
-                            onClick={() => swiperNestedNext()}
-                          >
+                          <Button colorScheme="gray" onClick={() => swiperNestedNext()}>
                             Next
                           </Button>
                         </HStack>
@@ -635,40 +494,27 @@ const RegisterForm = ({
                               defaultValue=""
                             >
                               <option value="" disabled>
-                                If you are a current smoker, how many cigarettes
-                                do you smoke per day?
+                                If you are a current smoker, how many cigarettes do you smoke per day?
                               </option>
                               {smokingOptions.map((smokingOpt, i) => (
-                                <option
-                                  key={"smokingOpt" + i}
-                                  value={smokingOpt}
-                                >
+                                <option key={"smokingOpt" + i} value={smokingOpt}>
                                   {smokingOpt}
                                 </option>
                               ))}
                             </Select>
                           </div>
                           <div>
-                            <Select
-                              {...register("sleepLength")}
-                              className="Select w-full max-w-[100%]"
-                              defaultValue=""
-                            >
+                            <Select {...register("sleepLength")} className="Select w-full max-w-[100%]" defaultValue="">
                               <option value="" disabled>
                                 How many hours of sleep do you get per day?
                               </option>
                               {Array.from({ length: 13 }, (_, item) => (
-                                <option
-                                  value={item + 1}
-                                  key={"sleepLength" + item}
-                                >
+                                <option value={item + 1} key={"sleepLength" + item}>
                                   {item + 1}
                                 </option>
                               ))}
                             </Select>
-                            <div className="text-red-500">
-                              {errors.sleepLength?.message}
-                            </div>
+                            <div className="text-red-500">{errors.sleepLength?.message}</div>
                           </div>
                           <div>
                             <Select
@@ -680,26 +526,17 @@ const RegisterForm = ({
                                 Rate your overall Health
                               </option>
                               {overallHealthOptions.map((healthOpt, i) => (
-                                <option
-                                  key={"overallHealth" + i}
-                                  value={healthOpt}
-                                >
+                                <option key={"overallHealth" + i} value={healthOpt}>
                                   {healthOpt}
                                 </option>
                               ))}
                             </Select>
-                            <div className="text-red-500">
-                              {errors.overallHealth?.message}
-                            </div>
+                            <div className="text-red-500">{errors.overallHealth?.message}</div>
                           </div>
                         </Stack>
 
                         <HStack gap={4} my={6} justify={"flex-end"}>
-                          <Button
-                            variant={"outline"}
-                            colorScheme="gray"
-                            onClick={() => swiperNestedPrev()}
-                          >
+                          <Button variant={"outline"} colorScheme="gray" onClick={() => swiperNestedPrev()}>
                             Back
                           </Button>
 
@@ -712,12 +549,11 @@ const RegisterForm = ({
                     </Swiper>
                   </form>
                 )}
-                {selectedUserType === "nutritionist" &&
-                  activeSlideIndex === 1 && (
-                    <Box>
-                      <NutritionistForm closeFormModal={onClose} />
-                    </Box>
-                  )}
+                {selectedUserType === "nutritionist" && activeSlideIndex === 1 && (
+                  <Box>
+                    <NutritionistForm closeFormModal={onClose} />
+                  </Box>
+                )}
               </SwiperSlide>
             </Box>
           </ModalBody>

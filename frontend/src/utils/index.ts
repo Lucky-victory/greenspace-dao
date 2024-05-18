@@ -7,6 +7,24 @@ export const env = process.env.NODE_ENV || "development";
 export const IS_DEV = env === "development";
 import slugify from "slugify";
 import isEmpty from "just-is-empty";
+
+export function convertJsDateToMysqlDate<T=Date>(jsDate: Date|string) {
+  const date=jsDate instanceof Date? jsDate : new Date(jsDate);
+  return date.toISOString().slice(0, 19).replace('T', ' ') as T
+}
+export const convertMinutesToMillisececonds = (mins: number) => +mins * 1000 * 60;
+
+ export function addMinutesToDate(
+    minutes: number,
+    date: string | Date
+  ) {
+    // Get the current date and time
+    const now = new Date(date);
+    // Calculate the new time by adding minutes
+    const newTime = new Date(now.getTime() + convertMinutesToMillisececonds(minutes)) 
+
+    return newTime;
+  }
 export const generateCommunityId = (prefix = "GS") => {
   return generateNumId(prefix, 14, "-");
 };

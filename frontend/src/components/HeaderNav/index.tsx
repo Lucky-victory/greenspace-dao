@@ -28,10 +28,7 @@ import RegisterForm from "../RegisterForm";
 
 export function HeaderNav() {
   const { isMobileSize, isTabletSize } = useResize();
-const u=useWallet()
-const a=useAccount()
 
-console.log({u,a});
 
   const linkStyles = {
     display: isMobileSize || isTabletSize ? "block" : "inline-block",
@@ -85,7 +82,7 @@ console.log({u,a});
   ];
   return (
     <>
-      <HStack minH={"50px"} pl={5} bg={"blackAlpha.300"} justify={"space-between"} backdropFilter={"blur(5px)"}>
+      <HStack minH={"60px"} pl={5} bg={"blackAlpha.300"} justify={"space-between"} backdropFilter={"blur(5px)"}>
         <Heading>
           <Image
             src={"/logo-with-text.png"}
@@ -105,7 +102,7 @@ console.log({u,a});
           minW={{ base: 250, lg: 350 }}
           px={4}
           pr={8}
-          py={2}
+          py={2} h={'full'}
           justify={"flex-end"}
         >
           {!(isMobileSize || isTabletSize) && <ConnectOrLogout openModal={onOpen}/>}

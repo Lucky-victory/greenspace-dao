@@ -136,9 +136,9 @@ export default function CommunityViewPage({
     );
   });
   return (
-    <PageLoader isLoading={isLoading || isFetching} text="fetching data...">
+    <PageLoader isLoading={isLoading || isFetching} text="Fetching data...">
       {community && (
-        <PageWrapper props={{ minH: "var(--chakra-vh,100vh)" }}>
+        <PageWrapper props={{  }}>
           <Head>
             <title>{community?.name}</title>
             <meta name="description" content={community?.description} />
@@ -232,7 +232,7 @@ export default function CommunityViewPage({
               </Flex>
             </Box>
             <Flex direction={{ lg: "row", base: "column" }} gap={3}>
-              <Stack>
+              {/* <Stack> */}
                 <Flex
                   borderBottom={{ base: "2px", lg: "none" }}
                   borderBottomColor={"gray.600"}
@@ -247,7 +247,7 @@ export default function CommunityViewPage({
                 >
                   {[tabButtons]}
                 </Flex>
-              </Stack>
+              {/* </Stack> */}
               <Box
                 flex={1}
                 px={4}

@@ -13,19 +13,18 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { pusherClient } from "src/lib/pusher/client";
-import { FormEvent, FormEventHandler, useEffect, useRef } from "react";
+import {  useEffect, useRef } from "react";
 import { Channel } from "pusher-js";
-import { useFormik } from "formik";
-import { useAuth } from "src/hooks/common";
-import { FiSend } from "react-icons/fi";
+
 import { useGetCommunityMessagesQuery } from "src/state/services";
 import { useSelector } from "react-redux";
 import { RootState, useAppDispatch } from "src/state/store";
 import { addMessage } from "src/state/slices";
 import CommunityChatInput from "./ChatInput";
+import { usePrivy } from "@privy-io/react-auth";
 
 export default function Chats({ spaceIdOrId }: { spaceIdOrId: string }) {
-  const { user } = useAuth();
+  const { user } = usePrivy();
   const {
     data: messagesRes,
     isFetching,

@@ -10,7 +10,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { http } from "viem";
 import { baseSepolia, base } from "viem/chains";
 import WalletProvider from "src/context/WalletProvider";
-
+import "swiper/css";
 import { EthereumWalletConnectors } from "@dynamic-labs/ethereum";
 import { DYNAMIC_KEY } from "src/config/constants";
 

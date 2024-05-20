@@ -12,10 +12,6 @@ import { useRouter } from "next/router";
 
 export default function Home() {
   const [showLoader, setShowLoader] = useState(true);
-  const url =
-    typeof window !== "undefined" && window.location
-      ? window.location.origin
-      : "";
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {

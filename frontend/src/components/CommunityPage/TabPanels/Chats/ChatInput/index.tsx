@@ -45,7 +45,7 @@ export default function CommunityChatInput({
   return (
     <HStack
       bg={"black"}
-      px={2}
+      px={0}
       py={3}
       as={"form"}
       onSubmit={handleSubmit}
@@ -55,18 +55,28 @@ export default function CommunityChatInput({
       w={"full"}
     >
       <Input
-        // rounded={"full"}
+        w={"full"}
+        py={"12px"}
+        h={"auto"}
         _focus={{
           boxShadow: "0 0 0 1px transparent",
           borderColor: "gs-yellow.400",
         }}
         autoComplete="off"
         name="message"
+        fontSize={"15px"}
+        rounded={"full"}
         value={messageForm.values.message}
         placeholder="Type a message..."
         onChange={messageForm.handleChange}
       />
       <Button
+        pos={"absolute"}
+        right={3}
+        size={"sm"}
+        zIndex={4}
+        rounded={"full"}
+        minW={16}
         colorScheme="gs-yellow"
         isDisabled={messageForm.values.message === ""}
       >

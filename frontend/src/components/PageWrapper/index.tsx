@@ -1,9 +1,10 @@
 import { Box } from "@chakra-ui/react";
 import { PropsWithChildren, ReactNode } from "react";
+import { cn } from "src/utils/tailwind";
 
 export default function PageWrapper({
   children,
-  h = "auto",
+  h = "var(--chakra-vh)",
   bg = "black",
   maxW = 1350,
   props,
@@ -16,10 +17,16 @@ export default function PageWrapper({
   props?: any;
 }) {
   return (
-    <>
-      <Box h={"auto"} bg={bg} as="main" maxW={maxW} mx={"auto"} {...props}>
-        {children}
-      </Box>
-    </>
+    <Box
+      h={h}
+      bg={bg}
+      as="main"
+      maxW={maxW}
+      mx={"auto"}
+      {...props}
+      className={"no-scrollbar"}
+    >
+      {children}
+    </Box>
   );
 }

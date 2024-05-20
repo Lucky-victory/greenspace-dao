@@ -16,23 +16,20 @@ export default function TabPanels({
   switch (activeTab) {
     case "":
       return <About spaceIdOrId={spaceIdOrId} description={description} />;
-      break;
+
     case "members":
       return <Members spaceIdOrId={spaceIdOrId} />;
-      break;
+
     case "events":
       return <Events spaceIdOrId={spaceIdOrId} />;
-      break;
+
     case "challenges":
       return <Challenges spaceIdOrId={spaceIdOrId} />;
-      break;
+
     case "chats":
       return <Chats spaceIdOrId={spaceIdOrId} />;
-      break;
 
     default:
-      return <About spaceIdOrId={spaceIdOrId} description={description}/>;
-      break;
+      return <About spaceIdOrId={spaceIdOrId} description={description} />;
   }
-  return <></>;
 }

@@ -1,4 +1,4 @@
-import {PrivyProvider, usePrivy} from '@privy-io/react-auth';
+import {PrivyProvider} from '@privy-io/react-auth';
 import "src/styles/globals.css";
 import type { AppProps } from "next/app";
 import { ChakraProvider } from "@chakra-ui/react";

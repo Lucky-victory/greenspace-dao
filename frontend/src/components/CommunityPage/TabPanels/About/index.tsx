@@ -1,4 +1,4 @@
-import { Box, Heading, Text } from "@chakra-ui/react";
+import { Box, Heading, Text, Stack } from "@chakra-ui/react";
 import MarkdownRenderer from "src/components/MarkdownRenderer";
 
 export default function About({
@@ -9,7 +9,7 @@ export default function About({
   description: string;
 }) {
   return (
-    <>
+    <Stack flex={1}>
       <Heading size={"lg"} fontWeight={600} mb={5}>
         About this community
       </Heading>
@@ -20,6 +20,6 @@ export default function About({
           No description provided
         </Text>
       )}
-    </>
+    </Stack>
   );
 }

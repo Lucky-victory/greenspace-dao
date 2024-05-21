@@ -13,9 +13,9 @@ export type USER = {
   role?: "admin" | "user";
   avatar?: string;
   authId?: string;
-  email: string;
+  email?: string;
   userType?: "member" | "nutritionist";
-  emailVerified: boolean;
+  emailVerified?: boolean;
   username: string;
 };
 export type Nutritionist = {
@@ -52,7 +52,14 @@ export type USER_SESSION = {
 
 export type NEW_USER = Pick<
   USER,
-  "address" | "chainId" | "fullName" | "avatar" | "authId" | "userType"
+  | "address"
+  | "chainId"
+  | "fullName"
+  | "avatar"
+  | "authId"
+  | "userType"
+  | "email"
+  | "emailVerified"
 >;
 export type MEETING = {
   id: number;

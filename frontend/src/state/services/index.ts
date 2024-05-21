@@ -263,7 +263,7 @@ export const GreenSpaceDAOApi = createApi({
     // TODO: Add return types
     getCommunities: builder.query<
       Partial<APIResponse<Community[]>>,
-      { status?: string } 
+      { status?: string }
     >({
       query: (params) => {
         return {
@@ -609,6 +609,66 @@ export const GreenSpaceDAOApi = createApi({
       }),
       invalidatesTags: [{ type: "Communities" as const, id: "LIST" }],
     }),
+    createCommunityEvent: builder.mutation<APIResponse<any>, any>({
+      query: (data) => ({
+        url: `communties/events`,
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: [{ type: "CommunityEvents" as const, id: "LIST" }],
+    }),
+    createCommunityChallenge: builder.mutation<APIResponse<any>, any>({
+      query: (data) => ({
+        url: `communties/challenges`,
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: [{ type: "CommunityChallenges" as const, id: "LIST" }],
+    }),
+    joinCommunityChallenge: builder.mutation<
+      APIResponse<any>,
+      { slugId: string; challengeId: number; userId: string }
+    >({
+      query: ({ slugId, ...data }) => ({
+        url: `community/challenges/${slugId}/join`,
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: [{ type: "CommunityChallenges" as const, id: "LIST" }],
+    }),
+    checkHasJoinCommunityChallenge: builder.mutation<
+      APIResponse<{ hasJoined: boolean }>,
+      { slugId: string; challengeId: number; userId: string }
+    >({
+      query: ({ slugId, ...data }) => ({
+        url: `community/challenges/${slugId}/has-joined`,
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: [{ type: "CommunityChallenges" as const, id: "LIST" }],
+    }),
+    joinCommunityEvent: builder.mutation<
+      APIResponse<any>,
+      { slugId: string; eventId: number; userId: string }
+    >({
+      query: ({ slugId, ...data }) => ({
+        url: `community/events/${slugId}/join`,
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: [{ type: "CommunityEvents" as const, id: "LIST" }],
+    }),
+    checkHasJoinCommunityEvent: builder.mutation<
+      APIResponse<{ hasJoined: boolean }>,
+      { slugId: string; challengeId: number; userId: string }
+    >({
+      query: ({ slugId, ...data }) => ({
+        url: `community/events/${slugId}/has-joined`,
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: [{ type: "CommunityEvents" as const, id: "LIST" }],
+    }),
     addMeetingRecord: builder.mutation<
       APIResponse<MEETING_RECORD>,
       NEW_MEETING_RECORD
@@ -632,6 +692,12 @@ export const GreenSpaceDAOApi = createApi({
 });
 export const {
   useSendUserInfoToAIMutation,
+  useCheckHasJoinCommunityChallengeMutation,
+  useCheckHasJoinCommunityEventMutation,
+  useCreateCommunityChallengeMutation,
+  useCreateCommunityEventMutation,
+  useJoinCommunityChallengeMutation,
+  useJoinCommunityEventMutation,
   useAddFitnessPlanMutation,
   useAddMealPlanMutation,
   useGetUsersQuery,

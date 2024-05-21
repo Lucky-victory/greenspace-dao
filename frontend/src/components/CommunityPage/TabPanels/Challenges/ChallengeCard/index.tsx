@@ -9,10 +9,13 @@ import {
   Flex,
 } from "@chakra-ui/react";
 import { Link } from "@chakra-ui/next-js";
+import MarkdownRenderer from "src/components/MarkdownRenderer";
+import { shortenText } from "src/utils";
+import isEmpty from "just-is-empty";
 export default function ChallengeCard({
-  spaceIdOrId,
+  spaceIdOrId,challenge
 }: {
-  spaceIdOrId: string;
+  spaceIdOrId: string;challenge:any
 }) {
   const tagStyles = {
     px: 2,
@@ -43,38 +46,30 @@ export default function ChallengeCard({
           h={"full"}
           objectFit={"cover"}
           alt=""
-          src={"/assets/community-dp.png"}
+          src={challenge?.coverImage||"/assets/community-dp.png"}
         />
       </Box>
       <Stack flex={1}>
-        <Heading size={"md"}>Challenge title</Heading>
+        <Heading size={"md"}>{challenge?.title}</Heading>
         <Box>
-          <Text>
-            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Minus
-            minima iusto vitae veniam libero esse nostrum consequatur architecto
-            et molestias...
-          </Text>
+          <MarkdownRenderer markdown={shortenText(challenge?.details, 150)} />
         </Box>
         <Box>
-          <HStack>
-            <Text as={"span"} {...tagStyles}>
-              Health
-            </Text>
-            <Text as={"span"} {...tagStyles}>
-              Fun
-            </Text>
-            <Text as={"span"} {...tagStyles}>
-              Meetup
-            </Text>
-            <Text as={"span"} {...tagStyles}>
-              Grow
-            </Text>
+          {!isEmpty(challenge?.tags) && (
+
+            <HStack>
+              {challenge?.tags.map((tag:{name:string}) => (
+                <Text as={"span"} {...tagStyles}>
+                  {tag?.name}
+                </Text>
+             ) )}
           </HStack>
+          )}
           <Button
             rounded={"full"}
             mt={4}
             as={Link}
-            href={`/community/${spaceIdOrId}/challenges/ieodockweb`}
+            href={`/community/${spaceIdOrId}/challenges/${challenge?.slugId}`}
             colorScheme="gs-yellow"
           >
             Find out more

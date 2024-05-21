@@ -23,6 +23,7 @@ import { format } from "date-fns";
 import isEmpty from "just-is-empty";
 import { FiCalendar, FiHome, FiMapPin } from "react-icons/fi";
 import { formatDateWithOrdinal } from "src/utils";
+import GetNotifiedForm from "src/components/GetNotified";
 
 export default function EventPage({
   eventId: eventIdFromServer,
@@ -177,44 +178,13 @@ export default function EventPage({
                   Join the Event
                 </Button>
               </Stack>
-              <Stack
-                minW={{ base: 300, md: 350, lg: 400 }}
-                flex={{ base: 1, lg: 0 }}
-                flexShrink={0}
-                bg={"black"}
-                rounded={"15px"}
-                border={"1px solid var(--chakra-colors-gray-600)"}
-                p={{ base: 5, lg: 8 }}
-              >
-                <Heading size={"lg"} fontWeight={600} mb={2}>
-                  Join the next event!
-                </Heading>
-                <Text fontSize={"15px"} color={"gray.300"}>
-                  We launch new events every month, and they fill up quickly.
-                  Add your email to get notified when new events are available.
-                </Text>
-                <Stack mt={4}>
-                  <Input
-                    _focus={{
-                      boxShadow: "0 0 0 1px transparent",
-                      borderColor: "gs-yellow.400",
-                    }}
-                    autoComplete="email"
-                    type="email"
-                    placeholder="me@example.com"
-                    rounded={"full"}
-                    size={"lg"}
-                  />
-                </Stack>
-                <Button
-                  mt={2}
-                  colorScheme="gs-gray"
-                  size={"lg"}
-                  rounded={"full"}
-                >
-                  Get notified
-                </Button>
-              </Stack>
+
+              <GetNotifiedForm
+                title="Join the next event!"
+                description="We launch new events every month, and they fill up quickly. 
+                Add your email to get notified when new events are available."
+                notifyFor="event"
+              />
             </Stack>
           </Flex>
         </PageWrapper>

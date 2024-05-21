@@ -9,7 +9,7 @@ export default function About({
   description: string;
 }) {
   return (
-    <Stack flex={1}>
+    <Stack flex={1} maxH={"full"} overflowY={"auto"} pb={6}>
       <Heading size={"lg"} fontWeight={600} mb={5}>
         About this community
       </Heading>

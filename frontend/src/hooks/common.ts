@@ -8,8 +8,27 @@ type UpdateSession = (data?: any) => Promise<USER_SESSION | null>;
 
 // import { MetaMaskConnector } from "wagmi/connectors/metaMask";
 import { useAccount, useConnect, useSignMessage, useDisconnect } from "wagmi";
+import { usePrivy } from "@privy-io/react-auth";
 
+/**
+ * Used to check if the user is logged in
+ * @returns
+ */
+export const useInAppAuth = () => {
+  const { ready, user, login } = usePrivy();
 
+  function connect() {
+    if (!user) {
+      login();
+    }
+  }
+  useEffect(() => {}, [user, ready]);
+  return {
+    user,
+    connect,
+    isLoggedIn: !!user,
+  };
+};
 export const useWalletAccount = () => {
   const [_address, setAddress] = useState<string | null>(null);
 
@@ -32,15 +51,15 @@ export const useWalletAccount = () => {
 export function useCustomSign() {
   //const { publicKey, signMessage } = useWallet();
   // const { connectAsync } = useConnect();
-  const { data, error, signMessageAsync } = useSignMessage({mutation:{
-
-    onError(error, variables, context) {
-      console.log({ error, variables, context });
+  const { data, error, signMessageAsync } = useSignMessage({
+    mutation: {
+      onError(error, variables, context) {
+        console.log({ error, variables, context });
+      },
+      onSuccess(data, variables, context) {
+        console.log({ data, variables, context });
+      },
     },
-    onSuccess(data, variables, context) {
-      console.log({ data, variables, context });
-    },
-  }
   });
 
   const { isConnected, address } = useAccount();

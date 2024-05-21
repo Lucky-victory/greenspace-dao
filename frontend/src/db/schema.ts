@@ -247,6 +247,16 @@ export const communityEvents = mysqlTable("CommunityEvents", {
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").onUpdateNow(),
 });
+export const communityEventParticipants = mysqlTable(
+  "CommunityEventParticipants",
+  {
+    id: int("id").autoincrement().primaryKey(),
+    eventId: int("event_id"),
+    userId: varchar("user_id", { length: 255 }),
+
+    createdAt: timestamp("created_at").defaultNow(),
+  }
+);
 export const communityChallenges = mysqlTable("CommunityChallenges", {
   id: int("id").autoincrement().primaryKey(),
   title: varchar("title", { length: 255 }).notNull(),
@@ -266,6 +276,16 @@ export const communityChallenges = mysqlTable("CommunityChallenges", {
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").onUpdateNow(),
 });
+export const communityChallengeParticipants = mysqlTable(
+  "CommunityChallengeParticipants",
+  {
+    id: int("id").autoincrement().primaryKey(),
+    challengeId: int("challenge_id"),
+    userId: varchar("user_id", { length: 255 }),
+
+    createdAt: timestamp("created_at").defaultNow(),
+  }
+);
 export const communityMembers = mysqlTable("CommunityMembers", {
   id: int("id").autoincrement().primaryKey(),
   communityId: int("community_id"),
@@ -351,6 +371,19 @@ export const communityChallengesRelations = relations(
     }),
   })
 );
+export const communityChallengeParticipantRelations = relations(
+  communityChallengeParticipants,
+  ({ one }) => ({
+    user: one(users, {
+      fields: [communityChallengeParticipants.userId],
+      references: [users.authId],
+    }),
+    community: one(communityChallenges, {
+      fields: [communityChallengeParticipants.challengeId],
+      references: [communityChallenges.id],
+    }),
+  })
+);
 export const communityChallengesTagsRelations = relations(
   communityChallengesTags,
   ({ one, many }) => ({
@@ -375,6 +408,19 @@ export const communityEventsRelations = relations(
     tags: many(communityEventsTags),
     community: one(communities, {
       fields: [communityEvents.communityId],
+      references: [communities.id],
+    }),
+  })
+);
+export const communityEventParticipantRelations = relations(
+  communityEventParticipants,
+  ({ one }) => ({
+    user: one(users, {
+      fields: [communityEventParticipants.userId],
+      references: [users.authId],
+    }),
+    community: one(communities, {
+      fields: [communityEventParticipants.eventId],
       references: [communities.id],
     }),
   })

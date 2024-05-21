@@ -160,7 +160,7 @@ export default function CommunityViewPage({
             bg="gray.800"
             props={{
               h: "var(--chakra-vh,100vh)",
-              maxH: { base: "auto", lg: "800px" },
+              // maxH: { base: "auto", lg: "800px" },
             }}
           >
             {/* BANNER AREA */}
@@ -243,7 +243,7 @@ export default function CommunityViewPage({
               borderTop={"4px"}
               borderTopColor={"gray.900"}
               direction={{ lg: "row", base: "column" }}
-              gap={3}
+              // gap={3}
               flex={1}
               maxH={"full"}
             >

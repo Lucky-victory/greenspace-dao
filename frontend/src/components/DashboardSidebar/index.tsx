@@ -3,7 +3,6 @@ import { Link } from "@chakra-ui/next-js";
 import { Box, Flex, Icon, Image, List, ListItem, Stack, Text } from "@chakra-ui/react";
 import { usePathname } from "next/navigation";
 import { IconType } from "react-icons";
-import { useResize } from "src/hooks/common";
 export default function DashboardSideNav(props: {
   entryPath?: string;
   links: Array<{

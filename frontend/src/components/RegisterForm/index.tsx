@@ -5,7 +5,6 @@ import { FieldValues, SubmitErrorHandler, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 import { useAppContext } from "src/context/state";
-import { useAccount } from "wagmi";
 
 import { ethers } from "ethers";
 import {
@@ -33,48 +32,77 @@ import SwiperMain from "swiper";
 import Icon from "../Icon";
 import NutritionistForm from "src/components/NutritionistForm";
 import { countries } from "src/utils/countries";
-import { useCustomSign, useDebounce } from "src/hooks";
-import { communityAbi } from "../../abis";
+import { useCustomSign, useDebounce } from "src/hooks/common";
+import { communityAbi } from "../../../abis";
 import { communityAddr } from "src/utils/constants";
 import { useStorageUpload } from "@thirdweb-dev/react";
 import { useAddUserMutation, useSendUserInfoToAIMutation } from "src/state/services";
 import { generateUsername } from "src/utils";
 
-import { parseEther } from "viem";
-import { writeContract } from "@wagmi/core";
+import { parseEther, parseGwei } from "viem";
 
-const RegisterForm = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) => {
-  const [createUser, { data: createdUser, isLoading: isCreatingUser, isSuccess }] = useAddUserMutation();
+import { useAccount } from "wagmi";
+import { simulateContract , writeContract,} from "@wagmi/core";
+import { config } from "src/config/wagmi";
+import { useLogin, useSignMessage } from "@privy-io/react-auth";
+
+export interface RegisterFormFields {
+  fullName: string;
+  sex: string;
+  country?: string;
+  weight: string;
+  height: string;
+  diet: string;
+  active: string;
+  sitting: string;
+  alcohol: string;
+  smoke: string;
+  sleepLength: string;
+  overallHealth: string;
+  birthDate: string;
+  smokingStopped?: string;  // Optional fields are marked with a question mark
+  smokingLength?: string;  // Optional fields are marked with a question mark
+}
+const RegisterForm = ({
+  isOpen,
+  onClose,
+}: {
+  isOpen: boolean;
+  onClose: () => void;
+}) => {
+  const [
+    createUser,
+    { data: createdUser, isLoading: isCreatingUser, isSuccess },
+  ] = useAddUserMutation();
+  const {signMessage}=useSignMessage()
   // const { publicKey } = useWallet();
   // const address = publicKey?.toBase58();
   const { address } = useAccount();
-  //const [sendUserToAI] = useSendUserInfoToAIMutation();
-  // const { chain } = useNetwork();
-  // const chainId = chain?.id;
-  const { signCustomMessage, setSigned, signed } = useCustomSign();
-  const [sendUserToAI, { data: userAIdataResponse }] = useSendUserInfoToAIMutation();
+  
+  const [sendUserToAI, { data: userAIdataResponse }] =
+  useSendUserInfoToAIMutation();
   const userAIdata = userAIdataResponse?.data;
-
+  
   const toast = useToast({
     // duration: 3000,
     // position: 'top',
     // status: 'success',
     // title: 'Sign up was successful',
   });
-
+  
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
   const swiperRef = useRef<SwiperRef>();
   const swiperNestedRef = useRef<SwiperRef>();
   const [activeSlideIndex, setActiveSlideIndex] = useState(0);
-  const [selectedUserType, setSelectedUserType] = useState<RegisterType>("member");
+  const [selectedUserType, setSelectedUserType] =
+  useState<RegisterType>("member");
   const { user, setUser, allTokensData } = useAppContext();
   const [amount, setAmount] = useState("0.01");
   const debouncedAmount = useDebounce<string>(amount, 500);
   const [hasError, setHasError] = useState(false);
   const [inTx, setInTx] = useState(false);
-  // form validation rules
-  const validationSchema = Yup.object().shape({
+ const validationSchema = Yup.object().shape({
     fullName: Yup.string().required("Field is required"),
     sex: Yup.string().required("Field is required"),
     country: Yup.string().required("Field is required"),
@@ -93,29 +121,55 @@ const RegisterForm = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => voi
   });
   const formOptions = { resolver: yupResolver(validationSchema) };
   const { register, handleSubmit, formState, reset } = useForm(formOptions);
+  
+const [formData,setFormData]=useState<RegisterFormFields|null>(null)
 
+  const {login} = useLogin({
+    onComplete:async function (user, isNewUser, wasAlreadyAuthenticated, loginMethod, loginAccount) {
+      // TODO: Add logic to handle new user, if the user does not exist, trigger them to register by redirecting them to an onboarding page oor modal.
+      console.log({ user, isNewUser, wasAlreadyAuthenticated, loginMethod, loginAccount });
+      if(isNewUser) {
+        await createUser({
+          fullName: formData?.fullName,authId:user?.id,
+          address: address!, 
+          userType: selectedUserType,
+        }).unwrap();
+        sendUserToAI(formData);
+      }
+        setUser?.({
+          ...user,
+          userAddress: address,
+          userCidData: cid,
+          name: formData?.fullName,
+        });
+    },
+  })
+ 
   // get functions to build form with useForm() hook
   const { errors, isValid, isSubmitSuccessful } = formState;
-  const [cid, setCid] = useState<any>("");
+  const [cid, setCid] = useState<string>("");
   //const [isLoading, setIsLoading] = useState(false);
   const { mutateAsync: upload } = useStorageUpload();
 
   const registerUserTx = async () => {
     try {
       setInTx(true);
-      const { hash } = await writeContract({
+      const {request}=await simulateContract(config,{
         address: communityAddr,
         abi: communityAbi as readonly unknown[],
         functionName: "registerUser",
         args: [cid, allTokensData.userNftUri],
         //@ts-ignore
         value: parseEther(debouncedAmount || "0"),
-      });
+      }
+
+      )
+      const hash  = await writeContract(config,request);
 
       //toast.success("Registration Successful on Avalanche");
 
       setInTx(false);
-      router.push("/member/dashboard");
+      // router.push("/member/dashboard");
     } catch (error) {
       toast({
         duration: 3000,
@@ -127,25 +181,6 @@ const RegisterForm = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => voi
     }
   };
 
-  // const { config } = usePrepareContractWrite({
-  //   //@ts-ignore
-  //   address: communityAddr,
-  //   abi: communityAbi,
-  //   functionName: 'registerUser',
-  //   args: [cid, allTokensData.userNftUri],
-  //   //@ts-ignore
-  //   value: ethers.utils.parseEther(debouncedAmount || '0'),
-  // });
-
-  // const { write: registerUser, data } = useContractWrite(config);
-
-  // const { isLoading } = useWaitForTransaction({
-  //   hash: data?.hash,
-  //   onSuccess(tx) {
-  //     console.log(tx);
-  //     router.push('/member/dashboard');
-  //   },
-  // });
 
   const onInvalidSubmit: SubmitErrorHandler<FieldValues> = (errors: any) => {
     if (!isValid) {
@@ -185,51 +220,48 @@ const RegisterForm = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => voi
           smokingStopped: data.smokingStopped,
           smokingLength: data.smokingLength,
         };
-
+setFormData(formDataObject)
         const dataToUpload = [formDataObject];
         const cid = await upload({ data: dataToUpload });
         console.log("The index of 0 in the cid array: ", cid[0]);
         // console.log(chainId);
 
         setCid(cid[0]);
-        setUser({
-          ...user,
-          userAddress: address,
-          userCidData: cid[0],
-          name: data.fullName,
-        });
-
-        await createUser({
-          fullName: data?.fullName,
-          address: address!,
-          userType: selectedUserType,
-        }).unwrap();
-        sendUserToAI(formDataObject);
+        onClose()
+        login()
+//         setUser?.({
+//           ...user,
+//           userAddress: address,
+//           userCidData: cid[0],
+//           name: data.fullName,
+//         });
+// // await new Promise((resolve) => setTimeout(()=>resolve(login())));
+//         await createUser({
+//           fullName: data?.fullName,
+//           address: address!, 
+//           userType: selectedUserType,
+//         }).unwrap();
+//         sendUserToAI(formDataObject);
         //TODO: Call contract to register user
         // await registerUserTx();
-        await new Promise((resolve) => setTimeout(resolve, 2000));
-        if (address) {
-          if (!signed) {
-            await signCustomMessage();
-          }
-        } else {
-          setSigned(false);
-        }
-        // publicKey ? !signed && signCustomMessage() : setSigned(false);
-        if (typeof window !== "undefined") {
-          window.localStorage.setItem("userData", JSON.stringify(userAIdata));
-        }
-        toast({
-          duration: 3000,
-          position: "top",
-          status: "success",
-          title: "Sign up was successful",
-        });
+        // await new Promise((resolve) => setTimeout(resolve, 2000));
+        // if (address) {
+        
+        //     await signMessage('Sign in to GreenspaceDAO');
+          
+        // } else {
+        //   // setSigned(false);
+        // }
+        // // publicKey ? !signed && signCustomMessage() : setSigned(false);
+        // if (typeof window !== "undefined") {
+        //   window.localStorage.setItem("userData", JSON.stringify(userAIdata));
+        // }
+      
 
         reset();
         setIsSubmitting(false);
         onClose();
-        router.push("/member/dashboard");
+        // router.push("/member/dashboard");
       }
     } catch (error) {
       console.log("error:", error);

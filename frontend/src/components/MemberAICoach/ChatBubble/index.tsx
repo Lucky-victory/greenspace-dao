@@ -1,5 +1,5 @@
 import Image from "next/image";
-import CommentCard from "src/components/CommentCard";
+import CommentCard from "src/components/MemberAICoach/CommentCard";
 
 const ChatBubble = (chat: {
   name: string;

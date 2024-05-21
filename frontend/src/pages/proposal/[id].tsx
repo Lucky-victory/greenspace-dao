@@ -4,7 +4,6 @@ import PageWrapper from "src/components/PageWrapper";
 
 import DaoLayout from "src/components/DaoLayout";
 import { useRouter } from "next/router";
-import { useContractWrite, useNetwork } from "wagmi";
 //import { ADDRESSES } from "src/constants/addresses";
 //import { ABI } from "src/constants/abi";
 

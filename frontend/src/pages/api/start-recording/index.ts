@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { Recorder } from "@huddle01/server-sdk/recorder";
 import { AccessToken, Role } from "@huddle01/server-sdk/auth";
-const { NEXT_PUBLIC_HUDDLE_PROJECT_ID, HUDDLE_API_KEY } = process.env;
+import { ENV_CONFIG } from "src/config/constants";
 
 export default async function handler(
   req: NextApiRequest,
@@ -10,21 +10,21 @@ export default async function handler(
   const { roomId } = req.query;
 
   //checking for project credentials
-  if (!NEXT_PUBLIC_HUDDLE_PROJECT_ID && !HUDDLE_API_KEY) {
+  if (!ENV_CONFIG.HUDDLE_PROJECT_ID && !ENV_CONFIG.HUDDLE_API_KEY) {
     return res
       .status(400)
-      .json({ error: "NEXT_PUBLIC_PROJECT_ID and API_KEY are required" });
+      .json({ error: "PROJECT_ID and API_KEY are required" });
   }
 
   //creating the Recorder class instance
   const recorder = new Recorder(
-    NEXT_PUBLIC_HUDDLE_PROJECT_ID!,
-    HUDDLE_API_KEY!
+    ENV_CONFIG.HUDDLE_PROJECT_ID!,
+   ENV_CONFIG.HUDDLE_API_KEY!
   );
 
   //generating an access token for the recorder
   const token = new AccessToken({
-    apiKey: HUDDLE_API_KEY!,
+    apiKey: ENV_CONFIG.HUDDLE_API_KEY!,
     roomId: roomId as string,
     role: Role.BOT,
     permissions: {

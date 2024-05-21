@@ -25,7 +25,7 @@ import { useRouter } from "next/router";
 import { NewMealPlan, PostStatus } from "src/types/shared";
 import { useAddMealPlanMutation } from "src/state/services";
 import { useAppContext } from "src/context/state";
-import { useAuth } from "src/hooks";
+import { useAuth } from "src/hooks/common";
 import { resolveIPFSURI, uploadToThirdWeb } from "src/helpers";
 import { useStorageUpload } from "@thirdweb-dev/react";
 

@@ -1,25 +1,27 @@
+import {PrivyProvider} from '@privy-io/react-auth';
 import "src/styles/globals.css";
 import type { AppProps } from "next/app";
 import { ChakraProvider } from "@chakra-ui/react";
 import { fonts } from "src/lib/fonts";
 import theme from "src/config/theme";
-import { DynamicContextProvider } from "@dynamic-labs/sdk-react-core";
-import { DynamicWagmiConnector } from "@dynamic-labs/wagmi-connector";
-import { createConfig, WagmiProvider } from "wagmi";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { http } from "viem";
-import { baseSepolia, base } from "viem/chains";
+import { WagmiProvider } from "wagmi";
 import WalletProvider from "src/context/WalletProvider";
-import "swiper/css";
-import { EthereumWalletConnectors } from "@dynamic-labs/ethereum";
-import { DYNAMIC_KEY } from "src/config/constants";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
-const config = createConfig({
-  chains: [baseSepolia, base],
-  multiInjectedProviderDiscovery: false,
-  transports: {
-    [baseSepolia.id]: http(),
-    [base.id]: http(),
+import { config } from "src/config/wagmi";
+import store from 'src/state/store';
+import { ThirdwebProvider } from '@thirdweb-dev/react';
+import "swiper/css";
+import { Provider as ReduxProvider } from'react-redux';
+import { HuddleClient } from '@huddle01/web-core';
+import { HuddleProvider } from '@huddle01/react';
+const huddleClient = new HuddleClient({
+  projectId: process.env.NEXT_PUBLIC_HUDDLE_PROJECT_ID!,
+  options: {
+    // `activeSpeakers` will be most active `n` number of peers, by default it's 8
+    activeSpeakers: {
+      size: 8,
+    },
   },
 });
 
@@ -35,24 +37,32 @@ export default function App({ Component, pageProps }: AppProps) {
           }
         `}
       </style>
-      <ChakraProvider theme={theme}>
-        <DynamicContextProvider
-          settings={{
-            environmentId: DYNAMIC_KEY,
-            walletConnectors: [EthereumWalletConnectors],
-          }}
-        >
+      <PrivyProvider appId={process.env.NEXT_PUBLIC_PRIVY_APP_ID!} config={{appearance:{
+        theme:'dark'
+      }}}>
           <WagmiProvider config={config}>
+                <ReduxProvider store={store}>
+        <ThirdwebProvider
+          clientId="7d6dd3b28e4d16bb007c78b1f6c90b04"
+          activeChain="sepolia"
+        >
             <QueryClientProvider client={queryClient}>
-              <DynamicWagmiConnector>
+          <HuddleProvider client={huddleClient}>
+                 
+      <ChakraProvider theme={theme}>
                 <WalletProvider>
+
                   <Component {...pageProps} />
                 </WalletProvider>
-              </DynamicWagmiConnector>
-            </QueryClientProvider>
-          </WagmiProvider>
-        </DynamicContextProvider>
+              
+    
       </ChakraProvider>
+                  </HuddleProvider>
+            </QueryClientProvider>
+        </ThirdwebProvider>
+      </ReduxProvider>
+          </WagmiProvider>
+      </PrivyProvider>
     </>
   );
 }

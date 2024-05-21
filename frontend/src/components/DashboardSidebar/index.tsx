@@ -1,3 +1,4 @@
+import { useResize } from "src/hooks/common";
 import { Link } from "@chakra-ui/next-js";
 import { Box, Flex, Icon, Image, List, ListItem, Stack, Text } from "@chakra-ui/react";
 import { usePathname } from "next/navigation";

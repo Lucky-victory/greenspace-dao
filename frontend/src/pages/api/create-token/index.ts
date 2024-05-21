@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { AccessToken, Role } from "@huddle01/server-sdk/auth";
+import { ENV_CONFIG } from "src/config/constants";
 // Opt out of caching for all data requests in the route segment
 export const dynamic = "force-dynamic";
 export default async function handler(
@@ -54,7 +55,7 @@ export default async function handler(
     }
 
     const accessToken = new AccessToken({
-      apiKey: process.env.HUDDLE_API_KEY!,
+      apiKey: ENV_CONFIG.HUDDLE_API_KEY!,
       roomId: roomId as string,
       options: { metadata: metadata },
       role,

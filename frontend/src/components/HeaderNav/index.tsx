@@ -19,10 +19,16 @@ import { Link } from "@chakra-ui/next-js";
 import { LuMenu } from "react-icons/lu";
 // import RegisterForm from "./RegisterForm";
 import { useResize } from "src/hooks/common";
-import { DynamicWidget } from "@dynamic-labs/sdk-react-core";
+import { CustomConnectButton } from "src/components/Auth/ConnectButton";
+import { ConnectOrLogout } from "../Auth/ConnectOrRegister";
+import { useWallet } from "src/context/WalletProvider";
+import { useAccount } from "wagmi";
+import RegisterForm from "../RegisterForm";
+// import { DynamicWidget } from "@dynamic-labs/sdk-react-core";
 
 export function HeaderNav() {
   const { isMobileSize, isTabletSize } = useResize();
+
 
   const linkStyles = {
     display: isMobileSize || isTabletSize ? "block" : "inline-block",
@@ -47,7 +53,7 @@ export function HeaderNav() {
     },
   };
 
-  //   const { isOpen, onOpen, onClose } = useDisclosure();
+    const { isOpen, onOpen, onClose } = useDisclosure();
   const {
     isOpen: isMobileNavbarOpen,
     onToggle: onMobileNavbarToggle,
@@ -76,7 +82,7 @@ export function HeaderNav() {
   ];
   return (
     <>
-      <HStack minH={"50px"} pl={5} bg={"blackAlpha.300"} justify={"space-between"} backdropFilter={"blur(5px)"}>
+      <HStack minH={"60px"} pl={5} bg={"blackAlpha.300"} justify={"space-between"} backdropFilter={"blur(5px)"}>
         <Heading>
           <Image
             src={"/logo-with-text.png"}
@@ -96,10 +102,10 @@ export function HeaderNav() {
           minW={{ base: 250, lg: 350 }}
           px={4}
           pr={8}
-          py={2}
+          py={2} h={'full'}
           justify={"flex-end"}
         >
-          {!(isMobileSize || isTabletSize) && <DynamicWidget />}
+          {!(isMobileSize || isTabletSize) && <ConnectOrLogout openModal={onOpen}/>}
 
           {(isMobileSize || isTabletSize) && (
             <IconButton ml={3} onClick={onMobileNavbarToggle} fontSize={24} aria-label="toggle mobile menu">
@@ -125,13 +131,14 @@ export function HeaderNav() {
                 p={2}
                 // justify={"center"}
               >
-                <DynamicWidget />
+              <ConnectOrLogout openModal={onOpen}/>
               </HStack>
             </DrawerBody>
           </DrawerContent>
         </Drawer>
       )}
       {/* <RegisterForm isOpen={isOpen} onClose={onClose} /> */}
+      <RegisterForm isOpen={isOpen} onClose={onClose} />
     </>
   );
 }

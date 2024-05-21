@@ -1,7 +1,23 @@
 import { objectToSearchParams } from "src/utils";
 import { fetchBaseQuery, createApi } from "@reduxjs/toolkit/query/react";
-import { APIResponse, MEETING, MEETING_RECORD, NEW_MEETING, NEW_MEETING_RECORD, NEW_USER, USER } from "../types";
-import { FitnessPlan, Article, MealPlan, NewArticle, NewFitnessPlan, NewMealPlan } from "src/types/shared";
+import {
+  APIResponse,
+  MEETING,
+  MEETING_RECORD,
+  NEW_MEETING,
+  NEW_MEETING_RECORD,
+  NEW_USER,
+  USER,
+} from "../types";
+import {
+  FitnessPlan,
+  Article,
+  MealPlan,
+  NewArticle,
+  NewFitnessPlan,
+  NewMealPlan,
+  Community,
+} from "src/types/shared";
 import { update } from "../slices";
 
 export const GreenSpaceDAOApi = createApi({
@@ -216,7 +232,10 @@ export const GreenSpaceDAOApi = createApi({
             [{ type: "Meetings", id: "LIST" }],
     }),
     // TODO: Add return types
-    getCommunities: builder.query<Partial<APIResponse<any[]>>, { status?: string } & Record<string, any>>({
+    getCommunities: builder.query<
+      Partial<APIResponse<Community[]>>,
+      { status?: string } 
+    >({
       query: (params) => {
         return {
           url: `communities?${objectToSearchParams(params)}`,

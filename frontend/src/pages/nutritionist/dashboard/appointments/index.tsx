@@ -33,7 +33,7 @@ import {
   useAddMeetingMutation,
   useCreateRoomMutation,
 } from "src/state/services";
-import { useAuth } from "src/hooks";
+import { useAuth } from "src/hooks/common";
 
 export default function DashBoard() {
   const today = new Date().getTime();

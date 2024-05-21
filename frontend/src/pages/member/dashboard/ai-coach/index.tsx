@@ -3,17 +3,18 @@ import io, { Socket } from "socket.io-client";
 
 // INSTALL npm install -D @tailwindcss/typography to properly display tables and such in md
 
-import ChatBubble from "src/components/ChatBubble";
-import MessageButton from "src/components/MessageButton";
-import SamplePromptsCard from "src/components/SamplePromptsCard";
+import ChatBubble from "src/components/MemberAICoach/ChatBubble";
+import MessageButton from "src/components/MemberAICoach/MessageButton";
+import SamplePromptsCard from "src/components/MemberAICoach/SamplePromptsCard";
 import { DefaultEventsMap } from "@socket.io/component-emitter";
 import isEmpty from "just-is-empty";
 import OpenAI from "openai";
-import { TextContentBlock } from "openai/resources/beta/threads/messages/messages.mjs";
+import { TextContentBlock } from "openai/resources/beta/threads/messages";
 // import { useAccount } from "wagmi";
 import DashBoardLayout from "src/components/MemberDashboardLayout";
+
 import { Box, Textarea } from "@chakra-ui/react";
-import { useWallet } from "src/context/WalletProvider";
+import { useAuth } from "src/hooks/common";
 
 const samplePrompts = [
   "What nutrition is best for a female BMI of 20?",
@@ -31,7 +32,9 @@ interface ChatState {
 }
 
 const AiCoachPage = () => {
-  const { address } = useWallet();
+  // const { publicKey } = useWallet();
+  const {session} = useAuth()
+  const address=session?.user?.address
   const [state, updateState] = useReducer(
     (current: ChatState, update: Partial<ChatState>): ChatState => ({
       ...current,

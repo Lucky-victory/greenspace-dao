@@ -1,7 +1,7 @@
 import { Box, Flex } from "@chakra-ui/react";
-import PageLoader from "../PageLoader";
-import DashboardSideNav from "./DashboardSidebar";
-import DashboardHeader from "./DashboardHeader";
+import PageLoader from "src/components/PageLoader";
+import DashboardSideNav from "src/components/DashboardSidebar";
+import DashboardHeader from "src/components/DashboardHeader";
 import { ReactNode } from "react";
 import {
   HiOutlineCalendarDays,

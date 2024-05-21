@@ -1,4 +1,4 @@
-import { useAuth } from "src/hooks";
+import { useAuth } from "src/hooks/common";
 import {
   useAddMeetingMutation,
   useCreateRoomMutation,

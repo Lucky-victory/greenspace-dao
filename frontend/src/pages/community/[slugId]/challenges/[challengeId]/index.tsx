@@ -18,8 +18,10 @@ import {
 import MarkdownRenderer from "src/components/MarkdownRenderer";
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 import {
+  useCheckHasJoinCommunityChallengeMutation,
   useGetCommunityChallengeQuery,
   useGetCommunityEventQuery,
+  useJoinCommunityChallengeMutation,
 } from "src/state/services";
 import { useRouter } from "next/router";
 import { format } from "date-fns";
@@ -28,11 +30,12 @@ import { FiCalendar, FiHome, FiMapPin } from "react-icons/fi";
 import { formatDateWithOrdinal } from "src/utils";
 import GetNotifiedForm from "src/components/GetNotified";
 import { useInAppAuth } from "src/hooks/common";
+import { useEffect } from "react";
 
 export default function EventPage({
   challengeId: challengeIdFromServer,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
-  const { connect, isLoggedIn } = useInAppAuth();
+  const { connect, isLoggedIn, user } = useInAppAuth();
   const router = useRouter();
   const challengeId =
     challengeIdFromServer || (router.query?.challengeId as string);
@@ -44,6 +47,13 @@ export default function EventPage({
     slugId: challengeId,
   });
   const challenge = challengeResponse?.data;
+  const [joinChallenge, { isLoading: isLoadingJoin }] =
+    useJoinCommunityChallengeMutation();
+  const [
+    checkChallengeJoin,
+    { isLoading: isLoadingHasJoin, data: hasJoinResponse },
+  ] = useCheckHasJoinCommunityChallengeMutation();
+  const hasJoined = hasJoinResponse?.data?.hasJoined;
   function formatDate(date: Date | string, fmt: string = "MMM d, yyyy") {
     if (isEmpty(date)) return "";
     if (typeof date === "string") {
@@ -52,12 +62,29 @@ export default function EventPage({
 
     return format(new Date(date), fmt);
   }
-  function handleChallengeJoin() {
+
+  async function handleChallengeJoin() {
     if (!isLoggedIn) {
       connect();
       return;
     }
+    await joinChallenge({
+      challengeId: challenge?.id,
+      userId: user?.id as string,
+      slugId: challengeId,
+    }).unwrap();
   }
+  console.log("hasJoinResponse", hasJoinResponse);
+
+  useEffect(() => {
+    if (isLoggedIn && challenge?.id) {
+      checkChallengeJoin({
+        challengeId: challenge?.id,
+        userId: user?.id as string,
+        slugId: challengeId,
+      });
+    }
+  }, [isLoadingJoin, isLoading, isLoggedIn, user?.id, challenge?.id]);
   return (
     <>
       <Head>
@@ -180,7 +207,13 @@ export default function EventPage({
                     <ListItem>
                       <HStack>
                         <FiMapPin size={20} />
-                        <Text>Location: {challenge?.location}</Text>
+                        <Text>
+                          {" "}
+                          <Text as={"span"} color={"gray.500"}>
+                            Location:
+                          </Text>{" "}
+                          {challenge?.location}
+                        </Text>
                       </HStack>
                     </ListItem>
                   )}
@@ -192,10 +225,12 @@ export default function EventPage({
                   onClick={handleChallengeJoin}
                   mt={4}
                   colorScheme="gs-yellow"
+                  isLoading={isLoadingJoin || isLoadingHasJoin}
                   size={"lg"}
                   rounded={"full"}
+                  isDisabled={hasJoined}
                 >
-                  Join the Challenge
+                  {hasJoined ? "Already joined" : "Join the Challenge"}
                 </Button>
               </Stack>
               <GetNotifiedForm

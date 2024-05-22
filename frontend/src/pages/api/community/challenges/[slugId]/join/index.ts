@@ -30,7 +30,7 @@ export const POST: HTTP_METHOD_CB = async (
         .insert(communityChallengeParticipants)
         .values(data);
 
-      return tx.query.communityEvents.findFirst({
+      return tx.query.communityChallengeParticipants.findFirst({
         where: eq(communityChallengeParticipants.id, insertRes.insertId),
       });
     });

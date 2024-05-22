@@ -660,7 +660,7 @@ export const GreenSpaceDAOApi = createApi({
     }),
     checkHasJoinCommunityEvent: builder.mutation<
       APIResponse<{ hasJoined: boolean }>,
-      { slugId: string; challengeId: number; userId: string }
+      { slugId: string; eventId: number; userId: string }
     >({
       query: ({ slugId, ...data }) => ({
         url: `community/events/${slugId}/has-joined`,

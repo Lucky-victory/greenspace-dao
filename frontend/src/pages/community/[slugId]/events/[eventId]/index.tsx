@@ -17,17 +17,24 @@ import {
 } from "@chakra-ui/react";
 import MarkdownRenderer from "src/components/MarkdownRenderer";
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
-import { useGetCommunityEventQuery } from "src/state/services";
+import {
+  useCheckHasJoinCommunityEventMutation,
+  useGetCommunityEventQuery,
+  useJoinCommunityEventMutation,
+} from "src/state/services";
 import { useRouter } from "next/router";
 import { format } from "date-fns";
 import isEmpty from "just-is-empty";
 import { FiCalendar, FiHome, FiMapPin } from "react-icons/fi";
 import { formatDateWithOrdinal } from "src/utils";
 import GetNotifiedForm from "src/components/GetNotified";
+import { useEffect } from "react";
+import { useInAppAuth } from "src/hooks/common";
 
 export default function EventPage({
   eventId: eventIdFromServer,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+  const { connect, isLoggedIn, user } = useInAppAuth();
   const router = useRouter();
   const eventId = eventIdFromServer || (router.query?.eventId as string);
   const {
@@ -38,6 +45,14 @@ export default function EventPage({
     slugId: eventId,
   });
   const event = eventResponse?.data;
+
+  const [joinEvent, { isLoading: isLoadingJoin }] =
+    useJoinCommunityEventMutation();
+  const [
+    checkEventJoin,
+    { isLoading: isLoadingHasJoin, data: hasJoinResponse },
+  ] = useCheckHasJoinCommunityEventMutation();
+  const hasJoined = hasJoinResponse?.data?.hasJoined;
   function formatDate(date: Date | string, fmt: string = "MMM d, yyyy") {
     if (isEmpty(date)) return "";
     if (typeof date === "string") {
@@ -46,6 +61,29 @@ export default function EventPage({
 
     return format(new Date(date), fmt);
   }
+
+  async function handleEventJoin() {
+    if (!isLoggedIn) {
+      connect();
+      return;
+    }
+    await joinEvent({
+      eventId: event?.id,
+      userId: user?.id as string,
+      slugId: eventId,
+    }).unwrap();
+  }
+  console.log("hasJoinResponse", hasJoinResponse);
+
+  useEffect(() => {
+    if (isLoggedIn && event?.id) {
+      checkEventJoin({
+        eventId: event?.id,
+        userId: user?.id as string,
+        slugId: eventId,
+      });
+    }
+  }, [isLoadingJoin, isLoading, isLoggedIn, user?.id, event?.id]);
   return (
     <>
       <Head>
@@ -161,7 +199,13 @@ export default function EventPage({
                     <ListItem>
                       <HStack>
                         <FiMapPin size={20} />
-                        <Text>Location: {event?.location}</Text>
+                        <Text>
+                          {" "}
+                          <Text as={"span"} color={"gray.500"}>
+                            Location:
+                          </Text>{" "}
+                          {event?.location}
+                        </Text>
                       </HStack>
                     </ListItem>
                   )}
@@ -172,10 +216,13 @@ export default function EventPage({
                 <Button
                   mt={4}
                   colorScheme="gs-yellow"
+                  onClick={handleEventJoin}
+                  isLoading={isLoadingJoin || isLoadingHasJoin}
+                  isDisabled={hasJoined}
                   size={"lg"}
                   rounded={"full"}
                 >
-                  Join the Event
+                  {hasJoined ? "Already joined" : "Join the Event"}
                 </Button>
               </Stack>
 

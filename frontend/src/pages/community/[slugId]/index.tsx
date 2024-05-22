@@ -270,8 +270,7 @@ export default function CommunityViewPage({
                 <TabPanels
                   activeTab={activeTab}
                   spaceIdOrId={slugId}
-                  description={community?.description}
-                  community={community}
+                  description={community?.description!}
                 />
               </Box>
               <Box

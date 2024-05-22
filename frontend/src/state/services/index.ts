@@ -285,7 +285,7 @@ export const GreenSpaceDAOApi = createApi({
             [{ type: "Communities", id: "LIST" }],
     }), // TODO: Add return types
     getCommunity: builder.query<
-      Partial<APIResponse<any>>,
+      APIResponse<Community>,
       { params?: Record<string, any>; spaceIdOrId: string }
     >({
       query: ({ spaceIdOrId, params }) => {

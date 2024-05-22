@@ -1,23 +1,34 @@
 import { Box, Button, Flex, Text } from "@chakra-ui/react";
+import { ReactNode, useEffect } from "react";
 import { useInAppAuth } from "src/hooks/common";
-import { useJoinCommunityMutation } from "src/state/services";
+import {
+  useCheckHasJoinCommunityMutation,
+  useGetCommunityQuery,
+  useJoinCommunityMutation,
+} from "src/state/services";
 import { Community } from "src/types/shared";
 
 type Props = {
   buttonSize?: "sm" | "md" | "lg";
   title?: string;
   description?: string;
-  community: Community;
+  spaceIdOrId: string;
   styleProps: Record<string, any>;
+  children?: ReactNode;
 };
 export const NotAMemberMiddlewareComp = ({
   buttonSize = "lg",
-  community,
-  title = "You are not a member of this community",
+  spaceIdOrId,
+  title = "Join this community",
   description,
   styleProps,
+  children,
 }: Props) => {
   const { connect, isLoggedIn, user } = useInAppAuth();
+  const { data: communityResponse } = useGetCommunityQuery({
+    spaceIdOrId,
+  });
+  const community = communityResponse?.data!;
   const [joinCommunity, { isLoading: isLoadingJoin }] =
     useJoinCommunityMutation();
 
@@ -31,29 +42,55 @@ export const NotAMemberMiddlewareComp = ({
       userId: user?.id as string,
       spaceIdOrId: community?.spaceId,
     }).unwrap();
-  }
+    await checkCommunityJoin({
+      communityId: community?.id,
+      userId: user?.id as string,
 
+      spaceIdOrId: community?.spaceId,
+    }).unwrap();
+  }
+  const [
+    checkCommunityJoin,
+    { isLoading: isLoadingHasJoin, data: hasJoinResponse },
+  ] = useCheckHasJoinCommunityMutation();
+  const hasJoined = hasJoinResponse?.data?.hasJoined;
+
+  useEffect(() => {
+    if (isLoggedIn && community?.id) {
+      checkCommunityJoin({
+        communityId: community?.id,
+        userId: user?.id as string,
+
+        spaceIdOrId: community?.spaceId,
+      });
+    }
+  }, [isLoggedIn, user?.id as string, community?.id]);
   return (
-    <Flex
-      gap={4}
-      px={4}
-      flexDir={buttonSize !== "sm" ? "column" : "row"}
-      align={"center"}
-      justify={buttonSize !== "sm" ? "center" : ""}
-      {...styleProps}
-    >
-      {title && <Text>{title}</Text>}
-      {description && <Text>{description}</Text>}
-      <Button
-        size={buttonSize}
-        colorScheme="gs-yellow"
-        rounded={"full"}
-        loadingText={"Joining..."}
-        onClick={handleCommunityJoin}
-        isLoading={isLoadingJoin}
-      >
-        Join
-      </Button>
-    </Flex>
+    <>
+      {!isLoadingHasJoin && hasJoined && children ? children : <></>}
+      {((!isLoadingHasJoin && !hasJoined) || !isLoggedIn) && (
+        <Flex
+          gap={4}
+          px={4}
+          flexDir={buttonSize !== "sm" ? "column" : "row"}
+          align={"center"}
+          justify={buttonSize !== "sm" ? "center" : ""}
+          {...styleProps}
+        >
+          {title && <Text>{title}</Text>}
+          {description && <Text>{description}</Text>}
+          <Button
+            size={buttonSize}
+            colorScheme="gs-yellow"
+            rounded={"full"}
+            loadingText={"Joining..."}
+            onClick={handleCommunityJoin}
+            isLoading={isLoadingJoin}
+          >
+            Join
+          </Button>
+        </Flex>
+      )}
+    </>
   );
 };

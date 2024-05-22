@@ -1,15 +1,11 @@
 import {
   Avatar,
   Box,
-  Button,
   Divider,
-  Flex,
   Heading,
   HStack,
-  Input,
   Skeleton,
   SkeletonCircle,
-  SkeletonText,
   Stack,
   Text,
 } from "@chakra-ui/react";
@@ -24,17 +20,14 @@ import { addMessage } from "src/state/slices";
 import CommunityChatInput from "./ChatInput";
 import { usePrivy } from "@privy-io/react-auth";
 import { formatChatTimestamp } from "src/helpers";
-import { Community } from "src/types/shared";
 import { NotAMemberMiddlewareComp } from "../../NotAMemberMiddleware";
 
 export default function Chats({
   spaceIdOrId,
-  community,
-  hasJoined,
+  
 }: {
   spaceIdOrId: string;
-  community: Community;
-  hasJoined?: boolean;
+
 }) {
   const { user } = usePrivy();
   const {
@@ -120,8 +113,8 @@ export default function Chats({
             </HStack>
           ))}
       </Stack>
-      {!hasJoined && (
-        <NotAMemberMiddlewareComp
+  
+        <NotAMemberMiddlewareComp spaceIdOrId={spaceIdOrId} 
           buttonSize={"md"}
           styleProps={{
             pos: "sticky",
@@ -132,12 +125,13 @@ export default function Chats({
             textAlign: "center",
           }}
           title="Join this community to send a message"
-          community={community}
-        />
-      )}
-      {hasJoined && (
+        
+        >
+
+   
         <CommunityChatInput user={user} spaceIdOrId={spaceIdOrId} />
-      )}
+        </NotAMemberMiddlewareComp>
+    
     </Stack>
   );
 }

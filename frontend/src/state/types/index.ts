@@ -17,6 +17,7 @@ export type USER = {
   userType?: "member" | "nutritionist";
   emailVerified: boolean;
   username: string;
+  userCid: string;
 };
 export type Nutritionist = {
   fullName: string;

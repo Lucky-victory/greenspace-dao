@@ -123,6 +123,7 @@ const RegisterForm = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => voi
                     authId: user?.id,
                     address: address!,
                     userType: selectedUserType,
+                    userCid: cid
                 }).unwrap();
                 sendUserToAI(formData);
             }

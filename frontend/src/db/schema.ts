@@ -121,6 +121,7 @@ export const users = mysqlTable(
     username: varchar("username", { length: 50 }).unique().notNull().$defaultFn(generateUsername),
     password: varchar("password", { length: 255 }),
     email: varchar("email", { length: 255 }).unique(),
+    userCid: varchar("userCid", { length: 255 }),
     address: varchar("address", { length: 100 }).default(""),
     avatar: varchar("avatar", { length: 255 }),
     userType: mysqlEnum("user_type", ["member", "nutritionist"]).default("member").notNull(),
@@ -133,7 +134,6 @@ export const users = mysqlTable(
     emailIdx: index("email_idx").on(t.email),
     userTypeIdx: index("user_type_idx").on(t.userType),
     addressIdx: index("address_idx").on(t.address),
-
     usernameIdx: uniqueIndex("username_idx").on(t.username),
   })
 );

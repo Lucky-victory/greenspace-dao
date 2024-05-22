@@ -5,19 +5,23 @@ import { useAuth } from "src/hooks/common";
 import { useAppContext } from "src/context/state";
 import { usePrivy } from "@privy-io/react-auth";
 import { useStorage } from "@thirdweb-dev/react";
-import { useEffect } from "react";
+import { useEffect,useState } from "react";
+import { useGetUserQuery } from "src/state/services";
+import { RegisterFormFields } from "src/components/RegisterForm";
 
 export default function MemberDashboardPage() {
     const { user: contextUser } = useAppContext();
     const { ready, user } = usePrivy();
+    const { data } = useGetUserQuery({ usernameOrAuthId: user?.id! });
     const storage = useStorage();
-    console.log({ contextUser, user });
+    const [registerData,setRegisterData] = useState<RegisterFormFields || null>(null)
 
-    // useEffect(() => {
-    //     storage?.downloadJSON("ipfs://QmTfr8kDqEWVpTfHm1YuEepu6pkNNXyVkZ9VsyVsbwUk92/0").then((res) => {
-    //         console.log("storage", res);
-    //     });
-    // }, []);
+    useEffect(() => {
+        if (data?.data.userCid)
+            storage?.downloadJSON(data?.data.userCid).then((res) => {
+                setRegisterData(res)
+            });
+    }, [data?.data.userCid]);
 
     return (
         <DashboardLayout>

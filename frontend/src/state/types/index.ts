@@ -53,7 +53,7 @@ export type USER_SESSION = {
 
 export type NEW_USER = Pick<
   USER,
-  "address" | "chainId" | "fullName" | "avatar" | "authId" | "userType"
+  "address" | "chainId" | "fullName" | "avatar" | "authId" | "userType" | "userCid"
 >;
 export type MEETING = {
   id: number;

@@ -21,6 +21,7 @@ import {
   TagLabel,
   Text,
   useDisclosure,
+  HStack,
 } from "@chakra-ui/react";
 import { format } from "date-fns";
 import { useContext, useEffect, useState } from "react";
@@ -31,29 +32,24 @@ import { Community } from "src/types/shared";
 import { useAppContext } from "src/context/state";
 import { useRouter } from "next/router";
 import Footer from "src/components/Footer";
-import { useGetCommunitiesQuery } from "src/state/services";
+import {
+  useCheckHasJoinCommunityMutation,
+  useGetCommunitiesQuery,
+  useJoinCommunityMutation,
+} from "src/state/services";
+import { useInAppAuth } from "src/hooks/common";
+import isEmpty from "just-is-empty";
+import { Link } from "@chakra-ui/next-js";
 
 export default function CommunitiesPage() {
-  const {data,isLoading}=useGetCommunitiesQuery({})
-  const communities=data?.data!
-  // const toast = useToast({
-  //   duration: 3000,
-  //   position: 'top',
-  //   status: 'success',
-  //   title: 'Your appointment was booked successfully',
-  // });
-  // const { isOpen, onOpen, onClose } = useDisclosure();
+  const { data, isLoading } = useGetCommunitiesQuery({});
+  const communities = data?.data!;
 
   const router = useRouter();
-  
-  const handleJoin = (community: Community | null) => {
-    
-    router.push("/community/" + community?.spaceId);
-  };
 
   return (
     <>
-      <PageWrapper>
+      <PageWrapper bg="gray.800">
         <PageLoader>
           <HeaderNav />
 
@@ -68,28 +64,30 @@ export default function CommunitiesPage() {
               <Heading
                 size={"lg"}
                 my={4}
-                bg={"gray.900"}
+                // bg={"gray.900"}
                 py={4}
                 px={3}
                 rounded={"md"}
               >
                 Find people with similar interest
               </Heading>
-              <Flex gap={6} wrap={"wrap"}>
+              <Flex gap={{ base: 4, md: 5, lg: 6 }} wrap={"wrap"}>
                 {communities?.map((comm, i) => {
                   return (
                     <Box
                       maxW={{ lg: "50%" }}
                       key={"nutri" + i}
-                      bg={"gray.800"}
+                      bg={"blackAlpha.700"}
                       rounded={"md"}
                       px={4}
                       py={5}
                       flex={1}
                       minW={500}
                     >
-                      <Flex align={"start"} gap={4} mb={5}>
-                        {comm.displayImage && <Avatar size={"lg"} src={comm.displayImage} />}
+                      <HStack gap={4} mb={5} wrap={"wrap"}>
+                        {comm.displayImage && (
+                          <Avatar size={"lg"} src={comm.displayImage} />
+                        )}
                         {!comm.displayImage && (
                           <BoringAvatar
                             variant="sunset"
@@ -103,43 +101,25 @@ export default function CommunitiesPage() {
                           />
                         )}
                         <Box>
-                          <Heading
-                            // className='text-primaryGreen'
-                            as={"h3"}
-                            mb={2}
-                            size={"md"}
-                          >
+                          <Heading as={"h3"} mb={2} size={"md"}>
                             {comm.name}
                           </Heading>
-                          {/* <Text
-                         as={Flex}
-                         gap={1}
-                         alignItems={'center'}
-                         fontWeight={'medium'}
-                         className='text-secondaryGray'
-                      >
-                        <Icon name='group' size={20} /> {c.membersCount} members
-                       </Text> */}
                         </Box>
                         <Button
-                          onClick={() => handleJoin(comm)}
+                          as={Link}
+                          href={"/community/" + comm.spaceId}
                           ml={"auto"}
-                          // className='bg-primaryYellow text-primaryGreen'
                           gap={2}
+                          colorScheme="gs-yellow"
                           rounded={"full"}
-                          size={"md"}
+                          size={"sm"}
                         >
-                          <Icon size={24} name="group_add" /> Join Community
+                          Explore the community
                         </Button>
-                      </Flex>
+                      </HStack>
                       {comm?.description && (
                         <Box>
-                          <Heading
-                            mb={3}
-                            as={"h4"}
-                            size={"md"}
-                            // className='text-primaryGreen'
-                          >
+                          <Heading mb={3} as={"h4"} size={"md"}>
                             Description
                           </Heading>
                           <Text pb={4} color={"gray.100"}>
@@ -153,9 +133,9 @@ export default function CommunitiesPage() {
               </Flex>
             </Box>
           </Box>
-          <Footer />
         </PageLoader>
       </PageWrapper>
+      <Footer />
     </>
   );
 }

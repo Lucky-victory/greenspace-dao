@@ -1,5 +1,7 @@
 import { db } from "src/db";
-import { communityEventParticipants } from "src/db/schema";
+import {
+  communityMembers,
+} from "src/db/schema";
 import {
   HTTP_METHOD_CB,
   errorHandlerCallback,
@@ -26,10 +28,10 @@ export const POST: HTTP_METHOD_CB = async (
   try {
     const data = req.body;
 
-    const response = await db.query.communityEventParticipants.findFirst({
+    const response = await db.query.communityMembers.findFirst({
       where: and(
-        eq(communityEventParticipants.userId, data.userId),
-        eq(communityEventParticipants.eventId, data.eventId)
+        eq(communityMembers.userId, data?.userId),
+        eq(communityMembers.communityId, data?.communityId)
       ),
     });
     const hasJoined = !isEmpty(response);

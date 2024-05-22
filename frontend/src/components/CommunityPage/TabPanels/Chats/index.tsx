@@ -24,8 +24,18 @@ import { addMessage } from "src/state/slices";
 import CommunityChatInput from "./ChatInput";
 import { usePrivy } from "@privy-io/react-auth";
 import { formatChatTimestamp } from "src/helpers";
+import { Community } from "src/types/shared";
+import { NotAMemberMiddlewareComp } from "../../NotAMemberMiddleware";
 
-export default function Chats({ spaceIdOrId }: { spaceIdOrId: string }) {
+export default function Chats({
+  spaceIdOrId,
+  community,
+  hasJoined,
+}: {
+  spaceIdOrId: string;
+  community: Community;
+  hasJoined?: boolean;
+}) {
   const { user } = usePrivy();
   const {
     data: messagesRes,
@@ -83,7 +93,7 @@ export default function Chats({ spaceIdOrId }: { spaceIdOrId: string }) {
           messages.map((message: any, index: number) => (
             <HStack
               py={3}
-              px={3}
+              px={{ base: 1, md: 3 }}
               rounded={"md"}
               // bg={"gs-gray.900"}
               gap={3}
@@ -110,8 +120,24 @@ export default function Chats({ spaceIdOrId }: { spaceIdOrId: string }) {
             </HStack>
           ))}
       </Stack>
-
-      <CommunityChatInput user={user} spaceIdOrId={spaceIdOrId} />
+      {!hasJoined && (
+        <NotAMemberMiddlewareComp
+          buttonSize={"md"}
+          styleProps={{
+            pos: "sticky",
+            bottom: 0,
+            bg: "gray.800",
+            w: "full",
+            py: 3,
+            textAlign: "center",
+          }}
+          title="Join this community to send a message"
+          community={community}
+        />
+      )}
+      {hasJoined && (
+        <CommunityChatInput user={user} spaceIdOrId={spaceIdOrId} />
+      )}
     </Stack>
   );
 }

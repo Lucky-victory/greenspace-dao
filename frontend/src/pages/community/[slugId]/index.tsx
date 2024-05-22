@@ -14,7 +14,7 @@ import {
   useBreakpoint,
 } from "@chakra-ui/react";
 import PageWrapper from "src/components/PageWrapper";
-import { useActiveTab } from "src/hooks/common";
+import { useActiveTab, useInAppAuth } from "src/hooks/common";
 import { Link } from "@chakra-ui/next-js";
 import { FiGlobe, FiLock } from "react-icons/fi";
 import { useEffect, useState } from "react";
@@ -22,9 +22,13 @@ import TabPanels from "src/components/CommunityPage/TabPanels";
 import { useRouter } from "next/router";
 import Head from "next/head";
 import PageLoader from "src/components/PageLoader";
-import { useGetCommunityQuery } from "src/state/services";
+import {
+  useCheckHasJoinCommunityMutation,
+  useGetCommunityQuery,
+  useJoinCommunityMutation,
+} from "src/state/services";
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
-import { HeaderNav } from "src/components/HeaderNav";
+import { Community } from "src/types/shared";
 
 const tabsObj = [
   {
@@ -51,12 +55,12 @@ export default function CommunityViewPage({
   const router = useRouter();
 
   const slugId = slugIdFromServer || (router.query.slugId as string);
-
+  const { connect, user, isLoggedIn } = useInAppAuth();
   const [activeTab, setActiveTab] = useActiveTab("tab");
   const breakpoint = useBreakpoint();
   const [tabs, setTabs] = useState(tabsObj);
   const smallerBreakPoints = ["md", "base", "sm"];
-  // TODO: Replace the community object with the communityData from useGetCommunityQuery
+
   const {
     data: communityData,
     isLoading,
@@ -76,17 +80,6 @@ export default function CommunityViewPage({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [breakpoint]);
 
-  // const community = {
-  //   name: "Health Focus Community",
-  //   spaceId: "",
-  //   coverImage: "",
-  //   displayImage: "",
-  //   slug: "",
-  //   visibility: "public",
-  //   userId: "",
-  //   description:
-  //     "Health Focus Community is a community of people who are passionate about health and wellness. We are a community of people who are passionate about improving the health of their lives.",
-  // };
   const tabBtnStyles = {
     textDecor: "none!important",
     py: 2,
@@ -116,7 +109,6 @@ export default function CommunityViewPage({
   ];
 
   const tabButtons = tabs.map((tab) => {
-    // if (activeTab === "") setActiveTab("about");
     const isActive = tab.url === activeTab;
     return (
       <ListItem fontSize={"18px"} key={tab.name}>
@@ -246,6 +238,7 @@ export default function CommunityViewPage({
               // gap={3}
               flex={1}
               maxH={"full"}
+              h={"full"}
             >
               <Flex
                 borderBottom={{ base: "2px", lg: "none" }}
@@ -260,6 +253,7 @@ export default function CommunityViewPage({
                 gap={{ base: 3, lg: 4 }}
                 flexShrink={0}
                 zIndex={5}
+                // h={"full"}
                 pos={"sticky"}
                 bg={"gray.900"}
                 top={0}
@@ -277,6 +271,7 @@ export default function CommunityViewPage({
                   activeTab={activeTab}
                   spaceIdOrId={slugId}
                   description={community?.description}
+                  community={community}
                 />
               </Box>
               <Box

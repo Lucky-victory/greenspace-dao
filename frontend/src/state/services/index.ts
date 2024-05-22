@@ -609,6 +609,28 @@ export const GreenSpaceDAOApi = createApi({
       }),
       invalidatesTags: [{ type: "Communities" as const, id: "LIST" }],
     }),
+    joinCommunity: builder.mutation<
+      APIResponse<any>,
+      { communityId: number; userId: string; spaceIdOrId: string }
+    >({
+      query: ({ spaceIdOrId, ...data }) => ({
+        url: `communities/${spaceIdOrId}/join`,
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: [{ type: "Communities" as const, id: "LIST" }],
+    }),
+    checkHasJoinCommunity: builder.mutation<
+      APIResponse<{ hasJoined: boolean }>,
+      { communityId: number; userId: string; spaceIdOrId: string }
+    >({
+      query: ({ spaceIdOrId, ...data }) => ({
+        url: `communities/${spaceIdOrId}/has-joined`,
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: [{ type: "Communities" as const, id: "LIST" }],
+    }),
     createCommunityEvent: builder.mutation<APIResponse<any>, any>({
       query: (data) => ({
         url: `communties/events`,
@@ -636,6 +658,7 @@ export const GreenSpaceDAOApi = createApi({
       }),
       invalidatesTags: [{ type: "CommunityChallenges" as const, id: "LIST" }],
     }),
+
     checkHasJoinCommunityChallenge: builder.mutation<
       APIResponse<{ hasJoined: boolean }>,
       { slugId: string; challengeId: number; userId: string }
@@ -692,6 +715,8 @@ export const GreenSpaceDAOApi = createApi({
 });
 export const {
   useSendUserInfoToAIMutation,
+  useJoinCommunityMutation,
+  useCheckHasJoinCommunityMutation,
   useCheckHasJoinCommunityChallengeMutation,
   useCheckHasJoinCommunityEventMutation,
   useCreateCommunityChallengeMutation,

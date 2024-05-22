@@ -1,5 +1,8 @@
 import { db } from "src/db";
-import { communityChallengeParticipants, communityEventParticipants } from "src/db/schema";
+import {
+  communityChallengeParticipants,
+  communityEventParticipants,
+} from "src/db/schema";
 import {
   HTTP_METHOD_CB,
   errorHandlerCallback,
@@ -32,9 +35,10 @@ export const POST: HTTP_METHOD_CB = async (
         eq(communityChallengeParticipants.challengeId, data?.challengeId)
       ),
     });
+    const hasJoined = !isEmpty(response);
     return successHandlerCallback(req, res, {
-      message: "Already joined",
-      data: { hasJoined: !isEmpty(response) },
+      message: hasJoined ? "Already joined" : "Not joined yet",
+      data: { hasJoined },
     });
   } catch (error) {
     return errorHandlerCallback(req, res, {

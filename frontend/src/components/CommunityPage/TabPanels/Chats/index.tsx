@@ -21,14 +21,9 @@ import CommunityChatInput from "./ChatInput";
 import { usePrivy } from "@privy-io/react-auth";
 import { formatChatTimestamp } from "src/helpers";
 import { NotAMemberMiddlewareComp } from "../../NotAMemberMiddleware";
+import { TabHeading } from "../../TabHeading";
 
-export default function Chats({
-  spaceIdOrId,
-  
-}: {
-  spaceIdOrId: string;
-
-}) {
+export default function Chats({ spaceIdOrId }: { spaceIdOrId: string }) {
   const { user } = usePrivy();
   const {
     data: messagesRes,
@@ -59,16 +54,7 @@ export default function Chats({
 
   return (
     <Stack flex={1} maxH={"full"}>
-      <Heading
-        size={"lg"}
-        fontWeight={600}
-        mb={4}
-        borderBottom={"2px"}
-        borderColor={"gray.800"}
-        pb={2}
-      >
-        Chats
-      </Heading>
+     <TabHeading title="Chats"/>
 
       <Stack divider={<Divider />} h={"full"} overflowY={"auto"}>
         {(isFetching || isLoading) &&
@@ -113,25 +99,22 @@ export default function Chats({
             </HStack>
           ))}
       </Stack>
-  
-        <NotAMemberMiddlewareComp spaceIdOrId={spaceIdOrId} 
-          buttonSize={"md"}
-          styleProps={{
-            pos: "sticky",
-            bottom: 0,
-            bg: "gray.800",
-            w: "full",
-            py: 3,
-            textAlign: "center",
-          }}
-          title="Join this community to send a message"
-        
-        >
 
-   
+      <NotAMemberMiddlewareComp
+        spaceIdOrId={spaceIdOrId}
+        buttonSize={"md"}
+        styleProps={{
+          pos: "sticky",
+          bottom: 0,
+          bg: "gray.800",
+          w: "full",
+          py: 3,
+          textAlign: "center",
+        }}
+        title="Join this community to send a message"
+      >
         <CommunityChatInput user={user} spaceIdOrId={spaceIdOrId} />
-        </NotAMemberMiddlewareComp>
-    
+      </NotAMemberMiddlewareComp>
     </Stack>
   );
 }

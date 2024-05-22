@@ -230,7 +230,7 @@ export default function EventPage({
                   rounded={"full"}
                   isDisabled={hasJoined}
                 >
-                  {hasJoined ? "Already joined" : "Join the Challenge"}
+                  {hasJoined ? "Joined" : "Join the Challenge"}
                 </Button>
               </Stack>
               <GetNotifiedForm

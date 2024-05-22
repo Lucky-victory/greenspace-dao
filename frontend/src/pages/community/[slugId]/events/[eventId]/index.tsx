@@ -222,7 +222,7 @@ export default function EventPage({
                   size={"lg"}
                   rounded={"full"}
                 >
-                  {hasJoined ? "Already joined" : "Join the Event"}
+                  {hasJoined ? "Joined" : "Join the Event"}
                 </Button>
               </Stack>
 

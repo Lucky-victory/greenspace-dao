@@ -29,6 +29,8 @@ import {
 } from "src/state/services";
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 import { Community } from "src/types/shared";
+import Members from "src/components/CommunityPage/TabPanels/Members";
+import { TabHeading } from "src/components/CommunityPage/TabHeading";
 
 const tabsObj = [
   {
@@ -244,7 +246,7 @@ export default function CommunityViewPage({
                 borderBottom={{ base: "2px", lg: "none" }}
                 borderBottomColor={"gray.600"}
                 pb={2}
-                pt={{ base: 2, lg: 0 }}
+                pt={{ base: 2 }}
                 minW={200}
                 as={List}
                 direction={{ lg: "column", base: "row" }}
@@ -281,40 +283,8 @@ export default function CommunityViewPage({
                 bg={"gray.900"}
               >
                 <Box borderRadius={"10px"} minW={250}>
-                  <Heading
-                    size={"sm"}
-                    fontWeight={500}
-                    borderBottom={"1px"}
-                    color={"gray.400"}
-                    p={2}
-                    borderBottomColor={"gray.700"}
-                    textTransform={"uppercase"}
-                  >
-                    Members
-                  </Heading>
-                  <Stack py={4} as={List}>
-                    {members?.length > 0 &&
-                      members.map((member, i) => {
-                        return (
-                          <ListItem key={"member" + i}>
-                            <HStack gap={4}>
-                              <Avatar size={"sm"} src={member?.avatar} />{" "}
-                              <Stack>
-                                <Link
-                                  color={"gray.400"}
-                                  href={"/user/" + member?.username}
-                                  textDecor={"none!important"}
-                                >
-                                  <Text fontWeight={500}>
-                                    {member?.fullName}
-                                  </Text>
-                                </Link>
-                              </Stack>
-                            </HStack>
-                          </ListItem>
-                        );
-                      })}
-                  </Stack>
+                  <TabHeading title="Members" size="md" />
+                  <Members showHeading={false} spaceIdOrId={slugId} />
                 </Box>
               </Box>
             </Flex>

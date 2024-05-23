@@ -64,7 +64,7 @@ const MembersPage = () => {
   return (
     <>
       <Head>
-        <title>Rejuvenate | Members</title>
+        <title>GreenspaceDAO | Members</title>
       </Head>
       <HeaderNav />
       <Box minH={500} className="bg-primaryBeige">

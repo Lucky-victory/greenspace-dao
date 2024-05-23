@@ -1,38 +1,5 @@
 import { createContext, useContext, useState } from "react";
-import {  User, stateContextType } from "src/types/state";
-
-const defaultCommunities = [
-  {
-    name: "All for good",
-    id: "1",
-    slug: "GS_238491048",
-    membersCount: 20,
-    members: [{}],
-    cover: "",
-    description:
-      'Join a movement that goes beyond personal well-being. In the "All for Good" nutrition community, we believe in the power of nutrition to create positive change. Share your journey towards a healthier you, engage in impactful discussions about sustainable eating, and explore how good nutrition can contribute to a better world. Every meal counts, and together, we\'re making choices that are "All for Good."',
-  },
-  {
-    name: "Live life to fullness",
-    id: "2",
-    slug: "live-life-to-fullness-fed3",
-    membersCount: 10,
-    members: [{}],
-    cover: "",
-    description:
-      'Experience a community that encourages you to savor every bite and live life to the fullest through mindful nutrition. In "Live Life to Fullness," we embrace a holistic approach to well-being, celebrating the pleasures of nourishing both body and soul. Discover a wealth of resources, connect with fellow members on a journey to vitality, and learn how to make every aspect of your life more fulfilling through balanced and joyful nutrition.',
-  },
-  {
-    name: "Meet your faves",
-    id: "3",
-    slug: "meet-your-faves-acd2",
-    membersCount: 45,
-    members: [{}],
-    cover: "",
-    description:
-      'Discover a vibrant community where nutrition enthusiasts unite to share their favorite recipes, wellness tips, and success stories. Connect with like-minded individuals, learn from nutrition experts, and celebrate the joy of nourishing your body. In "Meet Your Faves," we believe that building a supportive network is key to embracing a healthier lifestyle together.',
-  },
-];
+import { User, stateContextType } from "src/types/state";
 
 const contextDefaultValue: Partial<stateContextType> = {
   allTokensData: {},
@@ -46,7 +13,6 @@ const contextDefaultValue: Partial<stateContextType> = {
   user: {} as User,
   setUser: () => null,
 
-
   ensName: null,
   setEnsName: () => null,
   ensAvatar: null,
@@ -57,7 +23,8 @@ type StateContextProviderProps = {
   children: React.ReactNode;
 };
 
-const AppContext = createContext<Partial<stateContextType>>(contextDefaultValue);
+const AppContext =
+  createContext<Partial<stateContextType>>(contextDefaultValue);
 
 export function AppWrapper({ children }: StateContextProviderProps) {
   const [allTokensData, setAllTokenData] = useState<any>({
@@ -68,7 +35,6 @@ export function AppWrapper({ children }: StateContextProviderProps) {
   });
   const [address, setAddress] = useState<string>("");
 
- 
   const [loading, setLoading] = useState<boolean>(false);
   const [isUserConnected, setIsUserConnected] = useState<boolean>(false);
   const [ensName, setEnsName] = useState<any>();
@@ -84,7 +50,6 @@ export function AppWrapper({ children }: StateContextProviderProps) {
   });
 
   let sharedState = {
-  
     allTokensData,
     setAllTokenData,
     address,
@@ -94,10 +59,9 @@ export function AppWrapper({ children }: StateContextProviderProps) {
     isUserConnected,
     setIsUserConnected,
     user,
-  
+
     setUser,
-  
- 
+
     ensName,
     setEnsName,
     ensAvatar,

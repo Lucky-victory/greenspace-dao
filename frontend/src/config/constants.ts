@@ -1,7 +1,10 @@
 // All variables from env must be declared here
 // So that all environment vars will be exported from one place
-import dotenv from 'dotenv'
-dotenv.config()
+// import dotenv from 'dotenv'
+// dotenv.config({
+//   path:'/frontend/.env',
+// })
+function envConfigs(){
 const {
   APP_DOMAIN = "GreenspaceDAO",
   NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID,
@@ -24,7 +27,8 @@ const {
   NEXT_PUBLIC_PUSHER_KEY,
   NEXT_PUBLIC_PUSHER_CLUSTER,
 } = process.env;
-export const ENV_CONFIG = {
+
+return {
   APP_DOMAIN,
   WALLETCONNECT_PROJECT_ID:NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID,
   RESEND_API_KEY,
@@ -46,3 +50,6 @@ export const ENV_CONFIG = {
   PUSHER_KEY:NEXT_PUBLIC_PUSHER_KEY,
   PUSHER_CLUSTER:NEXT_PUBLIC_PUSHER_CLUSTER,
 };
+
+}
+export const ENV_CONFIG = envConfigs();

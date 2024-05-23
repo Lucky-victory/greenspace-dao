@@ -9,6 +9,6 @@ export const CustomConnectButton=()=>{
         connectWallet()
     }
     return (
-        <Button onClick={handleWalletConnect}>Connect Wallet</Button>
+        <Button rounded={'full'} onClick={handleWalletConnect}>Connect Wallet</Button>
     )
 }

@@ -17,6 +17,7 @@ export type USER = {
   userType?: "member" | "nutritionist";
   emailVerified: boolean;
   username: string;
+  userCid: string;
 };
 export type Nutritionist = {
   fullName: string;
@@ -52,7 +53,7 @@ export type USER_SESSION = {
 
 export type NEW_USER = Pick<
   USER,
-  "address" | "chainId" | "fullName" | "avatar" | "authId" | "userType"
+  "address" | "chainId" | "fullName" | "avatar" | "authId" | "userType" | "userCid"
 >;
 export type MEETING = {
   id: number;

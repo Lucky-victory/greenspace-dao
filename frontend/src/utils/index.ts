@@ -7,6 +7,54 @@ export const env = process.env.NODE_ENV || "development";
 export const IS_DEV = env === "development";
 import slugify from "slugify";
 import isEmpty from "just-is-empty";
+import { format } from "date-fns";
+
+export function getOrdinalSuffix(day: number) {
+  if (day > 3 && day < 21) return "th"; // Covers 11th to 19th
+  switch (day % 10) {
+    case 1:
+      return "st";
+    case 2:
+      return "nd";
+    case 3:
+      return "rd";
+    default:
+      return "th";
+  }
+}
+
+// Function to format the date with ordinal
+export function formatDateWithOrdinal(date: Date | string) {
+  if (isEmpty(date)) return "";
+  if (typeof date === "string") {
+    date = new Date(date);
+  }
+  const day = format(new Date(date), "d"); // Get the day of the month as a number
+  const ordinalSuffix = getOrdinalSuffix(parseInt(day, 10)); // Get the appropriate suffix
+  return `${day}${ordinalSuffix}`; // Combine day and suffix
+}
+
+// Example usage
+const date = new Date(2024, 4, 19); // May 19, 2024
+console.log(formatDateWithOrdinal(date)); // Output: "19th"
+
+export function convertJsDateToMysqlDate<T = Date>(jsDate: Date | string) {
+  const date = jsDate instanceof Date ? jsDate : new Date(jsDate);
+  return date.toISOString().slice(0, 19).replace("T", " ") as T;
+}
+export const convertMinutesToMillisececonds = (mins: number) =>
+  +mins * 1000 * 60;
+
+export function addMinutesToDate(minutes: number, date: string | Date) {
+  // Get the current date and time
+  const now = new Date(date);
+  // Calculate the new time by adding minutes
+  const newTime = new Date(
+    now.getTime() + convertMinutesToMillisececonds(minutes)
+  );
+
+  return newTime;
+}
 export const generateCommunityId = (prefix = "GS") => {
   return generateNumId(prefix, 14, "-");
 };

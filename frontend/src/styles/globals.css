@@ -4,6 +4,17 @@
 @import "material-symbols/outlined.css";
 
 @import "react-datepicker/dist/react-datepicker.css";
+
+.no-scrollbar {
+  overflow: auto; /* Allow scrolling */
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none; /* Webkit browsers */
+}
+
 :root {
   --chat-area-width: 330px;
 }

@@ -84,42 +84,8 @@ const NutritionistForm = ({
     },
   });
 
-  // form validation rules
-  const validationSchema = Yup.object().shape({
-    fullName: Yup.string().required("Field is required"),
-    sex: Yup.string().required("Field is required"),
-    country: Yup.string().required("Field is required"),
-    birthDate: Yup.string().required("Field is required"),
-    credentials: Yup.mixed().required("Field is required"),
-    // .test(
-    //   'fileSize',
-    //   'File size is too large',
-    //   (value) =>  Array.isArray(value) && value[0]?.size <= 2048 * 2048 // 1 MB
-    // )
-    // .test(
-    //   'fileType',
-    //   'Unsupported file type',
-    //   (value) =>
-    //   Array.isArray(value) && ['image/jpeg', 'image/png'].includes(value[0]?.type)
-    // ),
-  });
-  const formOptions = { resolver: yupResolver(validationSchema) };
+ 
 
-  // get functions to build form with useForm() hook
-  const { register, handleSubmit, reset, formState } = useForm(formOptions);
-  const { errors } = formState;
-
-  const onSubmit = async (data: any) => {
-    //    const cid = await uploadPromptToIpfs(data);
-    setIsSubmitting(true);
-
-    setTimeout(() => {
-      // router.push('/nutritionist/dashboard');
-      onOpen();
-      setIsSubmitting(false);
-    }, 2000);
-    //const {file} = data;
-  };
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files![0];
@@ -133,7 +99,7 @@ const NutritionistForm = ({
     } catch (error) {}
   };
 
-  const elem = [];
+  
   return (
     <>
       {/* <h2 className="text-[45px]">Register as a Nutritionist</h2> */}

@@ -1,4 +1,4 @@
-import {PrivyProvider, usePrivy} from '@privy-io/react-auth';
+import {PrivyProvider} from '@privy-io/react-auth';
 import "src/styles/globals.css";
 import type { AppProps } from "next/app";
 import { ChakraProvider } from "@chakra-ui/react";
@@ -8,7 +8,6 @@ import { WagmiProvider } from "wagmi";
 import WalletProvider from "src/context/WalletProvider";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
-import {  ENV_CONFIG } from "src/config/constants";
 import { config } from "src/config/wagmi";
 import store from 'src/state/store';
 import { ThirdwebProvider } from '@thirdweb-dev/react';
@@ -38,7 +37,7 @@ export default function App({ Component, pageProps }: AppProps) {
           }
         `}
       </style>
-      <PrivyProvider appId={'clw70y3a00bmgdawm15h730dd'} config={{appearance:{
+      <PrivyProvider appId={process.env.NEXT_PUBLIC_PRIVY_APP_ID!} config={{appearance:{
         theme:'dark'
       }}}>
           <WagmiProvider config={config}>

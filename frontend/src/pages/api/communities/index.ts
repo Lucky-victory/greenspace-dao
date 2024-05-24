@@ -6,8 +6,9 @@ import {
   mainHandler,
   successHandlerCallback,
 } from "src/utils";
-import { eq } from "drizzle-orm";
+import { eq, inArray } from "drizzle-orm";
 import { NextApiRequest, NextApiResponse } from "next";
+import isEmpty from "just-is-empty";
 
 export default async function handler(
   req: NextApiRequest,
@@ -25,7 +26,27 @@ export const GET: HTTP_METHOD_CB = async (
 ) => {
   try {
     type STATUS = "published" | "draft" | "deleted";
-    const { status = "published" } = req.query;
+    const { status = "published", userId } = req.query;
+    if (!isEmpty(userId)) {
+      const communitiesResult = await db.transaction(async (tx) => {
+        const communityIds = (
+          await tx.query.communityMembers.findMany({
+            where: eq(communities.userId, userId as string),
+            columns: {
+              communityId: true,
+            },
+          })
+        ).map(({ communityId }) => communityId) as number[];
+        if (isEmpty(communityIds)) return [];
+        return await tx.query.communities.findMany({
+          where: inArray(communities.id, communityIds),
+        });
+      });
+      return successHandlerCallback(req, res, {
+        message: "Data retrieved successfully",
+        data: communitiesResult,
+      });
+    }
     const communitiesResult = await db.query.communities.findMany({
       where: eq(communities.status, status as STATUS),
     });

@@ -21,6 +21,7 @@ import BoringAvatar from "boring-avatars";
 import isEmpty from "just-is-empty";
 import Head from "next/head";
 import { useState } from "react";
+import PageWrapper from "src/components/PageWrapper";
 
 const MembersPage = () => {
   const { isLoading, isFetching, data } = useGetUsersQuery({ t: "all" });
@@ -67,7 +68,7 @@ const MembersPage = () => {
         <title>GreenspaceDAO | Members</title>
       </Head>
       <HeaderNav />
-      <Box minH={500} className="bg-primaryBeige">
+      <PageWrapper props={{ minH: 500 }}>
         <Stack
           direction={"row"}
           px={{ lg: 6, base: 4 }}
@@ -76,7 +77,7 @@ const MembersPage = () => {
           spacing={{ base: 4, lg: 6 }}
           mx={"auto"}
           maxW={1200}
-          bg={"gray.100"}
+          // bg={"gray.100"}
         >
           {!isLoading &&
             !isEmpty(users) &&
@@ -86,7 +87,7 @@ const MembersPage = () => {
                 key={user?.id}
                 rounded={"lg"}
                 boxShadow={"md"}
-                bg={"white"}
+                bg={"black"}
                 minH={"250px"}
                 p={4}
                 maxW={350}
@@ -128,7 +129,7 @@ const MembersPage = () => {
               </Stack>
             ))}
         </Stack>
-      </Box>
+      </PageWrapper>
       <Footer />
     </>
   );

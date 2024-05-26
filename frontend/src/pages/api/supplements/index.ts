@@ -2,6 +2,7 @@ import { eq, sql } from "drizzle-orm";
 import { NextApiRequest, NextApiResponse } from "next";
 import { db } from "src/db";
 import { supplements, supplementAttributes, supplementRecommendations, supplementExperts } from "src/db/schema";
+import { Supplement } from "src/types";
 import { HTTP_METHOD_CB, errorHandlerCallback, mainHandler, successHandlerCallback } from "src/utils";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -12,34 +13,39 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   });
 }
 
-export const GET: HTTP_METHOD_CB = async (req, res) => {
-  try {
-    const allSupplements = await db.select().from(supplements);
-    const allSupplementsAttributes = await db.select().from(supplementAttributes);
-    const allSupplementsRecommendations = await db.select().from(supplementRecommendations);
-    const allSupplementsExperts = await db.select().from(supplementExperts);
-    const data = allSupplements.reduce((acc, curr) => {
-      const supplementId = curr.id;
-      const attributes = allSupplementsAttributes
-        .filter((item) => item.supplementId === supplementId)
-        .map((item) => item.attribute);
-      let recommendations = allSupplementsRecommendations
-        .filter((item) => item.supplementId === supplementId)
-        .map((item) => ({ expertId: item.expertId, doseage: item.doseage }));
-      const experts = allSupplementsExperts.filter((item) => recommendations.some((rec) => rec.expertId === item.id));
+export const getAllSupplements = async () => {
+  const allSupplements = await db.select().from(supplements);
+  const allSupplementsAttributes = await db.select().from(supplementAttributes);
+  const allSupplementsRecommendations = await db.select().from(supplementRecommendations);
+  const allSupplementsExperts = await db.select().from(supplementExperts);
+  const data = allSupplements.reduce((acc, curr) => {
+    const supplementId = curr.id;
+    const attributes = allSupplementsAttributes
+      .filter((item) => item.supplementId === supplementId)
+      .map((item) => item.attribute);
+    let recommendations = allSupplementsRecommendations
+      .filter((item) => item.supplementId === supplementId)
+      .map((item) => ({ expertId: item.expertId, doseage: item.doseage }));
+    const experts = allSupplementsExperts.filter((item) => recommendations.some((rec) => rec.expertId === item.id));
 
-      recommendations = recommendations.map((item) => {
-        // @ts-ignore
-        const expert = experts.find((expert) => expert.id === item.expertId);
-        return { ...item, ...expert };
-      });
+    recommendations = recommendations.map((item) => {
       // @ts-ignore
-      acc.push({ ...curr, attributes, recommendations });
-      return acc;
-    }, []);
+      const expert = experts.find((expert) => expert.id === item.expertId);
+
+      return { ...item, ...expert };
+    });
+    // @ts-ignore
+    acc.push({ ...curr, attributes, recommendations });
+    return acc;
+  }, []);
+  return JSON.parse(JSON.stringify(data)) as Supplement[];
+};
+
+export const GET: HTTP_METHOD_CB = async (req, res) => {
+  try {  
     return successHandlerCallback(req, res, {
       message: "supplements retrieved successfully",
-      data,
+      data: await getAllSupplements(),
     });
   } catch (error) {
     return errorHandlerCallback(req, res, {

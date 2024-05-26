@@ -14,10 +14,7 @@ export type USER = {
   userType?: USER_TYPE;
 };
 export type USER_TYPE = "member" | "nutritionist";
-export type NEW_USER = Pick<
-  USER,
-  "address" | "chainId" | "fullName" | "avatar" | "authId" | "userType"
->;
+export type NEW_USER = Pick<USER, "address" | "chainId" | "fullName" | "avatar" | "authId" | "userType">;
 export type MEETING = {
   id: number;
   roomId: string;
@@ -51,4 +48,23 @@ export type TPeerMetadata = {
   username?: string;
   avatar?: string;
   authId: string;
+};
+
+export type Supplement = {
+  attributes: string[];
+  createdAt: string;
+  id: number;
+  intro: string;
+  link: string;
+  recommendations: {
+    createdAt: string;
+    doseage: string;
+    expertId: number;
+    id: number;
+    image: string;
+    name: string;
+    updatedAt: string;
+  }[];
+  title: string;
+  updatedAt: string;
 };

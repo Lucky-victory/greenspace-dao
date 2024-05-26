@@ -5,6 +5,7 @@ import Link from "next/link";
 import React, { useMemo, useState } from "react";
 import { HeaderNav } from "src/components/HeaderNav";
 import { getAllSupplements } from "src/pages/api/supplements";
+import { Supplement } from "src/types";
 
 function Shop({ data }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const [expertId, setExpertId] = useState(0);

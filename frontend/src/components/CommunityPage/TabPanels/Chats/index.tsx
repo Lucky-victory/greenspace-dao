@@ -22,9 +22,11 @@ import { usePrivy } from "@privy-io/react-auth";
 import { formatChatTimestamp } from "src/helpers";
 import { NotAMemberMiddlewareComp } from "../../NotAMemberMiddleware";
 import { TabHeading } from "../../TabHeading";
+import { useScrollToBottom } from "src/hooks/common";
 
 export default function Chats({ spaceIdOrId }: { spaceIdOrId: string }) {
   const { user } = usePrivy();
+  const { containerRef } = useScrollToBottom(true);
   const {
     data: messagesRes,
     isFetching,
@@ -54,9 +56,14 @@ export default function Chats({ spaceIdOrId }: { spaceIdOrId: string }) {
 
   return (
     <Stack flex={1} maxH={"full"}>
-     <TabHeading title="Chats"/>
+      <TabHeading title="Chats" />
 
-      <Stack divider={<Divider />} h={"full"} overflowY={"auto"}>
+      <Stack
+        divider={<Divider />}
+        h={"full"}
+        overflowY={"auto"}
+        ref={containerRef}
+      >
         {(isFetching || isLoading) &&
           [0, 0, 0, 0, 0, 0].map((_, i) => (
             <ChatLoading key={"loading-skeleton" + i} />

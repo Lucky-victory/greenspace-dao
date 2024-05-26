@@ -14,7 +14,8 @@ import { TextContentBlock } from "openai/resources/beta/threads/messages";
 import DashBoardLayout from "src/components/MemberDashboardLayout";
 
 import { Box, Textarea } from "@chakra-ui/react";
-import { useAuth } from "src/hooks/common";
+import { useInAppAuth } from "src/hooks/common";
+import { useAccount } from "wagmi";
 
 const samplePrompts = [
   "What nutrition is best for a female BMI of 20?",
@@ -32,9 +33,8 @@ interface ChatState {
 }
 
 const AiCoachPage = () => {
-  // const { publicKey } = useWallet();
-  const {session} = useAuth()
-  const address=session?.user?.address
+  // const {user}=useInAppAuth()
+  // const {address} =useAccount()
   const [state, updateState] = useReducer(
     (current: ChatState, update: Partial<ChatState>): ChatState => ({
       ...current,

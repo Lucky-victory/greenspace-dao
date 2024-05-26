@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
 import { signIn, useSession } from "next-auth/react";
 import { USER_SESSION } from "src/state/types";
@@ -10,6 +10,31 @@ type UpdateSession = (data?: any) => Promise<USER_SESSION | null>;
 import { useAccount, useConnect, useSignMessage, useDisconnect } from "wagmi";
 import { usePrivy } from "@privy-io/react-auth";
 
+export const useScrollToBottom = (triggerOnLoad = false) => {
+  const chatContainerRef = useRef<any>(null);
+
+  const scrollToBottom = () => {
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop =
+        chatContainerRef.current.scrollHeight;
+    }
+  };
+
+  useEffect(() => {
+    if (triggerOnLoad) {
+      scrollToBottom();
+    }
+  }, [triggerOnLoad]);
+
+  const scrollToBottomOnNewMessage = () => {
+    scrollToBottom();
+  };
+
+  return {
+    containerRef: chatContainerRef,
+    scrollToBottom: scrollToBottomOnNewMessage,
+  };
+};
 /**
  * Used to check if the user is logged in
  * @returns

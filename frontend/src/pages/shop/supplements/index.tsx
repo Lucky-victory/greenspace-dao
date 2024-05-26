@@ -57,7 +57,7 @@ function Shop({ data }: InferGetServerSidePropsType<typeof getServerSideProps>) 
             <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={4}>
               {supplements.map((item, i) => (
                 <Card key={i}>
-                  <CardBody>
+                  <CardBody display="flex" flexDirection="column">
                     <Heading size="md">{item.title}</Heading>
                     <Text mt={2}>{item.intro}</Text>
                     <Text fontSize="sm" fontWeight={"bold"} color="gray.500" mt={2}>
@@ -78,11 +78,13 @@ function Shop({ data }: InferGetServerSidePropsType<typeof getServerSideProps>) 
                         <Text fontSize={"small"}>{ele.doseage}</Text>
                       </Flex>
                     ))}
-                    <Link href={item.link} target="_blank">
-                      <Button width={"full"} variant={"outline"} mt={3}>
-                        Buy Now
-                      </Button>
-                    </Link>
+                    <Flex flex={1} alignItems={"flex-end"}>
+                      <Link style={{width:"100%"}} href={item.link} target="_blank">
+                        <Button width={"full"} variant={"outline"} mt={3}>
+                          Buy Now
+                        </Button>
+                      </Link>
+                    </Flex>
                   </CardBody>
                 </Card>
               ))}

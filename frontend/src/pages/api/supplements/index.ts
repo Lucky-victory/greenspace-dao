@@ -38,11 +38,12 @@ export const getAllSupplements = async () => {
     acc.push({ ...curr, attributes, recommendations });
     return acc;
   }, []);
-  return JSON.parse(JSON.stringify(data)) as Supplement[];
+  // @ts-ignore
+  return JSON.parse(JSON.stringify(data.sort((a, b) => a.title.localeCompare(b.title)))) as Supplement[];
 };
 
 export const GET: HTTP_METHOD_CB = async (req, res) => {
-  try {  
+  try {
     return successHandlerCallback(req, res, {
       message: "supplements retrieved successfully",
       data: await getAllSupplements(),

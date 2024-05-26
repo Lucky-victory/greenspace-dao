@@ -17,6 +17,7 @@ import {
   NewFitnessPlan,
   NewMealPlan,
   Community,
+  NEW_COMMUNITY,
 } from "src/types/shared";
 import { update } from "../slices";
 
@@ -601,9 +602,9 @@ export const GreenSpaceDAOApi = createApi({
       invalidatesTags: [{ type: "Appointments" as const, id: "LIST" }],
     }),
     // TODO: Add return types
-    createCommunity: builder.mutation<APIResponse<any>, any>({
+    createCommunity: builder.mutation<APIResponse<any>, NEW_COMMUNITY>({
       query: (data) => ({
-        url: `communties`,
+        url: `communities`,
         method: "POST",
         body: data,
       }),

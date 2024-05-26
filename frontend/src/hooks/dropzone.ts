@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, RefObject } from "react";
 import {
   useDropzone,
   DropzoneOptions,
@@ -25,6 +25,9 @@ interface UseDragAndDropImageReturn {
   getRootProps: <T extends DropzoneRootProps>(props?: T | undefined) => T;
   getInputProps: <T extends DropzoneInputProps>(props?: T | undefined) => T;
   removeImage: (image: DropzoneImage) => void;
+  open: () => void;
+  inputRef: RefObject<HTMLInputElement>;
+  resetImages: () => void;
 }
 
 export function useDragAndDropImage(
@@ -60,7 +63,7 @@ export function useDragAndDropImage(
     onUpload(images.length > 0, files, images[0]?.src as string);
   }, [images, files, onUpload]);
 
-  const { getRootProps, getInputProps } = useDropzone({
+  const { getRootProps, getInputProps, inputRef, open } = useDropzone({
     accept: { "image/*": [".jpeg", ".png", ".jpg", ".webp"] },
     onDrop,
     maxFiles: maxFiles,
@@ -72,12 +75,18 @@ export function useDragAndDropImage(
     setFiles(filteredFiles);
     setImages(filteredImages);
   };
-
+  const resetImages = () => {
+    setFiles([]);
+    setImages([]);
+  };
   return {
     files,
     images,
     getRootProps,
     getInputProps,
     removeImage,
+    resetImages,
+    open,
+    inputRef,
   };
 }

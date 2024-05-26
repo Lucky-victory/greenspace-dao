@@ -1,6 +1,26 @@
-import { Box, HStack, IconButton } from "@chakra-ui/react";
+import {
+  Box,
+  HStack,
+  IconButton,
+  useDisclosure,
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+  PopoverHeader,
+  PopoverBody,
+  PopoverFooter,
+  PopoverArrow,
+  PopoverCloseButton,
+  PopoverAnchor,
+  Input,
+  Text,
+  Portal,
+} from "@chakra-ui/react";
+import { useStorageUpload } from "@thirdweb-dev/react";
 import { Editor, useCurrentEditor } from "@tiptap/react";
-import { useCallback, useState } from "react";
+import { useFormik } from "formik";
+import isEmpty from "just-is-empty";
+import { FormEvent, useCallback, useEffect, useRef, useState } from "react";
 import {
   BsBlockquoteLeft,
   BsArrow90DegLeft,
@@ -23,51 +43,99 @@ import {
   BsTypeH6,
   BsTypeItalic,
   BsTypeStrikethrough,
+  BsArrow90DegDown,
+  BsArrow90DegUp,
+  BsListOl,
+  BsListUl,
 } from "react-icons/bs";
+import { resolveIPFSURI } from "src/helpers";
 import { useDragAndDropImage } from "src/hooks/dropzone";
 
 export const MenuBar = () => {
   const { editor } = useCurrentEditor();
-  const { removeImage } = useDragAndDropImage([]);
-  if (!editor) {
-    return null;
-  }
-  const [linkValue, setLinkValue] = useState("");
-  const setLink = useCallback(() => {
-    const previousUrl = editor.getAttributes("link").href;
-    setLinkValue(previousUrl);
-    const url = linkValue;
+  const { mutateAsync: uploadToThirdweb } = useStorageUpload();
 
-    // cancelled
-    if (url === null) {
-      return;
-    }
-
-    // empty
-    if (url === "") {
-      editor.chain().focus().extendMarkRange("link").unsetLink().run();
-
-      return;
-    }
-
-    // update link
-    editor.chain().focus().extendMarkRange("link").setLink({ href: url }).run();
-  }, [editor]);
+  const initialFocusRef = useRef<any>();
+  const { isOpen, onClose, onOpen } = useDisclosure();
   const btnStyles = {
     size: "sm",
     fontSize: "medium",
     colorScheme: "gs-yellow",
   };
-  function handleImageUpload(editor: Editor): void {
-    throw new Error("Function not implemented.");
-  }
+  const formik = useFormik({
+    initialValues: {
+      content: "",
+    },
+    onSubmit: (values, actions) => {
+      const content = values.content;
+      const previousUrl = editor?.getAttributes("link").href;
+      actions.setFieldValue("content", previousUrl);
+      const url = content;
 
+      if (url === null) {
+        return;
+      }
+
+      // empty
+      if (isEmpty(url)) {
+        editor?.chain().focus().extendMarkRange("link").unsetLink().run();
+
+        return;
+      }
+
+      // update link
+      editor
+        ?.chain()
+        .focus()
+        .extendMarkRange("link")
+        .setLink({ href: url })
+        .run();
+      onClose();
+    },
+  });
+  const [isUploadingImage, setIsUploadingImage] = useState<boolean>(false);
+  const { files, resetImages, open: openFileUpload } = useDragAndDropImage();
+  if (!editor) {
+    return null;
+  }
+  const openLinkModal = useCallback(() => {
+    onOpen();
+  }, []);
+
+  function handleUploadOpen() {
+    openFileUpload();
+  }
+  useEffect(() => {
+    async function handleImageUpload() {
+      if (isEmpty(files)) return;
+      try {
+        setIsUploadingImage(true);
+
+        const res = await uploadToThirdweb({ data: [files[0]] });
+        editor
+          ?.chain()
+          .focus()
+          .setImage({ src: resolveIPFSURI(res[0]) })
+          .run();
+        resetImages();
+        setIsUploadingImage(false);
+      } catch (error) {}
+    }
+    handleImageUpload();
+  }, [files]);
   return (
     <HStack
       wrap={"wrap"}
       gap={2}
-      borderBottom={"2px"}
-      borderBottomColor={"gray.700"}
+      border={"1px"}
+      py={2}
+      px={1}
+      rounded={"md"}
+      borderColor={"gray.700"}
+      pos={"sticky"}
+      top={0}
+      bg={"gray.900"}
+      zIndex={50}
     >
       <IconButton
         aria-label=""
@@ -96,7 +164,7 @@ export const MenuBar = () => {
       <IconButton
         aria-label=""
         {...btnStyles}
-        onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
+        onClick={() => editor.chain().focus().toggleHeading({ level: 4 }).run()}
         variant={editor.isActive("heading", { level: 4 }) ? "solid" : "ghost"}
       >
         <BsTypeH4 size={20} />
@@ -104,7 +172,7 @@ export const MenuBar = () => {
       <IconButton
         aria-label=""
         {...btnStyles}
-        onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
+        onClick={() => editor.chain().focus().toggleHeading({ level: 5 }).run()}
         variant={editor.isActive("heading", { level: 5 }) ? "solid" : "ghost"}
       >
         <BsTypeH5 size={20} />
@@ -112,7 +180,7 @@ export const MenuBar = () => {
       <IconButton
         aria-label=""
         {...btnStyles}
-        onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
+        onClick={() => editor.chain().focus().toggleHeading({ level: 6 }).run()}
         variant={editor.isActive("heading", { level: 6 }) ? "solid" : "ghost"}
       >
         <BsTypeH6 size={20} />
@@ -192,18 +260,18 @@ export const MenuBar = () => {
       <IconButton
         aria-label=""
         {...btnStyles}
-        variant={editor.isActive("img") ? "solid" : "ghost"}
-        onClick={() => handleImageUpload(editor)}
+        variant={editor.isActive("bulletList") ? "solid" : "ghost"}
+        onClick={() => editor.chain().focus().toggleBulletList().run()}
       >
-        <BsImage size={20} />
+        <BsListUl size={20} />
       </IconButton>
       <IconButton
         aria-label=""
         {...btnStyles}
-        variant={editor.isActive("link") ? "solid" : "ghost"}
-        onClick={() => setLink()}
+        variant={editor.isActive("orderedList") ? "solid" : "ghost"}
+        onClick={() => editor.chain().focus().toggleOrderedList().run()}
       >
-        <BsLink size={20} />
+        <BsListOl size={20} />
       </IconButton>
       <IconButton
         aria-label=""
@@ -213,6 +281,76 @@ export const MenuBar = () => {
       >
         <BsBlockquoteLeft size={20} />
       </IconButton>
+      <IconButton
+        aria-label=""
+        {...btnStyles}
+        isLoading={isUploadingImage}
+        variant={editor.isActive("img") ? "solid" : "ghost"}
+        onClick={() => handleUploadOpen()}
+      >
+        <BsImage size={20} />
+      </IconButton>
+      <Popover
+        onClose={onClose}
+        onOpen={onOpen}
+        isOpen={isOpen}
+        initialFocusRef={initialFocusRef}
+      >
+        <PopoverTrigger>
+          <IconButton
+            aria-label=""
+            {...btnStyles}
+            variant={editor.isActive("link") ? "solid" : "ghost"}
+          >
+            <BsLink size={20} />
+          </IconButton>
+        </PopoverTrigger>
+        <Portal>
+          <PopoverContent
+            zIndex={100000}
+            bg={"gray.800"}
+            borderColor="gray.800"
+            py={4}
+          >
+            <PopoverArrow />
+            <PopoverCloseButton />
+            <PopoverHeader fontWeight="bold" border="0">
+              Enter URL:
+            </PopoverHeader>
+            <PopoverBody>
+              <HStack
+                as={"form"}
+                /* @ts-ignore */
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  formik.handleSubmit(
+                    e as unknown as FormEvent<HTMLFormElement>
+                  );
+                }}
+              >
+                <Input
+                  name="content"
+                  _focus={{
+                    boxShadow: "0 0 0 1px transparent",
+                    borderColor: "gs-yellow.400",
+                  }}
+                  rounded={"md"}
+                  autoComplete="off"
+                  value={formik.values.content}
+                  ref={initialFocusRef}
+                  onChange={formik.handleChange}
+                  placeholder="https://example.com"
+                  size={"sm"}
+                />
+                <IconButton aria-label="" variant={"ghost"} type="submit">
+                  <BsArrow90DegDown />
+                </IconButton>
+              </HStack>
+            </PopoverBody>
+          </PopoverContent>
+        </Portal>
+      </Popover>
+
       <IconButton
         aria-label=""
         {...btnStyles}

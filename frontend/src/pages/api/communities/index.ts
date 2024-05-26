@@ -1,5 +1,5 @@
 import { db } from "src/db";
-import { communities } from "src/db/schema";
+import { communities, communityMembers } from "src/db/schema";
 import {
   HTTP_METHOD_CB,
   errorHandlerCallback,
@@ -71,6 +71,11 @@ export const POST: HTTP_METHOD_CB = async (
       const [insertRes] = await tx.insert(communities).values(data);
       const createdCommunity = await tx.query.communities.findFirst({
         where: eq(communities.id, insertRes.insertId),
+      });
+      await tx.insert(communityMembers).values({
+        userId: createdCommunity?.userId,
+        communityId: createdCommunity?.id,
+        role: "admin",
       });
       return createdCommunity;
     });

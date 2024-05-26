@@ -47,7 +47,7 @@ const MarkdownRenderer = ({ markdown }: { markdown: string }) => {
             fontWeight={300}
             // color={"gray.00"}
             letterSpacing={1.1}
-            my={4}
+            my={2}
           />
         ),
         table: ({ node, ...props }) => (

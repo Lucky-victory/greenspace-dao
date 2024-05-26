@@ -1,106 +1,203 @@
 import {
   Box,
   Button,
-  Checkbox,
+  Divider,
   Flex,
   FormControl,
   FormLabel,
   HStack,
   Heading,
-  Image,
   Input,
-  ResponsiveValue,
   Stack,
+  Switch,
   Text,
-  Textarea,
+  useToast,
 } from "@chakra-ui/react";
-import DashboardEmptyArea from "src/components/DashboardEmptyArea";
 import DashboardLayout from "src/components/AdminDashboardLayout";
 import TextEditor from "src/components/TextEditor";
-import { useDragAndDropImage } from "src/hooks/dropzone";
-import isEmpty from "just-is-empty";
-import { BsPencil, BsPencilSquare, BsTrash } from "react-icons/bs";
-const NewCommunityPage = () => {
-  const { images, files, getInputProps, getRootProps } = useDragAndDropImage();
-  console.log({ images, files });
 
+import { useState } from "react";
+import { CoverImageUploader } from "src/components/CoverImageUploader";
+import { useStorageUpload } from "@thirdweb-dev/react";
+import { useFormik } from "formik";
+import { resolveIPFSURI } from "src/helpers";
+import { useInAppAuth } from "src/hooks/common";
+import isEmpty from "just-is-empty";
+import { useCreateCommunityMutation } from "src/state/services";
+
+const NewCommunityPage = () => {
+  const { mutateAsync: uploadToThirdweb } = useStorageUpload();
+  const [coverFile, setCoverFile] = useState<File>();
+  const [displayImageFile, setDisplayImageFile] = useState<File>();
+  const { user, connect } = useInAppAuth();
+  const [createCommunity, {}] = useCreateCommunityMutation();
+  const toast = useToast({
+    duration: 3000,
+    position: "top",
+    status: "success",
+    title: "Community created successfully",
+  });
+  const formik = useFormik({
+    initialValues: {
+      name: "",
+      description: "",
+      visibility: true,
+    },
+    onSubmit: async (values, actions) => {
+      if (isEmpty(user)) {
+        connect();
+        return;
+      }
+      actions.setSubmitting(true);
+      try {
+        const dataToSave = {
+          name: values.name,
+          description: values.description,
+          visibility: values.visibility ? "public" : "private",
+          coverImage: "",
+          displayImage: "",
+          userId: user?.id,
+        };
+        if (coverFile) {
+          const coverImageRes = await uploadToThirdweb({ data: [coverFile] });
+          dataToSave.coverImage = resolveIPFSURI(coverImageRes[0]);
+        }
+        if (displayImageFile) {
+          const displayImageRes = await uploadToThirdweb({
+            data: [displayImageFile],
+          });
+          dataToSave.displayImage = resolveIPFSURI(displayImageRes[0]);
+        }
+        console.log({ values, dataToSave });
+        await createCommunity(dataToSave);
+        actions.setSubmitting(false);
+
+        toast({
+          title: "Community created successfully",
+          status: "success",
+        });
+        setTimeout(() => {
+          actions.resetForm();
+          actions.setFieldValue("description", "");
+          setCoverFile(undefined);
+          setDisplayImageFile(undefined);
+        }, 2000);
+      } catch (err) {
+        console.log(err);
+        toast({
+          title: "An error occurred, please try again",
+          status: "error",
+        });
+        actions.setSubmitting(false);
+      }
+    },
+  });
+  function handleGetCoverFile(file: File | null) {
+    setCoverFile(file as File);
+  }
+  function handleGetDisplayImageFile(file: File | null) {
+    setDisplayImageFile(file as File);
+  }
   return (
     <DashboardLayout>
       <Flex direction={"column"} w={"full"} py={5} px={4}>
-        <Heading mb={2}>Add new community</Heading>
-        <Stack gap={5} mt={8}>
-          <Input
-            h={"auto"}
-            fontWeight={500}
-            py={3}
-            placeholder="Community Name"
-            fontSize={30}
-            size={"md"}
-          />
-          <Box>
-            <Text>Cover image</Text>
-            {isEmpty(images) && (
-              <Box
-                {...getRootProps({
-                  className: "dropzone",
-                  h: "10rem",
-                  textAlign: "center" as ResponsiveValue<"center">,
-                  maxW: "600px",
-                  border: "2px",
-                  borderStyle: "dashed",
-                  borderColor: "gray.400",
-                  borderRadius: "0.5rem",
-                  p: "1rem",
-                  mx: "auto",
-                  cursor: "pointer",
-                })}
-              >
-                <input {...getInputProps()} />
-                <Stack
-                  justify={"center"}
-                  borderRadius={"inherit"}
-                  h={"100%"}
-                  w={"100%"}
-                >
-                  <Stack>
-                    <Text as={"span"} fontSize={"18px"} fontWeight={"medium"}>
-                      Drag or Upload Cover Image
-                    </Text>
-                    <Text as={"span"} color={"gray.500"}>
-                      Recommended size: 1260 x 630
-                    </Text>
-                  </Stack>
-                </Stack>
-              </Box>
-            )}
-            <Box pos={"relative"}>
-              <HStack pos={"absolute"} zIndex={1} right={0} top={0}>
-                <Button size={"sm"} gap={2}>
-                  <BsPencilSquare /> <Text as={"span"}>Replace</Text>
-                </Button>
-                <Button size={"sm"} colorScheme="red" gap={2}>
-                  <BsTrash /> <Text as={"span"}>Delete</Text>
-                </Button>
-              </HStack>
-              {!isEmpty(images) && <Image src={images[0].src as string} />}
-            </Box>
-          </Box>
-          <FormControl>
-            <HStack>
-              <FormLabel>
-                <Text>Make public</Text>
-              </FormLabel>
-              <Checkbox isChecked />
-            </HStack>
+        <Heading mb={2} size={"lg"}>
+          Add new community
+        </Heading>
+        <Stack
+          gap={5}
+          mt={8}
+          divider={<Divider />}
+          as={"form"}
+          /* @ts-ignore */
+          onSubmit={formik.handleSubmit}
+        >
+          <FormControl isRequired>
+            <FormLabel htmlFor="community-name">Community Name</FormLabel>
+            <Input
+              isRequired
+              id="community-name"
+              h={"auto"}
+              fontWeight={500}
+              _focus={{
+                boxShadow: "0 0 0 1px transparent",
+                borderColor: "gs-yellow.400",
+              }}
+              autoComplete="off"
+              name="name"
+              value={formik.values.name}
+              py={3}
+              placeholder="Community Name"
+              fontSize={20}
+              onChange={formik.handleChange}
+              // size={"md"}
+            />
           </FormControl>
-          <Textarea placeholder="Community details"></Textarea>
+          <Box>
+            <FormLabel size={"md"} mt={2} mb={4} htmlFor="display-image">
+              Display image (Avatar)
+            </FormLabel>
+            <CoverImageUploader
+              subTitle="Recommended size: 500 x 500"
+              radius="50%"
+              useContainerSize={true}
+              containerHeight={180}
+              containerWidth={180}
+              inputId="display-image"
+              getCoverImageFile={handleGetDisplayImageFile}
+            />
+          </Box>
+          <Box>
+            <FormLabel size={"md"} mt={2} mb={4} htmlFor="cover-image">
+              Cover image
+            </FormLabel>
+            <CoverImageUploader
+              inputId="cover-image"
+              getCoverImageFile={handleGetCoverFile}
+            />
+          </Box>
 
-          <TextEditor />
+          <FormControl display="flex" alignItems="center">
+            <FormLabel htmlFor="community-visibility" mb="0">
+              Community Visibility{" "}
+              <Text as={"span"}>
+                ({formik.values.visibility ? "public" : "private"})
+              </Text>
+            </FormLabel>
+            <Switch
+              colorScheme="blue"
+              name="visibility"
+              onChange={formik.handleChange}
+              id="community-visibility"
+              isChecked={formik.values.visibility}
+            />
+          </FormControl>
+
+          <Box>
+            <FormLabel size={"md"} mt={2} mb={4}>
+              About this community
+            </FormLabel>
+            <TextEditor
+              onEditorContent={(content) =>
+                formik.setFieldValue("description", content)
+              }
+            />
+          </Box>
           <HStack gap={4}>
-            <Button rounded={"full"} variant={"outline"}>
+            <Button
+              type="submit"
+              rounded={"full"}
+              variant={"outline"}
+              isLoading={formik.isSubmitting}
+            >
               Save as draft
             </Button>
-            <Button rounded={"full"} colorScheme="gs-yellow">
+            <Button
+              type="submit"
+              rounded={"full"}
+              colorScheme="gs-yellow"
+              isLoading={formik.isSubmitting}
+            >
               Publish
             </Button>
           </HStack>

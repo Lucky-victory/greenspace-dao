@@ -42,6 +42,8 @@ import isEmpty from "just-is-empty";
 import { Link } from "@chakra-ui/next-js";
 import { FiEye, FiUsers } from "react-icons/fi";
 import { CardLoading } from "src/components/CommunityPage/CardLoading";
+import { shortenText } from "src/utils";
+import Head from "next/head";
 
 export default function CommunitiesPage() {
   const { data, isLoading, isFetching } = useGetCommunitiesQuery({});
@@ -80,6 +82,9 @@ export default function CommunitiesPage() {
   return (
     <>
       <PageWrapper bg="gray.800">
+        <Head>
+          <title>GreenspaceDAO | Communities</title>
+        </Head>
         <PageLoader>
           <HeaderNav />
 
@@ -121,7 +126,11 @@ export default function CommunitiesPage() {
                       >
                         <HStack gap={4} mb={5} wrap={"wrap"}>
                           {comm.displayImage && (
-                            <Avatar size={"lg"} src={comm.displayImage} />
+                            <Avatar
+                              size={"lg"}
+                              src={comm.displayImage}
+                              bg={"gray.800"}
+                            />
                           )}
                           {!comm.displayImage && (
                             <BoringAvatar
@@ -179,10 +188,10 @@ export default function CommunitiesPage() {
                         {comm?.description && (
                           <Box>
                             <Heading mb={3} as={"h4"} size={"md"}>
-                              Description
+                              About {comm?.name}
                             </Heading>
                             <Text pb={4} color={"gray.100"}>
-                              {comm.description}
+                              {shortenText(comm.description, 200)}
                             </Text>
                           </Box>
                         )}

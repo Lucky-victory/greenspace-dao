@@ -4,6 +4,7 @@ import { CardLoading } from "../../CardLoading";
 import { useGetCommunityChallengesQuery } from "src/state/services";
 import isEmpty from "just-is-empty";
 import { TabHeading } from "../../TabHeading";
+import DashboardEmptyArea from "src/components/DashboardEmptyArea";
 
 export default function Challenges({ spaceIdOrId }: { spaceIdOrId: string }) {
   const {
@@ -22,6 +23,13 @@ export default function Challenges({ spaceIdOrId }: { spaceIdOrId: string }) {
           [0, 0, 0, 0].map((_, i) => (
             <CardLoading key={"challenge-loading" + i} />
           ))}
+        {!isLoading && !isFetching && isEmpty(challenges) && (
+          <DashboardEmptyArea
+            text="No challenges yet"
+            isEmpty={true}
+            isLoading={false}
+          />
+        )}
         {!isLoading &&
           !isFetching &&
           !isEmpty(challenges) &&

@@ -22,6 +22,9 @@ import {
   Text,
   useDisclosure,
   HStack,
+  Stack,
+  Divider,
+  Image,
 } from "@chakra-ui/react";
 import { format } from "date-fns";
 import { useContext, useEffect, useState } from "react";
@@ -47,8 +50,8 @@ import Head from "next/head";
 
 export default function CommunitiesPage() {
   const { data, isLoading, isFetching } = useGetCommunitiesQuery({});
-  const { isLoggedIn, user, connect } = useInAppAuth();
   const communities = data?.data!;
+  const { isLoggedIn, user, connect } = useInAppAuth();
   const [joinCommunity, { isLoading: isJoiningComm }] =
     useJoinCommunityMutation();
   const [checkHasJoinCommunity, { isLoading: isCheckingJoin }] =
@@ -111,93 +114,102 @@ export default function CommunitiesPage() {
                   [0, 0, 0, 0].map((_, i) => (
                     <CardLoading key={"comm-loading" + i} />
                   ))}
-                {!(isLoading || isFetching) &&
-                  communities?.map((comm, i) => {
-                    return (
-                      <Box
-                        maxW={{ lg: "50%" }}
-                        key={"nutri" + i}
-                        bg={"blackAlpha.700"}
-                        rounded={"md"}
-                        px={4}
-                        py={5}
-                        flex={1}
-                        minW={500}
+                {!isLoading && !isFetching && (
+                  <HStack gap={4} wrap={"wrap"} align={"stretch"}>
+                    {communities.map((community) => (
+                      <Stack
+                        overflow={"hidden"}
+                        key={community.spaceId}
+                        rounded={"12px"}
+                        border={"1px"}
+                        minW={250}
+                        borderColor={"gray.600"}
+                        maxW={{ base: "100%", md: "300" }}
                       >
-                        <HStack gap={4} mb={5} wrap={"wrap"}>
-                          {comm.displayImage && (
-                            <Avatar
-                              size={"lg"}
-                              src={comm.displayImage}
-                              bg={"gray.800"}
-                            />
-                          )}
-                          {!comm.displayImage && (
-                            <BoringAvatar
-                              variant="sunset"
-                              colors={[
-                                "#92A1C6",
-                                "#146A7C",
-                                "#F0AB3D",
-                                "#C271B4",
-                                "#C20D90",
-                              ]}
-                            />
-                          )}
-                          <Box>
-                            <Heading as={"h3"} mb={2} size={"md"}>
-                              {comm.name}
-                            </Heading>
-                          </Box>
-                          <HStack gap={4} wrap={"wrap"}>
-                            <Button
-                              onClick={() => handleJoinCommunity(comm)}
-                              ml={"auto"}
-                              gap={2}
-                              isLoading={isJoiningComm || isCheckingJoin}
-                              loadingText={`${
-                                isCheckingJoin
-                                  ? "Checking..."
-                                  : isJoiningComm
-                                  ? "Joining..."
-                                  : ""
-                              }`}
-                              colorScheme="gs-yellow"
-                              rounded={"full"}
-                              size={"sm"}
-                              isDisabled={hasJoined}
-                            >
-                              <FiUsers />{" "}
-                              {hasJoined ? "Joined" : "Join community"}
-                            </Button>
-                            <Button
-                              as={Link}
-                              variant={"outline"}
-                              href={"/community/" + comm.spaceId}
-                              ml={"auto"}
-                              gap={2}
-                              colorScheme="gs-yellow"
-                              rounded={"full"}
-                              size={"sm"}
-                            >
-                              <FiEye />
-                              Explore the community
-                            </Button>
-                          </HStack>
-                        </HStack>
-                        {comm?.description && (
-                          <Box>
-                            <Heading mb={3} as={"h4"} size={"md"}>
-                              About {comm?.name}
-                            </Heading>
-                            <Text pb={4} color={"gray.100"}>
-                              {shortenText(comm.description, 200)}
+                        <Box h={150} pos={"relative"}>
+                          <Image
+                            pos={"absolute"}
+                            alt=""
+                            w={70}
+                            h={70}
+                            rounded={"full"}
+                            left={2}
+                            bottom={2}
+                            border={"2px"}
+                            borderColor={"gray.500"}
+                            src={
+                              community?.displayImage ||
+                              "/assets/community-dp.png"
+                            }
+                          />
+                          <Image
+                            alt=""
+                            src={
+                              community?.coverImage ||
+                              "/assets/community-default-bg.png"
+                            }
+                            h={"full"}
+                            objectFit={"cover"}
+                            w={"full"}
+                          />
+                        </Box>
+                        <Box p={3}>
+                          <Heading size={"md"} mb={2}>
+                            {community.name}
+                          </Heading>
+                          {community.description && (
+                            <Text fontSize={"13px"}>
+                              {shortenText(community.description || "", 120)}
                             </Text>
-                          </Box>
-                        )}
-                      </Box>
-                    );
-                  })}
+                          )}
+                        </Box>
+                        <Stack
+                          px={3}
+                          pb={4}
+                          gap={3}
+                          flex={1}
+                          justify={"flex-end"}
+                        >
+                          <Button
+                            as={Link}
+                            variant={"outline"}
+                            href={"/community/" + community.spaceId}
+                            ml={"auto"}
+                            gap={2}
+                            colorScheme="gs-yellow"
+                            rounded={"full"}
+                            size={"sm"}
+                            w={"full"}
+                          >
+                            <FiEye />
+                            Explore community
+                          </Button>
+                          <Button
+                            onClick={() => handleJoinCommunity(community)}
+                            ml={"auto"}
+                            gap={2}
+                            isLoading={isJoiningComm || isCheckingJoin}
+                            loadingText={`${
+                              isCheckingJoin
+                                ? "Checking..."
+                                : isJoiningComm
+                                ? "Joining..."
+                                : ""
+                            }`}
+                            colorScheme="gs-yellow"
+                            rounded={"full"}
+                            w={"full"}
+                            size={"sm"}
+                            isDisabled={hasJoined}
+                          >
+                            <FiUsers />{" "}
+                            {hasJoined ? "Joined" : "Join community"}
+                          </Button>
+                        </Stack>
+                      </Stack>
+                    ))}
+                  </HStack>
+                )}
               </Flex>
             </Box>
           </Box>

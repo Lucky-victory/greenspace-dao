@@ -19,6 +19,7 @@ export default function DashboardSideNav(props: {
     url: string;
     icon: IconType;
     child?: string[];
+    nestedChild?: string[];
   }>;
 }) {
   const { isMobileSize, isTabletSize } = useResize();
@@ -34,6 +35,8 @@ export default function DashboardSideNav(props: {
     const isActive =
       lastPart === link?.url ||
       (beforeLastPart == link.url && link?.child?.includes(lastPart)) ||
+      (link?.child?.includes(beforeLastPart) &&
+        link?.nestedChild?.includes(lastPart)) ||
       (link?.url === "overview" && lastPart === "dashboard");
 
     const buildLink = (entry: string, url: string) =>

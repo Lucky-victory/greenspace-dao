@@ -135,7 +135,7 @@ export const MenuBar = () => {
       pos={"sticky"}
       top={0}
       bg={"gray.900"}
-      zIndex={50}
+      zIndex={2}
     >
       <IconButton
         aria-label=""

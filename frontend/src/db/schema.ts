@@ -1,6 +1,5 @@
 import {
   generateCommunityId,
-  generateNumId,
   generateUrlSafeId,
   generateUsername,
 } from "src/utils";

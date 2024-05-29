@@ -62,7 +62,6 @@ export default function CommunityViewPage({
     isFetching,
   } = useGetCommunityQuery({ spaceIdOrId: slugId });
   const community = communityData?.data;
-  // console.log({ community, communityData, slugIdFromServer, slugId });
   useEffect(() => {
     if (smallerBreakPoints.includes(breakpoint)) {
       setTabs((prev) => tabs.filter((tab) => tab.name !== "Members"));
@@ -85,23 +84,6 @@ export default function CommunityViewPage({
       bg: "gray.700",
     },
   };
-  const members = [
-    {
-      fullName: "Mike Uche",
-      avatar: "https://randomuser.me/api/portraits/men/53.jpg",
-      username: "GH_1341331684",
-    },
-    {
-      fullName: "Olivia Dan",
-      avatar: "https://randomuser.me/api/portraits/women/36.jpg",
-      username: "GH_1931331334",
-    },
-    {
-      fullName: "Chinenye Johnson",
-      avatar: "https://randomuser.me/api/portraits/women/30.jpg",
-      username: "GH_1931331684",
-    },
-  ];
 
   const tabButtons = tabs.map((tab) => {
     const isActive = tab.url === activeTab;
@@ -162,7 +144,7 @@ export default function CommunityViewPage({
                 zIndex={5}
                 as={Link}
                 _hover={{ bg: "blackAlpha.700" }}
-                href={"/communities"}
+                onClick={() => router.back()}
               >
                 <BsChevronLeft /> <Text> Back</Text>
               </Button>

@@ -7,6 +7,7 @@ import {
 import { CardLoading } from "src/components/CommunityPage/CardLoading";
 import isEmpty from "just-is-empty";
 import { TabHeading } from "../../TabHeading";
+import DashboardEmptyArea from "src/components/DashboardEmptyArea";
 export default function Events({ spaceIdOrId }: { spaceIdOrId: string }) {
   const { data, isLoading, isFetching } = useGetCommunityEventsQuery({
     spaceIdOrId: spaceIdOrId,
@@ -20,6 +21,13 @@ export default function Events({ spaceIdOrId }: { spaceIdOrId: string }) {
       <Stack gap={5}>
         {(isLoading || isFetching) &&
           [0, 0, 0, 0].map((_, i) => <CardLoading key={"evt-loading" + i} />)}
+        {!isLoading && !isFetching && isEmpty(events) && (
+          <DashboardEmptyArea
+            text="No events yet"
+            isEmpty={true}
+            isLoading={false}
+          />
+        )}
         {!isLoading &&
           !isFetching &&
           !isEmpty(events) &&

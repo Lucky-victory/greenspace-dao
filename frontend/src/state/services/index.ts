@@ -634,7 +634,7 @@ export const GreenSpaceDAOApi = createApi({
     }),
     createCommunityEvent: builder.mutation<APIResponse<any>, any>({
       query: (data) => ({
-        url: `communties/events`,
+        url: `community/events`,
         method: "POST",
         body: data,
       }),
@@ -642,7 +642,7 @@ export const GreenSpaceDAOApi = createApi({
     }),
     createCommunityChallenge: builder.mutation<APIResponse<any>, any>({
       query: (data) => ({
-        url: `communties/challenges`,
+        url: `community/challenges`,
         method: "POST",
         body: data,
       }),

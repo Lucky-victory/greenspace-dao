@@ -59,6 +59,7 @@ export default function Chats({ spaceIdOrId }: { spaceIdOrId: string }) {
       <TabHeading title="Chats" />
 
       <Stack
+        minH={"400"}
         divider={<Divider />}
         h={"full"}
         overflowY={"auto"}

@@ -24,6 +24,8 @@ import { resolveIPFSURI } from "src/helpers";
 import { useInAppAuth } from "src/hooks/common";
 import isEmpty from "just-is-empty";
 import { useCreateCommunityMutation } from "src/state/services";
+import { BsChevronLeft } from "react-icons/bs";
+import { Link } from "@chakra-ui/next-js";
 
 const NewCommunityPage = () => {
   const { mutateAsync: uploadToThirdweb } = useStorageUpload();
@@ -100,7 +102,24 @@ const NewCommunityPage = () => {
   }
   return (
     <DashboardLayout>
-      <Flex direction={"column"} w={"full"} py={5} px={4}>
+      <Flex direction={"column"} w={"full"} pb={5} px={4}>
+        <HStack mb={10}>
+          <Button
+            gap={2}
+            bg={"gray.700"}
+            variant={"solid"}
+            // pos={"absolute"}
+            top={3}
+            left={3}
+            colorScheme="gray"
+            zIndex={5}
+            as={Link}
+            _hover={{ bg: "gray.800" }}
+            href={"/admin/dashboard/communities"}
+          >
+            <BsChevronLeft /> <Text> Back</Text>
+          </Button>
+        </HStack>
         <Heading mb={2} size={"lg"}>
           Add new community
         </Heading>
@@ -183,7 +202,7 @@ const NewCommunityPage = () => {
               }
             />
           </Box>
-          <HStack gap={4}>
+          <HStack gap={4} pos={"sticky"} bottom={0} pt={1} pb={3}>
             <Button
               type="submit"
               rounded={"full"}

@@ -2,23 +2,34 @@ import Highlight from "@tiptap/extension-highlight";
 import TextAlign from "@tiptap/extension-text-align";
 import { Editor, EditorProvider } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
-import { useCallback, useEffect, useState } from "react";
+import {
+  forwardRef,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useState,
+} from "react";
 import Typography from "@tiptap/extension-typography";
 import Image from "@tiptap/extension-image";
 import Link from "@tiptap/extension-link";
 import { Box } from "@chakra-ui/react";
 import { MenuBar } from "./MenuBar";
 import { useHTMLToMarkdownConverter } from "src/hooks/common";
-export default function TextEditor({
-  onEditorContent,
-  returnMarkdown = true,
-}: {
-  onEditorContent: (content: string) => void;
-  returnMarkdown?: boolean;
-}) {
-  const [editorContent, setEditorContent] = useState<string>(`
-    
-    `);
+type TextEditorHandle = {
+  resetContent: () => void;
+};
+
+const TextEditor = forwardRef<
+  TextEditorHandle,
+  {
+    onContentChange: (content: string) => void;
+    initialValue: string;
+    returnMarkdown?: boolean;
+  }
+>(({ onContentChange, initialValue, returnMarkdown = true }, ref) => {
+  const [editorContent, setEditorContent] = useState<string>(
+    initialValue || ""
+  );
   const { markdown, updateHtml } = useHTMLToMarkdownConverter();
   const extensions = [
     StarterKit,
@@ -30,27 +41,34 @@ export default function TextEditor({
       openOnClick: false,
       autolink: true,
     }),
-
     Typography,
-
     Image,
     TextAlign.configure({
       types: ["heading", "paragraph"],
     }),
     Highlight,
   ];
+
+  useImperativeHandle(
+    ref,
+    () => ({
+      resetContent: () => {
+        setEditorContent(initialValue);
+      },
+    }),
+    [initialValue]
+  );
+
   const getEditorContent = useCallback(
     (content: string) => {
-      onEditorContent(content);
+      onContentChange(content);
     },
-    [onEditorContent, editorContent]
+    [onContentChange, editorContent]
   );
 
   function handleEditorUpdate(editor: Editor) {
     setEditorContent(editor.getHTML());
     if (returnMarkdown) {
-      console.log({ html: editor.getHTML() });
-
       updateHtml(editor.getHTML());
       getEditorContent(markdown);
     } else {
@@ -65,10 +83,16 @@ export default function TextEditor({
           // @ts-ignore
           handleEditorUpdate(editor);
         }}
+        onTransaction={({ editor, transaction }) => {
+          // @ts-ignore
+          handleEditorUpdate(editor);
+        }}
         slotBefore={<MenuBar />}
         content={editorContent}
         extensions={extensions}
       />
     </Box>
   );
-}
+});
+
+export default TextEditor;

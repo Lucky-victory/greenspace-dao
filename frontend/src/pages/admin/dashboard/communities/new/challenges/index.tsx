@@ -24,7 +24,7 @@ import DashboardLayout from "src/components/AdminDashboardLayout";
 import TextEditor from "src/components/TextEditor";
 
 import { useEffect, useRef, useState } from "react";
-import { CoverImageUploader } from "src/components/CoverImageUploader";
+import CoverImageUploader  from "src/components/CoverImageUploader";
 import { useStorageUpload } from "@thirdweb-dev/react";
 import { useFormik } from "formik";
 import { resolveIPFSURI } from "src/helpers";
@@ -50,6 +50,13 @@ const NewChallengePage = ({
   const communityId =
     communityIdFromServerSideProps || router.query.communityId;
   const { mutateAsync: uploadToThirdweb } = useStorageUpload();
+  const uploaderRef = useRef<{ resetImages: () => void }>(null);
+
+  const handleUploaderReset = () => {
+    if (uploaderRef.current) {
+      uploaderRef.current.resetImages();
+    }
+  };
   const [coverFile, setCoverFile] = useState<File>();
   const [detailsContent, setDetailsContent] = useState<string>("");
   const [challengeStartDate, setChallengeStartDate] = useState(new Date());
@@ -153,6 +160,7 @@ const NewChallengePage = ({
     setCoverFile(undefined);
     setDetailsContent("");
     handleEditorReset();
+    handleUploaderReset()
   }
   function handleGetCoverFile(file: File | null) {
     setCoverFile(file as File);
@@ -220,7 +228,7 @@ const NewChallengePage = ({
             <FormLabel size={"md"} mt={2} mb={4} htmlFor="cover-image">
               Cover image:
             </FormLabel>
-            <CoverImageUploader
+            <CoverImageUploader ref={uploaderRef}
               inputId="cover-image"
               getCoverImageFile={handleGetCoverFile}
             />

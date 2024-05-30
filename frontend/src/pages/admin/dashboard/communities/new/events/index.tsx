@@ -20,8 +20,8 @@ import {
 import DashboardLayout from "src/components/AdminDashboardLayout";
 import TextEditor from "src/components/TextEditor";
 
-import { useState } from "react";
-import { CoverImageUploader } from "src/components/CoverImageUploader";
+import { useEffect, useRef, useState } from "react";
+import CoverImageUploader from "src/components/CoverImageUploader";
 import { useStorageUpload } from "@thirdweb-dev/react";
 import { useFormik } from "formik";
 import { resolveIPFSURI } from "src/helpers";
@@ -45,10 +45,11 @@ const NewEventPage = ({
     communityIdFromServerSideProps || router.query.communityId;
   const { mutateAsync: uploadToThirdweb } = useStorageUpload();
   const [coverFile, setCoverFile] = useState<File>();
-
-  const [challengeStartDate, setChallengeStartDate] = useState(new Date());
-  const [challengeEndDate, setChallengeEndDate] = useState(new Date());
+  const [detailsContent, setDetailsContent] = useState<string>("");
+  const [eventStartDate, setEventStartDate] = useState(new Date());
+  const [eventEndDate, setEventEndDate] = useState(new Date());
   const { user, connect, isLoggedIn } = useInAppAuth();
+  const editorRef = useRef<{ resetContent: () => void }>(null);
   const [createCommunityEvent, {}] = useCreateCommunityEventMutation();
   const toast = useToast({
     duration: 3000,
@@ -56,21 +57,33 @@ const NewEventPage = ({
     status: "success",
     title: "Community event created successfully",
   });
+  const uploaderRef = useRef<{ resetImages: () => void }>(null);
+
+  const handleUploaderReset = () => {
+    if (uploaderRef.current) {
+      uploaderRef.current.resetImages();
+    }
+  };
+  const handleEditorReset = () => {
+    if (editorRef.current) {
+      editorRef.current.resetContent();
+    }
+  };
   const handleDateSelect = (date: Date, type: "start" | "end") => {
     if (type === "start") {
-      setChallengeStartDate(date);
+      setEventStartDate(date);
       formik.setFieldValue("startDate", date);
     } else {
-      setChallengeEndDate(date);
+      setEventEndDate(date);
       formik.setFieldValue("endDate", date);
     }
   };
   const handleDateChange = (date: Date, type: "start" | "end") => {
     if (type === "start") {
-      setChallengeStartDate(date);
+      setEventStartDate(date);
       formik.setFieldValue("startDate", date);
     } else {
-      setChallengeEndDate(date);
+      setEventEndDate(date);
       formik.setFieldValue("endDate", date);
     }
   };
@@ -80,8 +93,8 @@ const NewEventPage = ({
       details: "",
       venue: "",
       location: "",
-      startDate: challengeStartDate,
-      endDate: challengeEndDate,
+      startDate: eventStartDate,
+      endDate: eventEndDate,
     },
     onSubmit: async (values, actions) => {
       if (!isLoggedIn) {
@@ -93,7 +106,6 @@ const NewEventPage = ({
           title: "No communityID provided",
           status: "error",
         });
-        return;
       }
       actions.setSubmitting(true);
       try {
@@ -104,7 +116,11 @@ const NewEventPage = ({
           location: values.location,
           venue: values.venue,
           communityId: communityId,
+          startDate: values.startDate,
+          endDate: values.endDate,
         };
+        console.log({ dataToSave });
+
         if (coverFile) {
           const coverImageRes = await uploadToThirdweb({ data: [coverFile] });
           dataToSave.coverImage = resolveIPFSURI(coverImageRes[0]);
@@ -118,9 +134,7 @@ const NewEventPage = ({
           status: "success",
         });
         setTimeout(() => {
-          actions.resetForm();
-          actions.setFieldValue("details", "");
-          setCoverFile(undefined);
+          handleFieldReset();
         }, 2000);
       } catch (err) {
         console.log(err);
@@ -132,10 +146,24 @@ const NewEventPage = ({
       }
     },
   });
+  function handleFieldReset() {
+    formik.resetForm();
+    formik.setFieldValue("details", "");
+    formik.setFieldValue("startDate", new Date());
+    formik.setFieldValue("endDate", formik.values.startDate);
+    setCoverFile(undefined);
+    setDetailsContent("");
+    handleEditorReset();
+     handleUploaderReset();
+  }
   function handleGetCoverFile(file: File | null) {
     setCoverFile(file as File);
   }
 
+  useEffect(() => {
+    formik.setFieldValue("details", detailsContent);
+    console.log({ vv: formik.values });
+  }, [detailsContent]);
   return (
     <DashboardLayout>
       <Flex direction={"column"} w={"full"} pb={5} px={4}>
@@ -168,11 +196,11 @@ const NewEventPage = ({
           onSubmit={formik.handleSubmit}
         >
           <FormControl isRequired>
-            <FormLabel htmlFor="Challenge-name">Event title:</FormLabel>
+            <FormLabel htmlFor="Event-name">Event title:</FormLabel>
             <Input
               rounded={"12px"}
               isRequired
-              id="Challenge-name"
+              id="Event-name"
               h={"auto"}
               fontWeight={500}
               _focus={{
@@ -194,7 +222,7 @@ const NewEventPage = ({
             <FormLabel size={"md"} mt={2} mb={4} htmlFor="cover-image">
               Cover image:
             </FormLabel>
-            <CoverImageUploader
+            <CoverImageUploader ref={uploaderRef}
               inputId="cover-image"
               getCoverImageFile={handleGetCoverFile}
             />
@@ -208,10 +236,8 @@ const NewEventPage = ({
                   as={Button}
                   colorScheme="gs-yellow"
                   rightIcon={<BsChevronDown />}
-                  value={formik.values.venue}
-                  onChange={formik.handleChange}
                 >
-                  Choose Venue
+                  {formik.values.venue || "Choose Venue"}
                 </MenuButton>
                 <MenuList zIndex={3}>
                   <MenuOptionGroup
@@ -219,8 +245,24 @@ const NewEventPage = ({
                     title="Venue"
                     type="radio"
                   >
-                    <MenuItemOption value="online">Online</MenuItemOption>
-                    <MenuItemOption value="in-person">In Person</MenuItemOption>
+                    <MenuItemOption
+                      name="venue"
+                      value="online"
+                      onClick={() => {
+                        formik.setFieldValue("venue", "online");
+                      }}
+                    >
+                      Online
+                    </MenuItemOption>
+                    <MenuItemOption
+                      name="venue"
+                      value="in-person"
+                      onClick={() => {
+                        formik.setFieldValue("venue", "in-person");
+                      }}
+                    >
+                      In Person
+                    </MenuItemOption>
                   </MenuOptionGroup>
                 </MenuList>
               </Menu>
@@ -229,15 +271,19 @@ const NewEventPage = ({
               <FormLabel htmlFor="location">Location:</FormLabel>
               <Input
                 rounded={"12px"}
-                placeholder="Block 123, Challenge Avenue, West Suite"
+                placeholder="Block 123, Event Avenue, West Suite"
                 id="location"
                 name="location"
+                _focus={{
+                  boxShadow: "0 0 0 1px transparent",
+                  borderColor: "gs-yellow.400",
+                }}
                 value={formik.values.location}
                 onChange={formik.handleChange}
               />
             </FormControl>
           </HStack>
-          <HStack wrap={"wrap"} gap={3}>
+          <HStack wrap={{ base: "wrap", md: "nowrap" }} gap={3}>
             <FormControl isRequired>
               <FormLabel htmlFor="details">Start Date:</FormLabel>
               <DatePicker
@@ -247,9 +293,8 @@ const NewEventPage = ({
                 wrapperClassName="gs-datepicker-wrapper"
                 popperClassName="gs-datepicker-popper"
                 showTimeSelect
-                // inline
                 selectsStart
-                selected={challengeStartDate}
+                selected={eventStartDate}
                 // TODO: use formik directly (value & onChange)
                 onSelect={(date: Date) => handleDateSelect(date, "start")} //when day is clicked
                 onChange={(date: Date) => handleDateChange(date, "start")} //only when value has changed
@@ -262,11 +307,11 @@ const NewEventPage = ({
                 calendarClassName="gs-datepicker-calendar"
                 wrapperClassName="gs-datepicker-wrapper"
                 popperClassName="gs-datepicker-popper"
-                minDate={new Date()}
+                minDate={eventStartDate}
                 showTimeSelect
                 // inline
                 selectsStart
-                selected={challengeEndDate}
+                selected={eventEndDate}
                 // TODO: use formik directly (value & onChange)
                 onSelect={(date: Date) => handleDateSelect(date, "end")} //when day is clicked
                 onChange={(date: Date) => handleDateChange(date, "end")} //only when value has changed
@@ -275,30 +320,31 @@ const NewEventPage = ({
           </HStack>
           <Box>
             <FormLabel size={"md"} mt={2} mb={4}>
-              Details about this event:
+              Details about this event
             </FormLabel>
             <TextEditor
-              onEditorContent={(content) =>
-                formik.setFieldValue("details", content)
-              }
+              ref={editorRef}
+              onContentChange={(content) => setDetailsContent(content)}
+              initialValue={detailsContent}
             />
           </Box>
           <HStack
             gap={4}
             pos={"sticky"}
             bottom={0}
-            pt={1}
-            pb={3}
             bg={"black"}
             zIndex={50}
+            pt={1}
+            pb={3}
           >
             <Button
               type="submit"
               rounded={"full"}
               colorScheme="gs-yellow"
               isLoading={formik.isSubmitting}
+              loadingText="Creating event..."
             >
-              Create Event
+              Create event
             </Button>
           </HStack>
         </Stack>

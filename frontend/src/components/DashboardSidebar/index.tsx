@@ -49,7 +49,7 @@ export default function DashboardSideNav(props: {
     };
 
     return (
-      <ListItem pos={"relative"} key={"dash-sidebar-nav-link" + i}>
+      <ListItem pos={"relative"} key={"dash-sidebar-nav-link" + i} pl={1}>
         <Link
           _hover={{ ...activeStyles, fontWeight: "normal" }}
           rounded={isMobileSize ? "none" : "md"}

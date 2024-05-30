@@ -9,7 +9,6 @@ import {
   HStack,
   Heading,
   Image,
-  Input,
   List,
   ListItem,
   Stack,
@@ -20,7 +19,6 @@ import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 import {
   useCheckHasJoinCommunityChallengeMutation,
   useGetCommunityChallengeQuery,
-  useGetCommunityEventQuery,
   useJoinCommunityChallengeMutation,
 } from "src/state/services";
 import { useRouter } from "next/router";
@@ -31,6 +29,7 @@ import { formatDateWithOrdinal } from "src/utils";
 import GetNotifiedForm from "src/components/GetNotified";
 import { useInAppAuth } from "src/hooks/common";
 import { useEffect } from "react";
+import { BsChevronLeft } from "react-icons/bs";
 
 export default function EventPage({
   challengeId: challengeIdFromServer,
@@ -74,7 +73,6 @@ export default function EventPage({
       slugId: challengeId,
     }).unwrap();
   }
-  console.log("hasJoinResponse", hasJoinResponse);
 
   useEffect(() => {
     if (isLoggedIn && challenge?.id) {
@@ -89,6 +87,17 @@ export default function EventPage({
     <>
       <Head>
         <title>{challenge?.title}</title>
+        <meta name="description" content={challenge?.details} />
+        <meta property="og:title" content={challenge?.title} />
+        <meta property="og:description" content={challenge?.details} />
+        <meta property="og:type" content="website" />
+        <meta property="og:image" content={challenge?.coverImage} />
+        {/* <meta property="og:url" content={`https://greenspacedao.xyz/`} /> */}
+        <meta property="og:site_name" content={challenge?.title} />
+        <meta property="og:locale" content="en_US" />
+        <meta property="og:locale:alternate" content="en" />
+        <meta property="og:locale:alternate" content="en_US" />
+        <meta property="og:locale:alternate" content="en_GB" />
       </Head>
       <PageLoader
         isLoading={isLoading || isFetching}
@@ -109,9 +118,24 @@ export default function EventPage({
               w={"full"}
               overflow={"hidden"}
             >
+              <Button
+                gap={2}
+                bg={"blackAlpha.600"}
+                variant={"ghost"}
+                pos={"absolute"}
+                top={3}
+                left={3}
+                colorScheme="gray"
+                zIndex={5}
+                // as={Link}
+                _hover={{ bg: "blackAlpha.700" }}
+                onClick={() => router.back()}
+              >
+                <BsChevronLeft /> <Text> Back</Text>
+              </Button>
               <Image
                 alt=""
-                src="/assets/community.jpg"
+                src={challenge?.coverImage || "/assets/community.jpg"}
                 width={"full"}
                 h={"full"}
                 objectFit={"cover"}

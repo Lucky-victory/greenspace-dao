@@ -104,6 +104,9 @@ const RegisterForm = ({
   const [inTx, setInTx] = useState(false);
   const validationSchema = Yup.object().shape({
     fullName: Yup.string().required("Field is required"),
+    email: Yup.string()
+      .required("Field is required")
+      .email("please enter a valid email address"),
     sex: Yup.string().required("Field is required"),
     country: Yup.string().required("Field is required"),
     weight: Yup.string().required("Field is required"),
@@ -150,13 +153,14 @@ const RegisterForm = ({
             emailVerified: true,
             userType: selectedUserType,
           }).unwrap();
+        } else {
+          await createUser({
+            fullName: formData?.fullName,
+            authId: user?.id,
+            address: address!,
+            userType: selectedUserType,
+          }).unwrap();
         }
-        await createUser({
-          fullName: formData?.fullName,
-          authId: user?.id,
-          address: address!,
-          userType: selectedUserType,
-        }).unwrap();
         sendUserToAI(formData);
       }
       setUser?.({
@@ -226,6 +230,8 @@ const RegisterForm = ({
         // Serialize the form data into a JSON object
         const formDataObject = {
           fullName: data.fullName,
+          email: data.email,
+          // country: data?.country,
           sex: data.sex,
           weight: data.weight,
           height: data.height,
@@ -405,6 +411,16 @@ const RegisterForm = ({
                             />
                             <div className="text-red-500">
                               {errors.fullName?.message}
+                            </div>
+                          </div>
+                          <div>
+                            <Input
+                              className=" w-full max-w-[100%]"
+                              {...register("email")}
+                              placeholder="Email address"
+                            />
+                            <div className="text-red-500">
+                              {errors.email?.message}
                             </div>
                           </div>
                           <div>

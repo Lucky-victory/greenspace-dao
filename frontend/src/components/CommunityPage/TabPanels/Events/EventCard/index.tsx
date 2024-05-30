@@ -9,7 +9,6 @@ import {
   Flex,
 } from "@chakra-ui/react";
 import { Link } from "@chakra-ui/next-js";
-import { useGetCommunitiesQuery } from "src/state/services";
 import MarkdownRenderer from "src/components/MarkdownRenderer";
 import { shortenText } from "src/utils";
 import isEmpty from "just-is-empty";
@@ -49,7 +48,7 @@ export default function EventCards({
           h={"full"}
           objectFit={"cover"}
           alt=""
-          src={"/assets/community-dp.png"}
+          src={event?.coverImage || "/assets/community-dp.png"}
         />
       </Box>
       <Stack flex={1}>

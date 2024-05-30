@@ -65,7 +65,7 @@ export default function DashBoard() {
   const today = new Date().getTime();
   const { isOpen, onClose, onOpen } = useDisclosure();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { user, setMealPlans } = useAppContext();
+
   const toast = useToast({
     duration: 3000,
     position: "top",

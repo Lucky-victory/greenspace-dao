@@ -142,7 +142,7 @@ export default function CommunityViewPage({
                 left={3}
                 colorScheme="gray"
                 zIndex={5}
-                as={Link}
+                // as={Link}
                 _hover={{ bg: "blackAlpha.700" }}
                 onClick={() => router.back()}
               >

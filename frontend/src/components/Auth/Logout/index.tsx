@@ -17,6 +17,6 @@ const {disconnectAsync}=useDisconnect()
 
     }
     return (
-        <Button isLoading={isLoading} rounded={'full'} colorScheme="red" gap={3} color={'white'} bg={'red.500'} onClick={handleLogout}><FiLogOut/> Logout</Button>
+        <Button isLoading={isLoading} variant={'ghost'} colorScheme="red" gap={3}  onClick={handleLogout}><FiLogOut/> Logout</Button>
     )
 }

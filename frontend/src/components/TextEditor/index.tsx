@@ -1,6 +1,6 @@
 import Highlight from "@tiptap/extension-highlight";
 import TextAlign from "@tiptap/extension-text-align";
-import { Editor, EditorProvider } from "@tiptap/react";
+import { Editor, EditorProvider, useCurrentEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import {
   forwardRef,
@@ -30,6 +30,7 @@ const TextEditor = forwardRef<
   const [editorContent, setEditorContent] = useState<string>(
     initialValue || ""
   );
+  const { editor } = useCurrentEditor();
   const { markdown, updateHtml } = useHTMLToMarkdownConverter();
   const extensions = [
     StarterKit,
@@ -54,6 +55,7 @@ const TextEditor = forwardRef<
     () => ({
       resetContent: () => {
         setEditorContent(initialValue);
+        editor?.commands?.clearContent();
       },
     }),
     [initialValue]
@@ -79,11 +81,12 @@ const TextEditor = forwardRef<
   return (
     <Box py={3}>
       <EditorProvider
+        enablePasteRules={true}
         onUpdate={({ editor }) => {
           // @ts-ignore
           handleEditorUpdate(editor);
         }}
-        onTransaction={({ editor, transaction }) => {
+        onTransaction={({ editor }) => {
           // @ts-ignore
           handleEditorUpdate(editor);
         }}

@@ -1,38 +1,20 @@
 import PageLoader from "src/components/PageLoader";
 import PageWrapper from "src/components/PageWrapper";
 
-import Icon from "src/components/Icon";
 import { HeaderNav } from "src/components/HeaderNav";
 import {
-  useToast,
-  Avatar,
   Box,
   Button,
   Flex,
   Heading,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-  Tag,
-  TagLabel,
   Text,
-  useDisclosure,
   HStack,
   Stack,
-  Divider,
   Image,
 } from "@chakra-ui/react";
-import { format } from "date-fns";
-import { useContext, useEffect, useState } from "react";
-import BoringAvatar from "boring-avatars";
+import { useState } from "react";
 //@ts-ignore
-import DatePicker from "react-datepicker";
 import { Community } from "src/types/shared";
-import { useAppContext } from "src/context/state";
 import { useRouter } from "next/router";
 import Footer from "src/components/Footer";
 import {
@@ -41,7 +23,6 @@ import {
   useJoinCommunityMutation,
 } from "src/state/services";
 import { useInAppAuth } from "src/hooks/common";
-import isEmpty from "just-is-empty";
 import { Link } from "@chakra-ui/next-js";
 import { FiEye, FiUsers } from "react-icons/fi";
 import { CardLoading } from "src/components/CommunityPage/CardLoading";

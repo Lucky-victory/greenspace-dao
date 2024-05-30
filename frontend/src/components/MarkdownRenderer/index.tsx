@@ -50,6 +50,24 @@ const MarkdownRenderer = ({ markdown }: { markdown: string }) => {
             my={2}
           />
         ),
+        b: ({ node, ...props }) => (
+          <Text
+            as={"b"}
+            {...props}
+            fontWeight={"bold"}
+            // color={"gray.00"}
+            letterSpacing={1.1}
+          />
+        ),
+        strong: ({ node, ...props }) => (
+          <Text
+            as={"strong"}
+            {...props}
+            fontWeight={"bold"}
+            // color={"gray.00"}
+            letterSpacing={1.1}
+          />
+        ),
         table: ({ node, ...props }) => (
           <TableContainer
             my={8}
@@ -69,7 +87,7 @@ const MarkdownRenderer = ({ markdown }: { markdown: string }) => {
             <List className={className} {...props} />
           ) : (
             //@ts-ignore
-            <OrderedList className={className} {...props} />
+            <List className={className} {...props} listStyleType={"initial"} />
           ),
         //@ts-ignore
         ol: ({ node, ordered, className, ...props }) =>

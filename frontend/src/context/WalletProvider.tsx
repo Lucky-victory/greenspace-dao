@@ -1,4 +1,11 @@
-import React, { FC, ReactNode, createContext, useContext } from "react";
+import React, {
+  FC,
+  ReactNode,
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { Address, WalletClient } from "viem";
 import { useAccount, usePublicClient, useWalletClient } from "wagmi";
 
@@ -19,7 +26,11 @@ const WalletProvider: FC<Props> = ({ children }) => {
   const publicClient = usePublicClient();
   const { data: walletClient } = useWalletClient();
 
-  return <WalletContext.Provider value={{ address, publicClient, walletClient }}>{children}</WalletContext.Provider>;
+  return (
+    <WalletContext.Provider value={{ address, publicClient, walletClient }}>
+      {children}
+    </WalletContext.Provider>
+  );
 };
 
 export default WalletProvider;

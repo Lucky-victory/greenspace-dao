@@ -5,7 +5,7 @@ const config = {
   useSystemColorMode: false,
 };
 
-const theme = extendTheme({
+export const theme = extendTheme({
   fonts: {
     heading: "var(--font-poppins)",
     body: "var(--font-poppins)",
@@ -108,6 +108,14 @@ const theme = extendTheme({
               bg: "gs-yellow.500",
               _hover: {
                 bg: "gs-yellow.600",
+              },
+            };
+          }
+          if (styleProps.colorScheme === "red") {
+            return {
+              bg: "red.500",
+              _hover: {
+                bg: "red.600",
               },
             };
           }

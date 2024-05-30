@@ -9,7 +9,7 @@ import {
   ModalOverlay,
   Stack,
 } from "@chakra-ui/react";
-import { LoginButton } from "../Auth/LoginButton";
+import { LoginButton } from "../LoginButton";
 
 type Props = {
   isOpen: boolean;
@@ -18,21 +18,21 @@ type Props = {
 export const LoginModal = ({ isOpen, onClose }: Props) => {
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
-      <ModalContent>
-        <ModalOverlay />
+      <ModalOverlay />
+      <ModalContent py={6} rounded={"30px"} alignSelf={"center"}>
         <ModalHeader>
           <Heading>Login</Heading>
           <ModalCloseButton />
         </ModalHeader>
         <ModalBody>
-          <Stack>
+          <Stack gap={4}>
             <LoginButton
               text="Login as User"
               type={"member"}
               styleProps={{
                 size: "lg",
                 rounded: "full",
-                variant: "outline",
+
                 colorScheme: "gs-yellow",
               }}
             />

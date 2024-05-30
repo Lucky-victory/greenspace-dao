@@ -100,10 +100,10 @@ export const fitnessPlans = mysqlTable(
   })
 );
 export const nutritionists = mysqlTable("Nutritionists", {
+  id: int("id").autoincrement().primaryKey(),
   bio: varchar("bio", { length: 255 }),
   city: varchar("city", { length: 100 }),
   country: varchar("country", { length: 255 }),
-  id: int("id").autoincrement().primaryKey(),
   username: varchar("username", { length: 50 })
     .unique()
     .$defaultFn(() => generateUsername("GN_")),
@@ -112,6 +112,9 @@ export const nutritionists = mysqlTable("Nutritionists", {
     .notNull(),
   sex: mysqlEnum("sex", ["male", "female", "other"]),
   birthDate: datetime("birth_date"),
+
+  email: varchar("email", { length: 255 }).unique(),
+  address: varchar("address", { length: 100 }).default(""),
   fullName: varchar("full_name", { length: 255 }),
   avatar: varchar("avatar", { length: 255 }),
   authId: varchar("auth_id", { length: 255 }).$defaultFn(generateUrlSafeId),

@@ -1,7 +1,7 @@
 import { Button, HStack, useDisclosure } from "@chakra-ui/react";
 import { LoginButton } from "../LoginButton";
 import { RegisterButton } from "../RegisterButton";
-import { LoginModal } from "src/components/LoginModal";
+import { LoginModal } from "src/components/Auth/LoginModal";
 
 export const LoginAndRegisterButtons = ({
   openModal,

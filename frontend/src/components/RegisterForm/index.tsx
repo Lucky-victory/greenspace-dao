@@ -348,7 +348,7 @@ const RegisterForm = ({
         size={"lg"}
       >
         <ModalOverlay />
-        <ModalContent>
+        <ModalContent rounded={"30px"} alignSelf={"center"}>
           <ModalHeader fontSize={{ lg: "3xl", base: "xl" }}>
             <HStack spacing={4} align={"center"}>
               {activeSlideIndex === 1 && (
@@ -479,6 +479,7 @@ const RegisterForm = ({
 
                         <HStack my={6} justify={"flex-end"}>
                           <Button
+                            rounded={"full"}
                             colorScheme="gray"
                             onClick={() => swiperNestedNext()}
                           >
@@ -550,6 +551,7 @@ const RegisterForm = ({
 
                         <HStack gap={4} my={6} justify={"flex-end"}>
                           <Button
+                            rounded={"full"}
                             colorScheme="gray"
                             variant={"outline"}
                             onClick={() => swiperNestedPrev()}
@@ -557,6 +559,7 @@ const RegisterForm = ({
                             Back
                           </Button>
                           <Button
+                            rounded={"full"}
                             colorScheme="gray"
                             onClick={() => swiperNestedNext()}
                           >
@@ -652,6 +655,7 @@ const RegisterForm = ({
 
                         <HStack gap={4} my={6} justify={"flex-end"}>
                           <Button
+                            rounded={"full"}
                             colorScheme="gray"
                             variant={"outline"}
                             onClick={() => swiperNestedPrev()}
@@ -659,6 +663,7 @@ const RegisterForm = ({
                             Back
                           </Button>
                           <Button
+                            rounded={"full"}
                             colorScheme="gray"
                             onClick={() => swiperNestedNext()}
                           >
@@ -736,6 +741,7 @@ const RegisterForm = ({
 
                         <HStack gap={4} my={6} justify={"flex-end"}>
                           <Button
+                            rounded={"full"}
                             variant={"outline"}
                             colorScheme="gray"
                             onClick={() => swiperNestedPrev()}
@@ -743,7 +749,12 @@ const RegisterForm = ({
                             Back
                           </Button>
 
-                          <Button type="submit" isLoading={isSubmitting}>
+                          <Button
+                            rounded={"full"}
+                            colorScheme={"gs-yellow"}
+                            type="submit"
+                            isLoading={isSubmitting}
+                          >
                             Complete Sign Up
                           </Button>
                           {/* {isSubmitting && <Spinner />} */}

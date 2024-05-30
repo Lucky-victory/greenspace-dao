@@ -1,11 +1,13 @@
 import {
   Avatar,
   Button,
+  HStack,
   Menu,
   MenuButton,
   MenuGroup,
   MenuItem,
   MenuList,
+  Portal,
   Text,
 } from "@chakra-ui/react";
 import { LogoutButton } from "../Logout";
@@ -13,21 +15,32 @@ import { Link } from "@chakra-ui/next-js";
 import { usePrivy } from "@privy-io/react-auth";
 import { useGetUserQuery } from "src/state/services";
 import BoringAvatar from "boring-avatars";
+import { BsChevronDown } from "react-icons/bs";
+import { useEffect, useState } from "react";
+import { USER } from "src/state/types";
 export const UserMenu = () => {
   const { user } = usePrivy();
   const { data: savedUserResponse, isLoading } = useGetUserQuery({
     usernameOrAuthId: user?.id as string,
   });
   const getFirstName = (name: string) => name.split(" ")[0];
-  const savedUser = savedUserResponse?.data;
-  const isAdmin = savedUser?.role === "admin";
-  const isMember = savedUser?.userType === "member";
-  const isNutritionist = savedUser?.userType === "nutritionist";
+  const [savedUser, setSavedUser] = useState<USER | undefined>();
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [isMember, setIsMember] = useState(false);
+  const [isNutritionist, setIsNutritionist] = useState(false);
+
+  useEffect(() => {
+    const savedUser = savedUserResponse?.data;
+    setSavedUser(savedUserResponse?.data);
+    setIsAdmin(savedUser?.role === "admin");
+    setIsMember(savedUser?.userType === "member");
+    setIsNutritionist(savedUser?.userType === "nutritionist");
+  }, [savedUserResponse?.data]);
+
   return (
-    <Menu>
+    <>
       {isLoading && (
-        <MenuButton
-          as={Button}
+        <Button
           rounded={"full"}
           variant={"outline"}
           colorScheme="gs-gray"
@@ -36,74 +49,53 @@ export const UserMenu = () => {
           loadingText="Loading..."
         >
           Hi, there <BoringAvatar size={30} />
-        </MenuButton>
+        </Button>
       )}
-      {!isLoading && user && (
-        <>
+
+      {!isLoading && savedUser && (
+        <Menu>
           <MenuButton
             as={Button}
             rounded={"full"}
-            variant={"outline"}
-            colorScheme="gs-gray"
-            size={"sm"}
+            // variant={"outline"}
+            colorScheme="gs-beige"
+            // size={"sm"}
             gap={3}
           >
-            <Text>Hi, {getFirstName(savedUser?.fullName!)}</Text>
-            <Avatar
-              size={"sm"}
-              name={savedUser?.fullName!}
-              src={savedUser?.avatar}
-            ></Avatar>
+            <HStack>
+              <Text as={"span"}>Hi, {getFirstName(savedUser?.fullName!)}</Text>
+              <Avatar
+                size={"sm"}
+                name={savedUser?.fullName!}
+                src={savedUser?.avatar}
+              ></Avatar>{" "}
+              {/* <BsChevronDown /> */}
+            </HStack>
           </MenuButton>
-          <MenuList>
-            <MenuGroup>
-              <MenuItem>
+          <Portal>
+            <MenuList zIndex={20} rounded={"12px"}>
+              <MenuGroup title="Profile">
                 {isMember && (
-                  <Button
-                    rounded={"full"}
-                    variant={"ghost"}
-                    colorScheme="gs-gray"
-                    size={"sm"}
-                    as={Link}
-                    href={"/member/dasboard"}
-                  >
+                  <MenuItem as={Link} href={"/member/dashboard"}>
                     Dashboard
-                  </Button>
+                  </MenuItem>
                 )}
                 {isNutritionist && (
-                  <Button
-                    rounded={"full"}
-                    variant={"ghost"}
-                    colorScheme="gs-gray"
-                    size={"sm"}
-                    as={Link}
-                    href={"/nutritionist/dasboard"}
-                  >
+                  <MenuItem as={Link} href={"/nutritionist/dashboard"}>
                     Dashboard
-                  </Button>
+                  </MenuItem>
                 )}
-              </MenuItem>
-              {isAdmin && (
-                <MenuItem>
-                  <Button
-                    rounded={"full"}
-                    variant={"ghost"}
-                    colorScheme="gs-gray"
-                    size={"sm"}
-                    as={Link}
-                    href={"/admin/dasboard"}
-                  >
+                {isAdmin && (
+                  <MenuItem as={Link} href={"/admin/dashboard"}>
                     Admin Dashboard
-                  </Button>
-                </MenuItem>
-              )}
-            </MenuGroup>
-            <MenuItem>
-              <LogoutButton />
-            </MenuItem>
-          </MenuList>
-        </>
+                  </MenuItem>
+                )}
+              </MenuGroup>
+              <MenuItem as={LogoutButton}>Logout</MenuItem>
+            </MenuList>
+          </Portal>
+        </Menu>
       )}
-    </Menu>
+    </>
   );
 };

@@ -1,12 +1,12 @@
 import { db } from "src/db";
-import { users } from "src/db/schema";
+import { nutritionists, users } from "src/db/schema";
 import {
   HTTP_METHOD_CB,
   errorHandlerCallback,
   mainHandler,
   successHandlerCallback,
 } from "src/utils";
-import { and, eq } from "drizzle-orm";
+import { and, eq, or } from "drizzle-orm";
 import { NextApiRequest, NextApiResponse } from "next";
 
 export default async function handler(
@@ -15,6 +15,7 @@ export default async function handler(
 ) {
   return mainHandler(req, res, {
     GET,
+    POST,
   });
 }
 
@@ -23,12 +24,11 @@ export const GET: HTTP_METHOD_CB = async (
   res: NextApiResponse
 ) => {
   try {
-    const user = await db.query.users.findMany({
+    const user = await db.query.nutritionists.findMany({
       columns: {
         email: false,
-        password: false,
       },
-      where: eq(users.userType, "nutritionist"),
+      // where: eq(users.userType, "nutritionist"),
     });
     return successHandlerCallback(req, res, {
       message: "nutritionists retrieved successfully",
@@ -38,6 +38,47 @@ export const GET: HTTP_METHOD_CB = async (
     return errorHandlerCallback(req, res, {
       message: "Something went wrong...",
       data: null,
+    });
+  }
+};
+export const POST: HTTP_METHOD_CB = async (
+  req: NextApiRequest,
+  res: NextApiResponse
+) => {
+  try {
+    const { authId, email, address, ...data } = req.body;
+    const existingUser = await db.query.nutritionists.findFirst({
+      where: or(
+        eq(nutritionists.email, email as string),
+        eq(nutritionists.authId, authId as string),
+        eq(nutritionists.address, address as string)
+      ),
+    });
+    if (existingUser) {
+      return successHandlerCallback(req, res, {
+        message: "nutritionist already exists",
+        data: existingUser,
+      });
+    }
+    const user = await db.transaction(async (tx) => {
+      const [insertRes] = await tx
+        .insert(users)
+        .values({ ...data, address, email, authId });
+
+      const createdUser = await tx.query.users.findFirst({
+        where: eq(users.id, insertRes.insertId),
+      });
+      return createdUser;
+    });
+    return successHandlerCallback(req, res, {
+      message: "user created successfully",
+      data: user,
+    });
+  } catch (error) {
+    return errorHandlerCallback(req, res, {
+      message: "Something went wrong...",
+      data: null,
+      error,
     });
   }
 };

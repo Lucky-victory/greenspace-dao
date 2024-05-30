@@ -84,9 +84,6 @@ const NutritionistForm = ({
     },
   });
 
- 
-
-
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files![0];
     setFileToUpload(file);
@@ -99,7 +96,6 @@ const NutritionistForm = ({
     } catch (error) {}
   };
 
-  
   return (
     <>
       {/* <h2 className="text-[45px]">Register as a Nutritionist</h2> */}
@@ -213,7 +209,12 @@ const NutritionistForm = ({
           {/* <FormErrorMessage className="text-red-200">{errors.credentials?.message}</FormErrorMessage> */}
         </FormControl>
         <Box mt={4} className="flex">
-          <Button type="submit" isLoading={isSubmitting}>
+          <Button
+            type="submit"
+            isLoading={isSubmitting}
+            colorScheme={"gs-yellow"}
+            rounded={"full"}
+          >
             Register as a Nutritionist
           </Button>
         </Box>
@@ -239,7 +240,12 @@ const NutritionistForm = ({
           </ModalBody>
 
           <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={onClose}>
+            <Button
+              colorScheme="blue"
+              mr={3}
+              onClick={onClose}
+              rounded={"full"}
+            >
               Close
             </Button>
           </ModalFooter>

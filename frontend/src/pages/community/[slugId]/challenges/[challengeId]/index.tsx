@@ -140,6 +140,7 @@ export default function EventPage({
                 h={"full"}
                 objectFit={"cover"}
                 pos={"absolute"}
+                zIndex={0}
               />
               <Box
                 pos={"absolute"}

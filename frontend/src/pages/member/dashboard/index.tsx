@@ -14,7 +14,7 @@ export default function MemberDashboardPage() {
   const { data } = useGetUserQuery({ usernameOrAuthId: user?.id! });
   const storage = useStorage();
   const [registerData, setRegisterData] = useState<RegisterFormFields | null>(null);
-  // console.log({ registerData });
+
   useEffect(
     () => {
       if (data?.data?.userCid)

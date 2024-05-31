@@ -10,10 +10,10 @@ export const ConnectOrLogout = ({ openModal }: { openModal: () => void }) => {
   const { ready, user } = usePrivy();
 
   const { address } = useWallet();
-  console.log({ address: address });
+
 
   useEffect(() => {
-    console.log({ address: address }, "in effect");
+   
   }, [address]);
 
   return (

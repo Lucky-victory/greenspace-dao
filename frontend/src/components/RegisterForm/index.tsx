@@ -115,13 +115,7 @@ const RegisterForm = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => voi
   const { login } = useLogin({
     onComplete: async function (user, isNewUser, wasAlreadyAuthenticated, loginMethod, loginAccount) {
       // TODO: Add logic to handle new user, if the user does not exist, trigger them to register by redirecting them to an onboarding page oor modal.
-      console.log({
-        user,
-        isNewUser,
-        wasAlreadyAuthenticated,
-        loginMethod,
-        loginAccount,
-      });
+
       if (isNewUser) {
         if (loginMethod === "google") {
           await createUser({
@@ -198,10 +192,6 @@ const RegisterForm = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => voi
 
     try {
       if (isSubmitSuccessful) {
-        // setIsLoading(true);
-
-        // setIsLoading(false);
-        console.log({ data });
       }
 
       if (isValid) {
@@ -228,8 +218,6 @@ const RegisterForm = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => voi
         setFormData(formDataObject);
         const dataToUpload = [formDataObject];
         const cid = await upload({ data: dataToUpload });
-        console.log("The index of 0 in the cid array: ", cid[0]);
-        // console.log(chainId);
 
         setCid(cid[0]);
         onClose();

@@ -113,12 +113,8 @@ export function useCustomSign() {
   // const { connectAsync } = useConnect();
   const { data, error, signMessageAsync } = useSignMessage({
     mutation: {
-      onError(error, variables, context) {
-        console.log({ error, variables, context });
-      },
-      onSuccess(data, variables, context) {
-        console.log({ data, variables, context });
-      },
+      onError(error, variables, context) {},
+      onSuccess(data, variables, context) {},
     },
   });
 
@@ -144,11 +140,10 @@ export function useCustomSign() {
     const { message } = await apiPost("api/auth/request-message", account);
     // const encodedMessage = new TextEncoder().encode(message);
     // const signedMessage = signMessage?.(encodedMessage) as unknown;
-    console.log({ signed, message });
+
     const signedMessage = (await signMessageAsync?.({
       message: message,
     })) as unknown as any;
-    console.log({ signedMessage, signed, message });
 
     setSigned(true);
     //const signature = base58.encode(signedMessage);

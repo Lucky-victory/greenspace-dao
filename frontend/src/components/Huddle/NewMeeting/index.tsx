@@ -42,7 +42,7 @@ export default function NewMeeting() {
       const data = response.data.data;
 
       const roomId = data?.roomId;
-      console.log({ roomId });
+ 
 
       await addMeeting({
         roomId: roomId as string,

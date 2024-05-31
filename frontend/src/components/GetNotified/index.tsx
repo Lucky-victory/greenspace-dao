@@ -19,7 +19,7 @@ export default function GetNotifiedForm({
     },
     validateOnMount: true,
     onSubmit: (values, formikHelpers) => {
-      console.log(values);
+    
 
       setTimeout(() => {
         formikHelpers.setSubmitting(false);

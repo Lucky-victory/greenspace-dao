@@ -70,7 +70,7 @@ const NewCommunityPage = () => {
           });
           dataToSave.displayImage = resolveIPFSURI(displayImageRes[0]);
         }
-        console.log({ values, dataToSave });
+     
         await createCommunity(dataToSave);
         actions.setSubmitting(false);
 

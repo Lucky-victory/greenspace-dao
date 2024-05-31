@@ -155,7 +155,7 @@ export const uploadToThirdWeb = async (json: any) => {
 
   // // You can also download the data from the uri
   // const data = await storage.downloadJSON(uri);
-  // console.log("data:", data)
+
 
   return uri;
 };

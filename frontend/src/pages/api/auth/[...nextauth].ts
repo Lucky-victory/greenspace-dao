@@ -101,7 +101,7 @@
 //         user && (token.user = user);
 //         return token;
 //       } catch (error) {
-//         console.log({ error }, "from JWT");
+//
 //       }
 //     },
 //     //@ts-ignore
@@ -114,7 +114,7 @@
 //         session.user = token.user;
 //         return session;
 //       } catch (error) {
-//         console.log({ error }, "from session");
+//
 //       }
 //     },
 //   },

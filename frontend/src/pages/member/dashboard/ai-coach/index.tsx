@@ -16,6 +16,7 @@ import DashBoardLayout from "src/components/MemberDashboardLayout";
 import { Box, Textarea } from "@chakra-ui/react";
 import { useInAppAuth } from "src/hooks/common";
 import { useAccount } from "wagmi";
+import { useWallet } from "src/context/WalletProvider";
 
 const samplePrompts = [
   "What nutrition is best for a female BMI of 20?",
@@ -33,8 +34,7 @@ interface ChatState {
 }
 
 const AiCoachPage = () => {
-  // const {user}=useInAppAuth()
-  // const {address} =useAccount()
+  const { address } = useWallet();
   const [state, updateState] = useReducer(
     (current: ChatState, update: Partial<ChatState>): ChatState => ({
       ...current,

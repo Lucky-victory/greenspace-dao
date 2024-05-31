@@ -24,22 +24,16 @@ import DashboardLayout from "src/components/AdminDashboardLayout";
 import TextEditor from "src/components/TextEditor";
 
 import { useEffect, useRef, useState } from "react";
-import CoverImageUploader  from "src/components/CoverImageUploader";
+import CoverImageUploader from "src/components/CoverImageUploader";
 import { useStorageUpload } from "@thirdweb-dev/react";
 import { useFormik } from "formik";
 import { resolveIPFSURI } from "src/helpers";
 import { useInAppAuth } from "src/hooks/common";
 import isEmpty from "just-is-empty";
-import {
-  useCreateCommunityMutation,
-  useCreateCommunityChallengeMutation,
-} from "src/state/services";
+import { useCreateCommunityMutation, useCreateCommunityChallengeMutation } from "src/state/services";
 import { BsChevronDown, BsChevronLeft } from "react-icons/bs";
 import { Link } from "@chakra-ui/next-js";
-import {
-  InferGetServerSidePropsType,
-  GetServerSidePropsContext,
-} from "next/types";
+import { InferGetServerSidePropsType, GetServerSidePropsContext } from "next/types";
 import { useRouter } from "next/router";
 import DatePicker from "react-datepicker";
 
@@ -47,8 +41,7 @@ const NewChallengePage = ({
   cid: communityIdFromServerSideProps,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const router = useRouter();
-  const communityId =
-    communityIdFromServerSideProps || router.query.communityId;
+  const communityId = communityIdFromServerSideProps || router.query.communityId;
   const { mutateAsync: uploadToThirdweb } = useStorageUpload();
   const uploaderRef = useRef<{ resetImages: () => void }>(null);
 
@@ -125,7 +118,6 @@ const NewChallengePage = ({
           startDate: values.startDate,
           endDate: values.endDate,
         };
-        console.log({ dataToSave });
 
         if (coverFile) {
           const coverImageRes = await uploadToThirdweb({ data: [coverFile] });
@@ -160,7 +152,7 @@ const NewChallengePage = ({
     setCoverFile(undefined);
     setDetailsContent("");
     handleEditorReset();
-    handleUploaderReset()
+    handleUploaderReset();
   }
   function handleGetCoverFile(file: File | null) {
     setCoverFile(file as File);
@@ -168,7 +160,7 @@ const NewChallengePage = ({
 
   useEffect(() => {
     formik.setFieldValue("details", detailsContent);
-    console.log({ vv: formik.values });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [detailsContent]);
   return (
     <DashboardLayout>
@@ -228,29 +220,17 @@ const NewChallengePage = ({
             <FormLabel size={"md"} mt={2} mb={4} htmlFor="cover-image">
               Cover image:
             </FormLabel>
-            <CoverImageUploader ref={uploaderRef}
-              inputId="cover-image"
-              getCoverImageFile={handleGetCoverFile}
-            />
+            <CoverImageUploader ref={uploaderRef} inputId="cover-image" getCoverImageFile={handleGetCoverFile} />
           </Box>
           <HStack wrap={{ base: "wrap", md: "nowrap" }} gap={3}>
             <FormControl isRequired maxW={250}>
               <FormLabel htmlFor="venue">Venue:</FormLabel>
               <Menu>
-                <MenuButton
-                  name="venue"
-                  as={Button}
-                  colorScheme="gs-yellow"
-                  rightIcon={<BsChevronDown />}
-                >
+                <MenuButton name="venue" as={Button} colorScheme="gs-yellow" rightIcon={<BsChevronDown />}>
                   {formik.values.venue || "Choose Venue"}
                 </MenuButton>
                 <MenuList zIndex={3}>
-                  <MenuOptionGroup
-                    defaultValue="online"
-                    title="Venue"
-                    type="radio"
-                  >
+                  <MenuOptionGroup defaultValue="online" title="Venue" type="radio">
                     <MenuItemOption
                       name="venue"
                       value="online"
@@ -334,15 +314,7 @@ const NewChallengePage = ({
               initialValue={detailsContent}
             />
           </Box>
-          <HStack
-            gap={4}
-            pos={"sticky"}
-            bottom={0}
-            bg={"black"}
-            zIndex={50}
-            pt={1}
-            pb={3}
-          >
+          <HStack gap={4} pos={"sticky"} bottom={0} bg={"black"} zIndex={50} pt={1} pb={3}>
             <Button
               type="submit"
               rounded={"full"}

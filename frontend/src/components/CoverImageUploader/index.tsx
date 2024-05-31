@@ -1,10 +1,4 @@
-import React, {
-  useCallback,
-  useEffect,
-  useState,
-  useImperativeHandle,
-  forwardRef,
-} from "react";
+import React, { useCallback, useEffect, useState, useImperativeHandle, forwardRef } from "react";
 import { Box, Button, HStack, Image, Stack, Text } from "@chakra-ui/react";
 import { ResponsiveValue } from "@chakra-ui/system";
 import isEmpty from "just-is-empty";
@@ -107,12 +101,7 @@ const CoverImageUploader = forwardRef<CoverImageUploaderHandle, Props>(
             })}
           >
             <input {...getInputProps()} id={inputId} />
-            <Stack
-              justify={"center"}
-              borderRadius={"inherit"}
-              h={"100%"}
-              w={"100%"}
-            >
+            <Stack justify={"center"} borderRadius={"inherit"} h={"100%"} w={"100%"}>
               <Stack>
                 <Text as={"span"} fontSize={"18px"} fontWeight={"medium"}>
                   Drag or Upload Image
@@ -127,24 +116,11 @@ const CoverImageUploader = forwardRef<CoverImageUploaderHandle, Props>(
         {!isEmpty(images) && (
           <Stack align={"flex-start"}>
             <Box pos={"relative"}>
-              <HStack
-                pt={1}
-                pr={1}
-                pos={"absolute"}
-                gap={3}
-                zIndex={1}
-                right={0}
-                top={0}
-              >
+              <HStack pt={1} pr={1} pos={"absolute"} gap={3} zIndex={1} right={0} top={0}>
                 <Button size={"sm"} gap={2} onClick={handleInputTrigger}>
                   <BsPencilSquare />
                 </Button>
-                <Button
-                  size={"sm"}
-                  colorScheme="red"
-                  gap={2}
-                  onClick={handleRemoveCoverImage}
-                >
+                <Button size={"sm"} colorScheme="red" gap={2} onClick={handleRemoveCoverImage}>
                   <BsTrash />
                 </Button>
               </HStack>
@@ -154,9 +130,10 @@ const CoverImageUploader = forwardRef<CoverImageUploaderHandle, Props>(
                   width={containerWidth}
                   h={containerHeight}
                   objectFit={"cover"}
+                  alt=""
                 />
               )}
-              {!useContainerSize && <Image src={coverImage?.src as string} />}
+              {!useContainerSize && <Image alt="" src={coverImage?.src as string} />}
             </Box>
           </Stack>
         )}
@@ -165,4 +142,5 @@ const CoverImageUploader = forwardRef<CoverImageUploaderHandle, Props>(
   }
 );
 
+CoverImageUploader.displayName = "CoverImageUploader";
 export default CoverImageUploader;

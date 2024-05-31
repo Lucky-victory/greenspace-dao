@@ -77,9 +77,7 @@ export default function MeetPage({
       console.log("Failed to join room", { data });
     },
     onJoin: (data) => {
-      // data.room
-      console.log("onRoomJoin", data);
-
+   
       updateLocalPeerMetadata({
         displayName: user?.fullName! || displayName,
         avatar: user?.avatar,

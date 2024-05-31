@@ -59,8 +59,8 @@ export default function EventCards({
         <Box>
           {!isEmpty(event?.tags) && (
             <HStack>
-              {event?.tags.map((tag: { name: string }) => (
-                <Text as={"span"} {...tagStyles}>
+              {event?.tags.map((tag: { name: string },i:number) => (
+                <Text as={"span"} {...tagStyles} key={tag?.name+i}>
                   {tag?.name}
                 </Text>
               ))}

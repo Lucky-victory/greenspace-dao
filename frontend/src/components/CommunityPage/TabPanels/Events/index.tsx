@@ -13,7 +13,7 @@ export default function Events({ spaceIdOrId }: { spaceIdOrId: string }) {
     spaceIdOrId: spaceIdOrId,
   });
   const events = data?.data as any[];
-  console.log({ data });
+ 
 
   return (
     <Stack flex={1} maxH={"full"} overflowY={"auto"} pb={6}>

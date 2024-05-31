@@ -44,7 +44,7 @@ export default function Chats({ spaceIdOrId }: { spaceIdOrId: string }) {
     channelRef.current = pusherClient
       .subscribe(spaceIdOrId)
       .bind("evt::message", (data: any) => {
-        console.log("test", data);
+      
         dispatch(addMessage(data));
       });
 

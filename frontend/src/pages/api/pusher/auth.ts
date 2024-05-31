@@ -26,7 +26,7 @@ export const POST: HTTP_METHOD_CB = async (
   req: NextApiRequest,
   res: NextApiResponse
 ) => {
-  console.log("authenticating pusher perms...");
+
   const data = await req.body;
   const [socketId, channelName] = data
     .split("&")

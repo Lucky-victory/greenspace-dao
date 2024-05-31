@@ -37,6 +37,7 @@ export function useHTMLToMarkdownConverter() {
     if (html) {
       setMarkdown(turndownService.turndown(html));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [html]);
 
   const updateHtml = useCallback((newHtml: string) => {
@@ -50,8 +51,7 @@ export const useScrollToBottom = (triggerOnLoad = false) => {
 
   const scrollToBottom = () => {
     if (chatContainerRef.current) {
-      chatContainerRef.current.scrollTop =
-        chatContainerRef.current.scrollHeight;
+      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
     }
   };
 
@@ -59,7 +59,7 @@ export const useScrollToBottom = (triggerOnLoad = false) => {
     if (triggerOnLoad) {
       scrollToBottom();
     }
-  }, []);
+  }, [triggerOnLoad]);
 
   const scrollToBottomOnNewMessage = () => {
     scrollToBottom();
@@ -113,12 +113,8 @@ export function useCustomSign() {
   // const { connectAsync } = useConnect();
   const { data, error, signMessageAsync } = useSignMessage({
     mutation: {
-      onError(error, variables, context) {
-        console.log({ error, variables, context });
-      },
-      onSuccess(data, variables, context) {
-        console.log({ data, variables, context });
-      },
+      onError(error, variables, context) {},
+      onSuccess(data, variables, context) {},
     },
   });
 
@@ -144,11 +140,10 @@ export function useCustomSign() {
     const { message } = await apiPost("api/auth/request-message", account);
     // const encodedMessage = new TextEncoder().encode(message);
     // const signedMessage = signMessage?.(encodedMessage) as unknown;
-    console.log({ signed, message });
+
     const signedMessage = (await signMessageAsync?.({
       message: message,
     })) as unknown as any;
-    console.log({ signedMessage, signed, message });
 
     setSigned(true);
     //const signature = base58.encode(signedMessage);
@@ -211,9 +206,7 @@ export const useAuth = () => {
   };
 };
 
-export const useActiveTab = (
-  paramName: string = "tab"
-): [string, (tabName: string) => void] => {
+export const useActiveTab = (paramName: string = "tab"): [string, (tabName: string) => void] => {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState("");
 

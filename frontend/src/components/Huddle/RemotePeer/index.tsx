@@ -68,7 +68,7 @@ const RemotePeer = ({ peerId, activePeers, isPinned }: Props) => {
     } else {
       setIsSpeaking(false);
     }
-    // console.log("from remote", { isSpeaking, activePeers });
+    
   }, [dominantSpeakerId, activePeerIds, peerId, audioStream]);
 
   return (

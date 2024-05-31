@@ -17,7 +17,7 @@ import DashboardLayout from "src/components/AdminDashboardLayout";
 import TextEditor from "src/components/TextEditor";
 
 import { useState } from "react";
-import { CoverImageUploader } from "src/components/CoverImageUploader";
+import CoverImageUploader from "src/components/CoverImageUploader";
 import { useStorageUpload } from "@thirdweb-dev/react";
 import { useFormik } from "formik";
 import { resolveIPFSURI } from "src/helpers";
@@ -70,7 +70,7 @@ const NewCommunityPage = () => {
           });
           dataToSave.displayImage = resolveIPFSURI(displayImageRes[0]);
         }
-        console.log({ values, dataToSave });
+     
         await createCommunity(dataToSave);
         actions.setSubmitting(false);
 
@@ -170,18 +170,12 @@ const NewCommunityPage = () => {
             <FormLabel size={"md"} mt={2} mb={4} htmlFor="cover-image">
               Cover image
             </FormLabel>
-            <CoverImageUploader
-              inputId="cover-image"
-              getCoverImageFile={handleGetCoverFile}
-            />
+            <CoverImageUploader inputId="cover-image" getCoverImageFile={handleGetCoverFile} />
           </Box>
 
           <FormControl display="flex" alignItems="center">
             <FormLabel htmlFor="community-visibility" mb="0">
-              Community Visibility{" "}
-              <Text as={"span"}>
-                ({formik.values.visibility ? "public" : "private"})
-              </Text>
+              Community Visibility <Text as={"span"}>({formik.values.visibility ? "public" : "private"})</Text>
             </FormLabel>
             <Switch
               colorScheme="blue"
@@ -197,26 +191,15 @@ const NewCommunityPage = () => {
               About this community
             </FormLabel>
             <TextEditor
-              onEditorContent={(content) =>
-                formik.setFieldValue("description", content)
-              }
+              onContentChange={(content) => formik.setFieldValue("description", content)}
+              initialValue={formik.values.description}
             />
           </Box>
           <HStack gap={4} pos={"sticky"} bottom={0} pt={1} pb={3}>
-            <Button
-              type="submit"
-              rounded={"full"}
-              variant={"outline"}
-              isLoading={formik.isSubmitting}
-            >
+            <Button type="submit" rounded={"full"} variant={"outline"} isLoading={formik.isSubmitting}>
               Save as draft
             </Button>
-            <Button
-              type="submit"
-              rounded={"full"}
-              colorScheme="gs-yellow"
-              isLoading={formik.isSubmitting}
-            >
+            <Button type="submit" rounded={"full"} colorScheme="gs-yellow" isLoading={formik.isSubmitting}>
               Publish
             </Button>
           </HStack>

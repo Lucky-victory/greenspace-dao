@@ -5,11 +5,7 @@ import { FiSend } from "react-icons/fi";
 export default function ChatInput({
   sendData,
 }: {
-  sendData: (data: {
-    to: string[] | "*";
-    payload: string;
-    label?: string;
-  }) => Promise<void>;
+  sendData: (data: { to: string[] | "*"; payload: string; label?: string }) => Promise<void>;
 }) {
   const [text, setText] = useState<string>("");
   function handleInputChange(evt: ChangeEvent<HTMLInputElement>) {

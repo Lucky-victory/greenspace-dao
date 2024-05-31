@@ -24,6 +24,7 @@ import {
   Text,
   Spinner,
   IconButton,
+
 } from "@chakra-ui/react";
 import { NewUserType, RegisterType } from "src/components/NewUserType";
 
@@ -35,11 +36,11 @@ import { countries } from "src/utils/countries";
 import { useDebounce } from "src/hooks/common";
 import { communityAbi } from "../../../abis";
 import { communityAddr } from "src/utils/constants";
-import { useStorageUpload } from "@thirdweb-dev/react";
-import {
-  useAddUserMutation,
-  useSendUserInfoToAIMutation,
-} from "src/state/services";
+
+import { useStorageUpload, useStorage } from "@thirdweb-dev/react";
+import { useAddUserMutation, useSendUserInfoToAIMutation } from "src/state/services";
+import { generateUsername } from "src/utils";
+
 
 import { parseEther, parseGwei } from "viem";
 
@@ -49,6 +50,7 @@ import { config } from "src/config/wagmi";
 import { useLogin, useSignMessage } from "@privy-io/react-auth";
 
 export interface RegisterFormFields {
+
   fullName: string;
   sex: string;
   country?: string;
@@ -760,26 +762,350 @@ const RegisterForm = ({
                             Complete Sign Up
                           </Button>
                           {/* {isSubmitting && <Spinner />} */}
-                        </HStack>
-                      </SwiperSlide>
-                    </Swiper>
-                  </form>
-                )}
-                {selectedUserType === "nutritionist" &&
-                  activeSlideIndex === 1 && (
-                    <Box>
-                      <NutritionistForm closeFormModal={onClose} />
-                    </Box>
-                  )}
-              </SwiperSlide>
-            </Box>
-          </ModalBody>
 
-          <ModalFooter></ModalFooter>
-        </ModalContent>
-      </Modal>
-    </>
-  );
+
+                        </HStack>
+                        {hasError && activeSlideIndex > 0 && selectedUserType !== "nutritionist" && (
+                            <Text color="red.600" my={1} fontWeight={"medium"} fontSize={"md"} as={"span"}>
+                                Please fill out all fields
+                            </Text>
+                        )}
+                    </ModalHeader>
+                    <ModalCloseButton />
+                    <ModalBody>
+                        <Box
+                            as={Swiper}
+                            onActiveIndexChange={(swiper: SwiperMain) => {
+                                setActiveSlideIndex(swiper.activeIndex);
+                            }}
+                            ref={swiperRef as RefObject<SwiperRef>}
+                            allowTouchMove={false}
+                        >
+                            <SwiperSlide>
+                                <NewUserType
+                                    onClick={() => swiperRef.current?.swiper.slideNext()}
+                                    getValue={setSelectedUserType}
+                                />
+                            </SwiperSlide>
+                            <SwiperSlide>
+                                {selectedUserType == "member" && activeSlideIndex > 0 && (
+                                    <form onSubmit={handleSubmit(onValidSubmit, onInvalidSubmit)}>
+                                        <Swiper
+                                            nested
+                                            allowTouchMove={false}
+                                            ref={swiperNestedRef as RefObject<SwiperRef>}
+                                        >
+                                            <SwiperSlide>
+                                                <Stack spacing={5}>
+                                                    <div>
+                                                        <Input
+                                                            className=" w-full max-w-[100%]"
+                                                            {...register("fullName")}
+                                                            placeholder="Full name"
+                                                        />
+                                                        <div className="text-red-500">{errors.fullName?.message}</div>
+                                                    </div>
+                                                    <div>
+                                                        <Input
+                                                            type="date"
+                                                            id="start"
+                                                            {...register("birthDate")}
+                                                            className=" w-full max-w-[100%]"
+                                                        />
+                                                        <div className="text-red-500">{errors.birthDate?.message}</div>
+                                                    </div>
+                                                    <div>
+                                                        <Select
+                                                            className="Select w-full max-w-[100%]"
+                                                            {...register("country")}
+                                                            // placeholder="What's your biological sex?"
+                                                            defaultValue=""
+                                                        >
+                                                            <option value="" disabled>
+                                                                Select your country
+                                                            </option>
+
+                                                            {countries.map((country, i) => (
+                                                                <option key={"country" + i} value={country.name}>
+                                                                    {country.name}
+                                                                </option>
+                                                            ))}
+                                                        </Select>
+                                                        <div className="text-red-500">{errors.country?.message}</div>
+                                                    </div>
+                                                    <div>
+                                                        <Select
+                                                            className="Select w-full max-w-[100%]"
+                                                            {...register("sex")}
+                                                            // placeholder="What's your biological sex?"
+                                                            defaultValue=""
+                                                        >
+                                                            <option value="" disabled>
+                                                                What&apos;s your biological sex?
+                                                            </option>
+                                                            <option value="name">Male</option>
+                                                            <option value="female">Female</option>
+                                                        </Select>
+                                                        <div className="text-red-500">{errors.sex?.message}</div>
+                                                    </div>
+                                                </Stack>
+
+                                                <HStack my={6} justify={"flex-end"}>
+                                                    <Button colorScheme="gray" onClick={() => swiperNestedNext()}>
+                                                        Next
+                                                    </Button>
+                                                </HStack>
+                                            </SwiperSlide>
+
+                                            <SwiperSlide>
+                                                <Stack spacing={4}>
+                                                    <div>
+                                                        <Input
+                                                            className="Input w-full max-w-[100%]"
+                                                            {...register("weight")}
+                                                            placeholder="What's your weight in kg?"
+                                                        />
+                                                        <div className="text-red-500">{errors.weight?.message}</div>
+                                                    </div>
+                                                    <div>
+                                                        <Input
+                                                            className="Input w-full max-w-[100%]"
+                                                            {...register("height")}
+                                                            placeholder="What's your height in feet and inches?"
+                                                        />
+                                                        <div className="text-red-500">{errors.height?.message}</div>
+                                                    </div>
+                                                    <div>
+                                                        <Select
+                                                            className="Select w-full max-w-[100%]"
+                                                            {...register("diet")}
+                                                            // placeholder='Tell us about your diet?'
+                                                            defaultValue=""
+                                                        >
+                                                            <option value="" disabled>
+                                                                Tell us about your diet?
+                                                            </option>
+                                                            {dietOptions.map((diet, i) => (
+                                                                <option key={"diet" + i} value={diet}>
+                                                                    {diet}
+                                                                </option>
+                                                            ))}
+                                                        </Select>
+                                                        <div className="text-red-500">{errors.diet?.message}</div>
+                                                    </div>
+                                                    <div>
+                                                        <Select
+                                                            {...register("active")}
+                                                            className="Select w-full max-w-[100%]"
+                                                            defaultValue=""
+                                                        >
+                                                            <option value="" disabled>
+                                                                How active are you on an average week?
+                                                            </option>
+                                                            <option value="inactive">inactive</option>
+                                                            <option value="active">active</option>
+                                                            <option value="very active">very active</option>
+                                                        </Select>
+                                                        <div className="text-red-500">{errors.active?.message}</div>
+                                                    </div>
+                                                </Stack>
+
+                                                <HStack gap={4} my={6} justify={"flex-end"}>
+                                                    <Button
+                                                        colorScheme="gray"
+                                                        variant={"outline"}
+                                                        onClick={() => swiperNestedPrev()}
+                                                    >
+                                                        Back
+                                                    </Button>
+                                                    <Button colorScheme="gray" onClick={() => swiperNestedNext()}>
+                                                        Next
+                                                    </Button>
+                                                </HStack>
+                                            </SwiperSlide>
+                                            <SwiperSlide>
+                                                <Stack spacing={4}>
+                                                    <div>
+                                                        <Select
+                                                            {...register("sitting")}
+                                                            className="Select w-full max-w-[100%]"
+                                                            defaultValue=""
+                                                        >
+                                                            <option value="" disabled>
+                                                                How many hours a day are you sitting
+                                                            </option>
+                                                            {Array.from({ length: 23 }, (_, i) => (
+                                                                <option value={i + 1} key={"sitting" + i}>
+                                                                    {i + 1}
+                                                                </option>
+                                                            ))}
+                                                        </Select>
+                                                        <div className="text-red-500">{errors.sitting?.message}</div>
+                                                    </div>
+                                                    <div>
+                                                        <Select
+                                                            {...register("alcohol")}
+                                                            className="Select w-full max-w-[100%]"
+                                                            defaultValue=""
+                                                        >
+                                                            <option value="" disabled>
+                                                                How much alcohol do you drink
+                                                            </option>
+                                                            <option value="0 - 10 drinks a week">
+                                                                0 - 10 drinks a week
+                                                            </option>
+                                                            <option value="10 - 20 drinks a week">
+                                                                10 - 20 drinks a week
+                                                            </option>
+                                                            <option value="greater than 20 drinks a week">
+                                                                greater than 20 drinks a week
+                                                            </option>
+                                                        </Select>
+                                                        <div className="text-red-500">{errors.alcohol?.message}</div>
+                                                    </div>
+                                                    <div>
+                                                        <Select
+                                                            {...register("smoke")}
+                                                            className="Select w-full max-w-[100%]"
+                                                            defaultValue=""
+                                                        >
+                                                            <option value="" disabled>
+                                                                Do you smoke?
+                                                            </option>
+                                                            <option value="Never smoked">Never smoked</option>
+                                                            <option value="Ex smoker">Ex smoker</option>
+                                                            <option value="Current smoker">Current smoker</option>
+                                                        </Select>
+                                                        <div className="text-red-500">{errors.smoke?.message}</div>
+                                                    </div>
+                                                    <div>
+                                                        <Select
+                                                            {...register("smokingStopped")}
+                                                            className="Select w-full max-w-[100%]"
+                                                            defaultValue=""
+                                                        >
+                                                            <option value="" disabled>
+                                                                If you are an ex-smoker, how many months ago did you
+                                                                stop?
+                                                            </option>
+                                                            <option value="less than 6 months ago">
+                                                                less than 6 months ago
+                                                            </option>
+                                                            <option value="six to twelve months ago">
+                                                                six to twelve months ago
+                                                            </option>
+                                                            <option value="more than twelve months ago">
+                                                                more than twelve months ago
+                                                            </option>
+                                                        </Select>
+                                                    </div>
+                                                </Stack>
+
+                                                <HStack gap={4} my={6} justify={"flex-end"}>
+                                                    <Button
+                                                        colorScheme="gray"
+                                                        variant={"outline"}
+                                                        onClick={() => swiperNestedPrev()}
+                                                    >
+                                                        Back
+                                                    </Button>
+                                                    <Button colorScheme="gray" onClick={() => swiperNestedNext()}>
+                                                        Next
+                                                    </Button>
+                                                </HStack>
+                                            </SwiperSlide>
+                                            <SwiperSlide>
+                                                <Stack spacing={4}>
+                                                    <div>
+                                                        <Select
+                                                            {...register("smokingLength")}
+                                                            className="Select w-full max-w-[100%]"
+                                                            defaultValue=""
+                                                        >
+                                                            <option value="" disabled>
+                                                                If you are a current smoker, how many cigarettes do you
+                                                                smoke per day?
+                                                            </option>
+                                                            {smokingOptions.map((smokingOpt, i) => (
+                                                                <option key={"smokingOpt" + i} value={smokingOpt}>
+                                                                    {smokingOpt}
+                                                                </option>
+                                                            ))}
+                                                        </Select>
+                                                    </div>
+                                                    <div>
+                                                        <Select
+                                                            {...register("sleepLength")}
+                                                            className="Select w-full max-w-[100%]"
+                                                            defaultValue=""
+                                                        >
+                                                            <option value="" disabled>
+                                                                How many hours of sleep do you get per day?
+                                                            </option>
+                                                            {Array.from({ length: 13 }, (_, item) => (
+                                                                <option value={item + 1} key={"sleepLength" + item}>
+                                                                    {item + 1}
+                                                                </option>
+                                                            ))}
+                                                        </Select>
+                                                        <div className="text-red-500">
+                                                            {errors.sleepLength?.message}
+                                                        </div>
+                                                    </div>
+                                                    <div>
+                                                        <Select
+                                                            {...register("overallHealth")}
+                                                            className="Select w-full max-w-[100%]"
+                                                            defaultValue=""
+                                                        >
+                                                            <option value="" disabled>
+                                                                Rate your overall Health
+                                                            </option>
+                                                            {overallHealthOptions.map((healthOpt, i) => (
+                                                                <option key={"overallHealth" + i} value={healthOpt}>
+                                                                    {healthOpt}
+                                                                </option>
+                                                            ))}
+                                                        </Select>
+                                                        <div className="text-red-500">
+                                                            {errors.overallHealth?.message}
+                                                        </div>
+                                                    </div>
+                                                </Stack>
+
+                                                <HStack gap={4} my={6} justify={"flex-end"}>
+                                                    <Button
+                                                        variant={"outline"}
+                                                        colorScheme="gray"
+                                                        onClick={() => swiperNestedPrev()}
+                                                    >
+                                                        Back
+                                                    </Button>
+
+                                                    <Button type="submit" isLoading={isSubmitting}>
+                                                        Complete Sign Up
+                                                    </Button>
+                                                    {/* {isSubmitting && <Spinner />} */}
+                                                </HStack>
+                                            </SwiperSlide>
+                                        </Swiper>
+                                    </form>
+                                )}
+                                {selectedUserType === "nutritionist" && activeSlideIndex === 1 && (
+                                    <Box>
+                                        <NutritionistForm closeFormModal={onClose} />
+                                    </Box>
+                                )}
+                            </SwiperSlide>
+                        </Box>
+                    </ModalBody>
+
+                    <ModalFooter></ModalFooter>
+                </ModalContent>
+            </Modal>
+        </>
+    );
 };
 
 export default RegisterForm;
+

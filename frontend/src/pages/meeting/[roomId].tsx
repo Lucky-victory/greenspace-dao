@@ -1,21 +1,7 @@
-import {
-  Box,
-  Flex,
-  HStack,
-  Heading,
-  IconButton,
-  Button,
-  Input,
-  Stack,
-  Text,
-  useToast,
-} from "@chakra-ui/react";
+import { Box, Flex, HStack, Heading, IconButton, Button, Input, Stack, Text, useToast } from "@chakra-ui/react";
 import axios from "axios";
 import { useRouter } from "next/router";
-import {
-  InferGetServerSidePropsType,
-  type GetServerSidePropsContext,
-} from "next";
+import { InferGetServerSidePropsType, type GetServerSidePropsContext } from "next";
 import { FiChevronRight } from "react-icons/fi";
 import {
   useLocalPeer,
@@ -31,21 +17,17 @@ import RemotePeer from "src/components/Huddle/RemotePeer";
 import LocalPeer from "src/components/Huddle/LocalPeer";
 import { ChatArea } from "src/components/Huddle/ChatArea";
 import PageWrapper from "src/components/PageWrapper";
-import {
-  useCreateTokenMutation,
-  useLazyGetMeetingQuery,
-} from "src/state/services";
+import { useCreateTokenMutation, useLazyGetMeetingQuery, useLazyGetUserQuery } from "src/state/services";
 import isEmpty from "just-is-empty";
-import { MEETING, TPeerMetadata } from "src/types";
-import { useAuth } from "src/hooks/common";
+import { MEETING, TPeerMetadata, USER } from "src/types";
+
 import PageLoader from "src/components/PageLoader";
+import { useInAppAuth } from "src/hooks/common";
 
 interface Props {
   token: string;
 }
-export default function MeetPage({
-  roomId: roomIdFromServer,
-}: InferGetServerSidePropsType<typeof getServerSideProps>) {
+export default function MeetPage({ roomId: roomIdFromServer }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const router = useRouter();
   const toast = useToast({
     duration: 3000,
@@ -56,11 +38,19 @@ export default function MeetPage({
   const [createToken] = useCreateTokenMutation();
   const [meeting, setMeeting] = useState<MEETING | undefined>();
   const [queryMeeting, { isFetching, isLoading }] = useLazyGetMeetingQuery();
-
+  const [user, setUser] = useState<USER | null>(null);
   // const { data } = useGetMeetingQuery({ roomId: roomId as string });
   // const meeting = data?.data;
 
-  const { user, isAuthenticated, isLoading: isAuthLoading } = useAuth();
+  const { user: privyUser } = useInAppAuth();
+  const [getUser, { data: savedUser }] = useLazyGetUserQuery();
+  useEffect(() => {
+    getUser({ usernameOrAuthId: privyUser?.id as string })
+      .unwrap()
+      .then((res) => {
+        setUser(res.data as USER);
+      });
+  }, [privyUser]);
   const activePeers = useActivePeers();
 
   const [displayName, setDisplayName] = useState<string>("");
@@ -77,7 +67,6 @@ export default function MeetPage({
       console.log("Failed to join room", { data });
     },
     onJoin: (data) => {
-   
       updateLocalPeerMetadata({
         displayName: user?.fullName! || displayName,
         avatar: user?.avatar,
@@ -87,10 +76,7 @@ export default function MeetPage({
       });
     },
     onWaiting(data) {
-      setIsWaiting(
-        data.reason === "WAITING_FOR_ADMIN_TO_JOIN" ||
-          data.reason === "WAITING_FOR_PERMISSIONS"
-      );
+      setIsWaiting(data.reason === "WAITING_FOR_ADMIN_TO_JOIN" || data.reason === "WAITING_FOR_PERMISSIONS");
     },
     onPeerJoin: (peerId) => {
       console.log("onPeerJoin", peerId);
@@ -168,8 +154,7 @@ export default function MeetPage({
     }
   }
   useEffect(() => {
-    const isCreator =
-      !isEmpty(user) && !isEmpty(meeting) && meeting?.userId == user?.authId;
+    const isCreator = !isEmpty(user) && !isEmpty(meeting) && meeting?.userId == user?.authId;
     console.log({ meeting, user, isCreator });
     setIsRoomCreator(isCreator);
   }, [meeting, user]);
@@ -233,16 +218,7 @@ export default function MeetPage({
           p={2}
         >
           {isIdle && (
-            <Stack
-              gap={4}
-              minW={300}
-              shadow={"md"}
-              mx={"auto"}
-              alignSelf={"center"}
-              py={8}
-              px={6}
-              rounded={"md"}
-            >
+            <Stack gap={4} minW={300} shadow={"md"} mx={"auto"} alignSelf={"center"} py={8} px={6} rounded={"md"}>
               <Box>
                 <Heading mb={2} size={"sm"} fontWeight={500}>
                   Enter your name:
@@ -292,20 +268,8 @@ export default function MeetPage({
           )}
           {!isIdle && isConnected && (
             <Flex direction={"column"} gap={2} flex={1} minH={"full"}>
-              <MeetingHeader
-                isHost={role === "host"}
-                room={room}
-                meetingTitle={meeting?.title}
-              />
-              <Flex
-                h={"full"}
-                bg={"gray.700"}
-                rounded={"15px"}
-                p={2}
-                gap={3}
-                overflow={"hidden"}
-                pos={"relative"}
-              >
+              <MeetingHeader isHost={role === "host"} room={room} meetingTitle={meeting?.title} />
+              <Flex h={"full"} bg={"gray.700"} rounded={"15px"} p={2} gap={3} overflow={"hidden"} pos={"relative"}>
                 {/* video area */}
                 {/* <Flex
               flexDir={"column"}
@@ -321,9 +285,7 @@ export default function MeetPage({
                   flex={1}
                   gap={2}
                   mr={{
-                    lg: !isMinimized
-                      ? "calc(var(--chat-area-width,330px) + 10px)"
-                      : "auto",
+                    lg: !isMinimized ? "calc(var(--chat-area-width,330px) + 10px)" : "auto",
                     base: 0,
                   }}
                 >
@@ -354,22 +316,11 @@ export default function MeetPage({
                       overflowY={{ base: "auto", lg: "hidden" }}
                       p={{ base: "6px 2px", lg: "0 6px " }}
                     >
-                      <Flex
-                        gap={3}
-                        flex={1}
-                        flexShrink={0}
-                        w={"full"}
-                        direction={{ base: "row", lg: "column" }}
-                      >
+                      <Flex gap={3} flex={1} flexShrink={0} w={"full"} direction={{ base: "row", lg: "column" }}>
                         {peerIds.map(
                           (peerId) =>
                             isNotBot(peerId) && (
-                              <RemotePeer
-                                isPinned={false}
-                                activePeers={activePeers}
-                                key={peerId}
-                                peerId={peerId}
-                              />
+                              <RemotePeer isPinned={false} activePeers={activePeers} key={peerId} peerId={peerId} />
                             )
                         )}
                       </Flex>

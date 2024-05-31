@@ -1,8 +1,6 @@
-import DashboardEmptyArea from "src/components/DashboardEmptyArea";
 import DashboardLayout from "src/components/MemberDashboardLayout";
-import { Box, Card, Flex, Heading, SimpleGrid, Text } from "@chakra-ui/react";
-import { useAuth } from "src/hooks/common";
-import { useAppContext } from "src/context/state";
+import { Box, Card, Flex, Heading, Text } from "@chakra-ui/react";
+
 import { usePrivy } from "@privy-io/react-auth";
 import { useStorage } from "@thirdweb-dev/react";
 import { useEffect, useState } from "react";

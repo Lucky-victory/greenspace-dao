@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
-import { signIn, useSession } from "next-auth/react";
+
 import { USER_SESSION } from "src/state/types";
 
 import { apiPost } from "src/utils";
@@ -149,11 +149,11 @@ export function useCustomSign() {
     //const signature = base58.encode(signedMessage);
     const signature = signedMessage;
     try {
-      await signIn("credentials", {
-        message,
-        signature,
-        redirect: false,
-      });
+      // await signIn("credentials", {
+      //   message,
+      //   signature,
+      //   redirect: false,
+      // });
     } catch (e) {
       console.log(e);
       return;
@@ -180,31 +180,6 @@ export function useDebounce<T>(value: T, delay?: number): T {
 
   return debouncedValue;
 }
-export const useAuth = () => {
-  const { data: session, status } = useSession() as {
-    status: "authenticated" | "loading" | "unauthenticated";
-    data: USER_SESSION;
-    update: UpdateSession;
-  };
-  const [user, setUser] = useState<USER_SESSION["user"] | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    if (status === "authenticated" && session) {
-      setUser(session.user);
-    } else {
-      setUser(null);
-    }
-    setIsLoading(false);
-  }, [session, status]);
-
-  return {
-    user,
-    session,
-    isAuthenticated: status === "authenticated",
-    isLoading,
-  };
-};
 
 export const useActiveTab = (paramName: string = "tab"): [string, (tabName: string) => void] => {
   const router = useRouter();

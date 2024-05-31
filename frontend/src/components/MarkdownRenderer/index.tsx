@@ -47,7 +47,25 @@ const MarkdownRenderer = ({ markdown }: { markdown: string }) => {
             fontWeight={300}
             // color={"gray.00"}
             letterSpacing={1.1}
-            my={4}
+            my={2}
+          />
+        ),
+        b: ({ node, ...props }) => (
+          <Text
+            as={"b"}
+            {...props}
+            fontWeight={"bold"}
+            // color={"gray.00"}
+            letterSpacing={1.1}
+          />
+        ),
+        strong: ({ node, ...props }) => (
+          <Text
+            as={"strong"}
+            {...props}
+            fontWeight={"bold"}
+            // color={"gray.00"}
+            letterSpacing={1.1}
           />
         ),
         table: ({ node, ...props }) => (
@@ -69,7 +87,7 @@ const MarkdownRenderer = ({ markdown }: { markdown: string }) => {
             <List className={className} {...props} />
           ) : (
             //@ts-ignore
-            <OrderedList className={className} {...props} />
+            <List className={className} {...props} listStyleType={"initial"} />
           ),
         //@ts-ignore
         ol: ({ node, ordered, className, ...props }) =>
@@ -98,22 +116,40 @@ const MarkdownRenderer = ({ markdown }: { markdown: string }) => {
         tfoot: ({ node, ...props }) => <Tfoot {...props} />,
         img: ({ node, alt, ...props }) => <Image alt={alt} {...props} />,
         h1: ({ node, ...props }) => (
-          <Heading as={"h1"} size={"xl"} my={"6"} {...props} />
+          <Heading as={"h1"} size={"xl"} mt={"1.5rem"} mb={"1rem"} {...props} />
         ),
         h2: ({ node, ...props }) => (
-          <Heading as={"h2"} size={"lg"} my={"5"} {...props} />
+          <Heading as={"h2"} size={"lg"} mt={"1.5rem"} mb={"1rem"} {...props} />
         ),
         h3: ({ node, ...props }) => (
-          <Heading as={"h3"} size={"md"} my={"4"} {...props} />
+          <Heading as={"h3"} size={"md"} mt={"1.5rem"} mb={"1rem"} {...props} />
         ),
         h4: ({ node, ...props }) => (
-          <Heading as={"h4"} size={"20px"} my={"3"} {...props} />
+          <Heading
+            as={"h4"}
+            size={"24px"}
+            mt={"1.5rem"}
+            mb={"1rem"}
+            {...props}
+          />
         ),
         h5: ({ node, ...props }) => (
-          <Heading as={"h5"} size={"18px"} my={"2"} {...props} />
+          <Heading
+            as={"h5"}
+            size={"20px"}
+            mt={"1.5rem"}
+            mb={"1rem"}
+            {...props}
+          />
         ),
         h6: ({ node, ...props }) => (
-          <Heading as={"h6"} size={"16px"} my={"1"} {...props} />
+          <Heading
+            as={"h6"}
+            size={"16px"}
+            mt={"1.5rem"}
+            mb={"1rem"}
+            {...props}
+          />
         ),
 
         blockquote: ({ node, ...props }) => (
@@ -129,7 +165,7 @@ const MarkdownRenderer = ({ markdown }: { markdown: string }) => {
             maxW={"1000"}
             py={4}
             pr={4}
-            bg={"gray.900"}
+            bg={"gray.800"}
           />
         ),
       }}

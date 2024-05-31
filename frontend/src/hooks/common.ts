@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
 import { signIn, useSession } from "next-auth/react";
 import { USER_SESSION } from "src/state/types";
@@ -6,10 +6,89 @@ import { USER_SESSION } from "src/state/types";
 import { apiPost } from "src/utils";
 type UpdateSession = (data?: any) => Promise<USER_SESSION | null>;
 
-// import { MetaMaskConnector } from "wagmi/connectors/metaMask";
 import { useAccount, useConnect, useSignMessage, useDisconnect } from "wagmi";
+import { usePrivy } from "@privy-io/react-auth";
 
+import TurndownService from "turndown";
 
+export function useHTMLToMarkdownConverter() {
+  const [html, setHtml] = useState("");
+  const [markdown, setMarkdown] = useState("");
+  const turndownService = new TurndownService();
+
+  // Add rules to handle specific HTML elements or attributes
+  turndownService.addRule("heading", {
+    filter: ["h1", "h2", "h3", "h4", "h5", "h6"],
+    replacement: function (content, node, options) {
+      const hLevel = +node.nodeName.charAt(1);
+      const hPrefix = "#".repeat(hLevel);
+      return `\n\n${hPrefix} ${content}\n\n`;
+    },
+  });
+
+  turndownService.addRule("paragraph", {
+    filter: "p",
+    replacement: function (content) {
+      return `\n\n${content}\n\n`;
+    },
+  });
+
+  useEffect(() => {
+    if (html) {
+      setMarkdown(turndownService.turndown(html));
+    }
+  }, [html]);
+
+  const updateHtml = useCallback((newHtml: string) => {
+    setHtml(newHtml);
+  }, []);
+
+  return { markdown, updateHtml };
+}
+export const useScrollToBottom = (triggerOnLoad = false) => {
+  const chatContainerRef = useRef<any>(null);
+
+  const scrollToBottom = () => {
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop =
+        chatContainerRef.current.scrollHeight;
+    }
+  };
+
+  useEffect(() => {
+    if (triggerOnLoad) {
+      scrollToBottom();
+    }
+  }, []);
+
+  const scrollToBottomOnNewMessage = () => {
+    scrollToBottom();
+  };
+
+  return {
+    containerRef: chatContainerRef,
+    scrollToBottom: scrollToBottomOnNewMessage,
+  };
+};
+/**
+ * Used to check if the user is logged in
+ * @returns
+ */
+export const useInAppAuth = () => {
+  const { ready, user, login } = usePrivy();
+
+  function connect() {
+    if (!user) {
+      login();
+    }
+  }
+  useEffect(() => {}, [user, ready]);
+  return {
+    user,
+    connect,
+    isLoggedIn: !!user,
+  };
+};
 export const useWalletAccount = () => {
   const [_address, setAddress] = useState<string | null>(null);
 
@@ -32,15 +111,15 @@ export const useWalletAccount = () => {
 export function useCustomSign() {
   //const { publicKey, signMessage } = useWallet();
   // const { connectAsync } = useConnect();
-  const { data, error, signMessageAsync } = useSignMessage({mutation:{
-
-    onError(error, variables, context) {
-      console.log({ error, variables, context });
+  const { data, error, signMessageAsync } = useSignMessage({
+    mutation: {
+      onError(error, variables, context) {
+        console.log({ error, variables, context });
+      },
+      onSuccess(data, variables, context) {
+        console.log({ data, variables, context });
+      },
     },
-    onSuccess(data, variables, context) {
-      console.log({ data, variables, context });
-    },
-  }
   });
 
   const { isConnected, address } = useAccount();

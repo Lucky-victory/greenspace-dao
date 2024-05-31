@@ -9,7 +9,6 @@ export interface IAddressData {
   address: string;
 }
 
-
 export type stateContextType = {
   address: string;
   allTokensData: any;
@@ -21,38 +20,20 @@ export type stateContextType = {
   setIsUserConnected: (data: boolean) => void;
   user: User;
   setUser: (data: any) => void;
-  setSelectedMealPlan:(data:MealPlan)=>void
-  selectedMealPlan:MealPlan|null;
-  
-  communities: Community[] | null;
-  setCommunities: (data: Community[]) => void
-  community: Community | null;
-  setCommunity: (data: Community | null) => void
-  mealPlans: MealPlan[] | null;
-  setMealPlans: (data: MealPlans[]) => void
   ensName: any;
   setEnsName: (data: any) => void;
   ensAvatar: any;
   setEnsAvatar: (data: any) => void;
 };
 export type User = {
-  userAddress: string,
-  name: string,
-  userCidData?: string,
-  startDate?: string,
-  endDate?: string,
-  amount?: string,
-}
-export type Community = {
+  userAddress: string;
   name: string;
-  description: string;
-  cover: string;
-  membersCount: number;
-  id: string;
-  slug: string;
-  members: object[];
-  messages?: ChatMessages[] | null
+  userCidData?: string;
+  startDate?: string;
+  endDate?: string;
+  amount?: string;
 };
+
 export type ChatMessages = {
   id: string;
   content: string;
@@ -60,5 +41,3 @@ export type ChatMessages = {
   fullname: string;
   timestamp: Date | number;
 };
-
-

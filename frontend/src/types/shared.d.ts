@@ -3,22 +3,31 @@ import { USER } from "src/state/types";
 export type USER_TYPE = "member" | "nutritionist";
 export type USER_ROLE = "user" | "admin";
 export type PostStatus = "published" | "draft" | "deleted";
-export type Timestamp = string | Date
+export type Timestamp = string | Date;
 export interface Community {
   id: number;
   spaceId: string;
-  status: PostStatus;
+  status?: PostStatus;
   views: number;
   name: string;
   description?: string;
-  visibility: "public" | "private";
+  visibility?: "public" | "private" | string;
   slug?: string;
   displayImage?: string;
   coverImage?: string;
-  author: AUTHOR; 
+  author: AUTHOR;
   createdAt: Timestamp;
   updatedAt: Timestamp;
 }
+export type NEW_COMMUNITY = Pick<
+  Community,
+  | "status"
+  | "coverImage"
+  | "description"
+  | "displayImage"
+  | "name"
+  | "visibility"
+>;
 export type Article = {
   id: number;
   slug: string;
@@ -28,8 +37,8 @@ export type Article = {
   userId: string;
   status?: PostStatus;
   intro?: string;
-  createdAt: Timestamp
-  updatedAt?: Timestamp
+  createdAt: Timestamp;
+  updatedAt?: Timestamp;
   views?: number;
   author: AUTHOR;
 };
@@ -49,8 +58,8 @@ export type MealPlan = {
   intro?: string;
   views?: number;
   time: "breakfast" | "lunch" | "dinner" | "snack" | string;
-  createdAt: Timestamp
-  updatedAt?: Timestamp
+  createdAt: Timestamp;
+  updatedAt?: Timestamp;
   author: AUTHOR;
 };
 export interface IUser {
@@ -63,8 +72,8 @@ export interface IUser {
   avatar?: string;
   userType: USER_TYPE;
   role?: USER_ROLE;
-  createdAt: Timestamp
-  updatedAt?: Timestamp
+  createdAt: Timestamp;
+  updatedAt?: Timestamp;
   chainId?: number;
 }
 export type NewUser = Pick<
@@ -99,8 +108,8 @@ export type FitnessPlan = {
   status?: PostStatus;
   intro?: string;
   views?: number;
-  createdAt: Timestamp
-  updatedAt?: Timestamp
+  createdAt: Timestamp;
+  updatedAt?: Timestamp;
   author: AUTHOR;
 };
 export type AUTHOR = {

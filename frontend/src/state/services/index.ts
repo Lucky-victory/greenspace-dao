@@ -6,8 +6,11 @@ import {
   MEETING_RECORD,
   NEW_MEETING,
   NEW_MEETING_RECORD,
+  NEW_NUTRITIONIST,
   NEW_USER,
+  Nutritionist,
   USER,
+  VerificationStatus,
 } from "../types";
 import {
   FitnessPlan,
@@ -17,6 +20,7 @@ import {
   NewFitnessPlan,
   NewMealPlan,
   Community,
+  NEW_COMMUNITY,
 } from "src/types/shared";
 import { update } from "../slices";
 
@@ -40,6 +44,7 @@ export const GreenSpaceDAOApi = createApi({
     "CommunityMessages",
     "CommunityChallenges",
     "Appointments",
+    "Nutritionists",
   ],
 
   endpoints: (builder) => ({
@@ -201,7 +206,62 @@ export const GreenSpaceDAOApi = createApi({
         return [{ type: "Users" as const, id: usernameOrAuthId }];
       },
     }),
-    getMeeting: builder.query<Partial<APIResponse<MEETING>>, Record<string, any> & { roomId: string }>({
+
+    checkNutritionistStatus: builder.mutation<
+      APIResponse<{ status: VerificationStatus }>,
+      { address: string }
+    >({
+      query(data) {
+        return {
+          url: `users/nutritionists/status`,
+          method: "POST",
+          body: data,
+        };
+      },
+    }),
+    getNutritionist: builder.query<
+      Partial<APIResponse<Nutritionist>>,
+      { usernameOrAuthId: string; params?: Record<string, any> }
+    >({
+      query: ({ usernameOrAuthId, params }) => {
+        return {
+          url: `users/nutritionists/${usernameOrAuthId}?${objectToSearchParams(
+            params!
+          )}`,
+        };
+      },
+      providesTags: (result, error, { usernameOrAuthId }) => {
+        return [{ type: "Nutritionists" as const, id: usernameOrAuthId }];
+      },
+    }),
+    getNutritionists: builder.query<
+      Partial<APIResponse<Nutritionist[]>>,
+      { status?: VerificationStatus }
+    >({
+      query: (params) => {
+        return {
+          url: `users/nutritionists?${objectToSearchParams(params)}`,
+        };
+      },
+      providesTags: (result) =>
+        // is result available?
+        result?.data
+          ? // successful query
+            [
+              ...result?.data.map(({ authId }) => ({
+                type: "Nutritionists" as const,
+                id: authId,
+              })),
+              { type: "Nutritionists", id: "LIST" },
+            ]
+          : // an error occurred, but we still want to refetch this query when `{ type: 'FitnessPlans', id: 'LIST' }` is invalidated
+            [{ type: "Nutritionists", id: "LIST" }],
+    }),
+    getMeeting: builder.query<
+      Partial<APIResponse<MEETING>>,
+      Record<string, any> & { roomId: string }
+    >({
+
       query: ({ roomId, ...params }) => {
         return {
           url: `meetings/${roomId}?${objectToSearchParams(params)}`,
@@ -234,7 +294,7 @@ export const GreenSpaceDAOApi = createApi({
     // TODO: Add return types
     getCommunities: builder.query<
       Partial<APIResponse<Community[]>>,
-      { status?: string } 
+      { status?: string; userId?: string }
     >({
       query: (params) => {
         return {
@@ -255,7 +315,12 @@ export const GreenSpaceDAOApi = createApi({
           : // an error occurred, but we still want to refetch this query when `{ type: 'Communities', id: 'LIST' }` is invalidated
             [{ type: "Communities", id: "LIST" }],
     }), // TODO: Add return types
-    getCommunity: builder.query<Partial<APIResponse<any>>, { params?: Record<string, any>; spaceIdOrId: string }>({
+
+    getCommunity: builder.query<
+      APIResponse<Community>,
+      { params?: Record<string, any>; spaceIdOrId: string }
+    >({
+
       query: ({ spaceIdOrId, params }) => {
         return {
           url: `communities/${spaceIdOrId}?${objectToSearchParams(params!)}`,
@@ -313,22 +378,7 @@ export const GreenSpaceDAOApi = createApi({
           url: `communities/${spaceIdOrId}/messages?${objectToSearchParams(params)}`,
         };
       },
-      // async onCacheEntryAdded(
-      //   id,
-      //   {
-      //     dispatch,
-      //     getState,
-      //     extra,
-      //     requestId,
-      //     cacheEntryRemoved,
-      //     cacheDataLoaded,
-      //     getCacheEntry,
-      //     updateCachedData,
-      //   }
-      // ) {
-      //   const { data } = (await cacheDataLoaded).data;
-      //   dispatch(update({ data: data! }));
-      // },
+
       providesTags: (result) =>
         // is result available?
         result?.data
@@ -510,6 +560,17 @@ export const GreenSpaceDAOApi = createApi({
       }),
       invalidatesTags: [{ type: "Users" as const, id: "LIST" }],
     }),
+    addNutritionist: builder.mutation<
+      APIResponse<Nutritionist>,
+      NEW_NUTRITIONIST
+    >({
+      query: (data) => ({
+        url: `users/nutritionists`,
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: [{ type: "Nutritionists" as const, id: "LIST" }],
+    }),
     addMeeting: builder.mutation<APIResponse<MEETING>, NEW_MEETING>({
       query: (data) => ({
         url: `meetings`,
@@ -529,15 +590,103 @@ export const GreenSpaceDAOApi = createApi({
       invalidatesTags: [{ type: "Appointments" as const, id: "LIST" }],
     }),
     // TODO: Add return types
-    createCommunity: builder.mutation<APIResponse<any>, any>({
+    createCommunity: builder.mutation<APIResponse<any>, NEW_COMMUNITY>({
       query: (data) => ({
-        url: `communties`,
+        url: `communities`,
         method: "POST",
         body: data,
       }),
       invalidatesTags: [{ type: "Communities" as const, id: "LIST" }],
     }),
-    addMeetingRecord: builder.mutation<APIResponse<MEETING_RECORD>, NEW_MEETING_RECORD>({
+    joinCommunity: builder.mutation<
+      APIResponse<any>,
+      { communityId: number; userId: string; spaceIdOrId: string }
+    >({
+      query: ({ spaceIdOrId, ...data }) => ({
+        url: `communities/${spaceIdOrId}/join`,
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: [{ type: "Communities" as const, id: "LIST" }],
+    }),
+
+    checkHasJoinCommunity: builder.mutation<
+      APIResponse<{ hasJoined: boolean }>,
+      { communityId: number; userId: string; spaceIdOrId: string }
+    >({
+      query: ({ spaceIdOrId, ...data }) => ({
+        url: `communities/${spaceIdOrId}/has-joined`,
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: [{ type: "Communities" as const, id: "LIST" }],
+    }),
+    createCommunityEvent: builder.mutation<APIResponse<any>, any>({
+      query: (data) => ({
+        url: `community/events`,
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: [{ type: "CommunityEvents" as const, id: "LIST" }],
+    }),
+    createCommunityChallenge: builder.mutation<APIResponse<any>, any>({
+      query: (data) => ({
+        url: `community/challenges`,
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: [{ type: "CommunityChallenges" as const, id: "LIST" }],
+    }),
+    joinCommunityChallenge: builder.mutation<
+      APIResponse<any>,
+      { slugId: string; challengeId: number; userId: string }
+    >({
+      query: ({ slugId, ...data }) => ({
+        url: `community/challenges/${slugId}/join`,
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: [{ type: "CommunityChallenges" as const, id: "LIST" }],
+    }),
+
+    checkHasJoinCommunityChallenge: builder.mutation<
+      APIResponse<{ hasJoined: boolean }>,
+      { slugId: string; challengeId: number; userId: string }
+    >({
+      query: ({ slugId, ...data }) => ({
+        url: `community/challenges/${slugId}/has-joined`,
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: [{ type: "CommunityChallenges" as const, id: "LIST" }],
+    }),
+    joinCommunityEvent: builder.mutation<
+      APIResponse<any>,
+      { slugId: string; eventId: number; userId: string }
+    >({
+      query: ({ slugId, ...data }) => ({
+        url: `community/events/${slugId}/join`,
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: [{ type: "CommunityEvents" as const, id: "LIST" }],
+    }),
+    checkHasJoinCommunityEvent: builder.mutation<
+      APIResponse<{ hasJoined: boolean }>,
+      { slugId: string; eventId: number; userId: string }
+    >({
+      query: ({ slugId, ...data }) => ({
+        url: `community/events/${slugId}/has-joined`,
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: [{ type: "CommunityEvents" as const, id: "LIST" }],
+    }),
+    addMeetingRecord: builder.mutation<
+      APIResponse<MEETING_RECORD>,
+      NEW_MEETING_RECORD
+    >({
+
       query: (data) => ({
         url: `meeting-records`,
         method: "POST",
@@ -557,6 +706,19 @@ export const GreenSpaceDAOApi = createApi({
 });
 export const {
   useSendUserInfoToAIMutation,
+  useAddNutritionistMutation,
+  useCheckNutritionistStatusMutation,
+  useGetNutritionistQuery,
+  useGetNutritionistsQuery,
+  useLazyGetNutritionistQuery,
+  useJoinCommunityMutation,
+  useCheckHasJoinCommunityMutation,
+  useCheckHasJoinCommunityChallengeMutation,
+  useCheckHasJoinCommunityEventMutation,
+  useCreateCommunityChallengeMutation,
+  useCreateCommunityEventMutation,
+  useJoinCommunityChallengeMutation,
+  useJoinCommunityEventMutation,
   useAddFitnessPlanMutation,
   useAddMealPlanMutation,
   useGetUsersQuery,

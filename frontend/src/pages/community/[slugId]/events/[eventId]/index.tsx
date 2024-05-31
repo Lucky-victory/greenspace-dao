@@ -17,16 +17,25 @@ import {
 } from "@chakra-ui/react";
 import MarkdownRenderer from "src/components/MarkdownRenderer";
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
-import { useGetCommunityEventQuery } from "src/state/services";
+import {
+  useCheckHasJoinCommunityEventMutation,
+  useGetCommunityEventQuery,
+  useJoinCommunityEventMutation,
+} from "src/state/services";
 import { useRouter } from "next/router";
 import { format } from "date-fns";
 import isEmpty from "just-is-empty";
 import { FiCalendar, FiHome, FiMapPin } from "react-icons/fi";
 import { formatDateWithOrdinal } from "src/utils";
+import GetNotifiedForm from "src/components/GetNotified";
+import { useEffect } from "react";
+import { useInAppAuth } from "src/hooks/common";
+import { BsChevronLeft } from "react-icons/bs";
 
 export default function EventPage({
   eventId: eventIdFromServer,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+  const { connect, isLoggedIn, user } = useInAppAuth();
   const router = useRouter();
   const eventId = eventIdFromServer || (router.query?.eventId as string);
   const {
@@ -37,6 +46,14 @@ export default function EventPage({
     slugId: eventId,
   });
   const event = eventResponse?.data;
+
+  const [joinEvent, { isLoading: isLoadingJoin }] =
+    useJoinCommunityEventMutation();
+  const [
+    checkEventJoin,
+    { isLoading: isLoadingHasJoin, data: hasJoinResponse },
+  ] = useCheckHasJoinCommunityEventMutation();
+  const hasJoined = hasJoinResponse?.data?.hasJoined;
   function formatDate(date: Date | string, fmt: string = "MMM d, yyyy") {
     if (isEmpty(date)) return "";
     if (typeof date === "string") {
@@ -45,10 +62,43 @@ export default function EventPage({
 
     return format(new Date(date), fmt);
   }
+
+  async function handleEventJoin() {
+    if (!isLoggedIn) {
+      connect();
+      return;
+    }
+    await joinEvent({
+      eventId: event?.id,
+      userId: user?.id as string,
+      slugId: eventId,
+    }).unwrap();
+  }
+
+  useEffect(() => {
+    if (isLoggedIn && event?.id) {
+      checkEventJoin({
+        eventId: event?.id,
+        userId: user?.id as string,
+        slugId: eventId,
+      });
+    }
+  }, [isLoadingJoin, isLoading, isLoggedIn, user?.id, event?.id]);
   return (
     <>
       <Head>
         <title>{event?.title}</title>
+        <meta name="description" content={event?.details} />
+        <meta property="og:title" content={event?.title} />
+        <meta property="og:description" content={event?.details} />
+        <meta property="og:type" content="website" />
+        <meta property="og:image" content={event?.coverImage} />
+        {/* <meta property="og:url" content={`https://greenspacedao.xyz/`} /> */}
+        <meta property="og:site_name" content={event?.title} />
+        <meta property="og:locale" content="en_US" />
+        <meta property="og:locale:alternate" content="en" />
+        <meta property="og:locale:alternate" content="en_US" />
+        <meta property="og:locale:alternate" content="en_GB" />
       </Head>
       <PageLoader isLoading={isLoading || isFetching} text="Fetching event...">
         <HeaderNav />
@@ -66,9 +116,24 @@ export default function EventPage({
               w={"full"}
               overflow={"hidden"}
             >
+              <Button
+                gap={2}
+                bg={"blackAlpha.600"}
+                variant={"ghost"}
+                pos={"absolute"}
+                top={3}
+                left={3}
+                colorScheme="gray"
+                zIndex={5}
+                // as={Link}
+                _hover={{ bg: "blackAlpha.700" }}
+                onClick={() => router.back()}
+              >
+                <BsChevronLeft /> <Text> Back</Text>
+              </Button>
               <Image
                 alt=""
-                src="/assets/community.jpg"
+                src={event?.coverImage || "/assets/community.jpg"}
                 width={"full"}
                 h={"full"}
                 objectFit={"cover"}
@@ -121,7 +186,7 @@ export default function EventPage({
                 <Heading size={"lg"} fontWeight={600} mb={2}>
                   Event Details
                 </Heading>
-                <Stack as={List} gap={3} mb={4}>
+                <Stack as={List} pl={0} gap={3} mb={4}>
                   <ListItem>
                     <HStack>
                       <FiCalendar size={20} />
@@ -160,7 +225,13 @@ export default function EventPage({
                     <ListItem>
                       <HStack>
                         <FiMapPin size={20} />
-                        <Text>Location: {event?.location}</Text>
+                        <Text>
+                          {" "}
+                          <Text as={"span"} color={"gray.500"}>
+                            Location:
+                          </Text>{" "}
+                          {event?.location}
+                        </Text>
                       </HStack>
                     </ListItem>
                   )}
@@ -171,50 +242,22 @@ export default function EventPage({
                 <Button
                   mt={4}
                   colorScheme="gs-yellow"
+                  onClick={handleEventJoin}
+                  isLoading={isLoadingJoin || isLoadingHasJoin}
+                  isDisabled={hasJoined}
                   size={"lg"}
                   rounded={"full"}
                 >
-                  Join the Event
+                  {hasJoined ? "Joined" : "Join the Event"}
                 </Button>
               </Stack>
-              <Stack
-                minW={{ base: 300, md: 350, lg: 400 }}
-                flex={{ base: 1, lg: 0 }}
-                flexShrink={0}
-                bg={"black"}
-                rounded={"15px"}
-                border={"1px solid var(--chakra-colors-gray-600)"}
-                p={{ base: 5, lg: 8 }}
-              >
-                <Heading size={"lg"} fontWeight={600} mb={2}>
-                  Join the next event!
-                </Heading>
-                <Text fontSize={"15px"} color={"gray.300"}>
-                  We launch new events every month, and they fill up quickly.
-                  Add your email to get notified when new events are available.
-                </Text>
-                <Stack mt={4}>
-                  <Input
-                    _focus={{
-                      boxShadow: "0 0 0 1px transparent",
-                      borderColor: "gs-yellow.400",
-                    }}
-                    autoComplete="email"
-                    type="email"
-                    placeholder="me@example.com"
-                    rounded={"full"}
-                    size={"lg"}
-                  />
-                </Stack>
-                <Button
-                  mt={2}
-                  colorScheme="gs-gray"
-                  size={"lg"}
-                  rounded={"full"}
-                >
-                  Get notified
-                </Button>
-              </Stack>
+
+              <GetNotifiedForm
+                title="Join the next event!"
+                description="We launch new events every month, and they fill up quickly. 
+                Add your email to get notified when new events are available."
+                notifyFor="event"
+              />
             </Stack>
           </Flex>
         </PageWrapper>

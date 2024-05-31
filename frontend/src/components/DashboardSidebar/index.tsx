@@ -10,6 +10,7 @@ export default function DashboardSideNav(props: {
     url: string;
     icon: IconType;
     child?: string[];
+    nestedChild?: string[];
   }>;
 }) {
   const { isMobileSize, isTabletSize } = useResize();
@@ -25,6 +26,8 @@ export default function DashboardSideNav(props: {
     const isActive =
       lastPart === link?.url ||
       (beforeLastPart == link.url && link?.child?.includes(lastPart)) ||
+      (link?.child?.includes(beforeLastPart) &&
+        link?.nestedChild?.includes(lastPart)) ||
       (link?.url === "overview" && lastPart === "dashboard");
 
     const buildLink = (entry: string, url: string) => (url.toLowerCase() === "overview" ? entry + "" : entry + url);
@@ -36,7 +39,7 @@ export default function DashboardSideNav(props: {
     };
 
     return (
-      <ListItem pos={"relative"} key={"dash-sidebar-nav-link" + i}>
+      <ListItem pos={"relative"} key={"dash-sidebar-nav-link" + i} pl={1}>
         <Link
           _hover={{ ...activeStyles, fontWeight: "normal" }}
           rounded={isMobileSize ? "none" : "md"}

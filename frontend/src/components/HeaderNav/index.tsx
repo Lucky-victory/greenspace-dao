@@ -29,7 +29,6 @@ import RegisterForm from "../RegisterForm";
 export function HeaderNav() {
   const { isMobileSize, isTabletSize } = useResize();
 
-
   const linkStyles = {
     display: isMobileSize || isTabletSize ? "block" : "inline-block",
     fontSize: "16px",
@@ -53,7 +52,7 @@ export function HeaderNav() {
     },
   };
 
-    const { isOpen, onOpen, onClose } = useDisclosure();
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const {
     isOpen: isMobileNavbarOpen,
     onToggle: onMobileNavbarToggle,
@@ -87,7 +86,13 @@ export function HeaderNav() {
   ];
   return (
     <>
-      <HStack minH={"60px"} pl={5} bg={"blackAlpha.300"} justify={"space-between"} backdropFilter={"blur(5px)"}>
+      <HStack
+        minH={"60px"}
+        pl={5}
+        bg={"blackAlpha.300"}
+        justify={"space-between"}
+        backdropFilter={"blur(5px)"}
+      >
         <Heading>
           <Image
             src={"/logo-with-text.png"}
@@ -97,23 +102,36 @@ export function HeaderNav() {
           />
         </Heading>
 
-        <List display={"flex"} gap={4} fontWeight={500} hidden={isMobileSize || isTabletSize}>
+        <List
+          display={"flex"}
+          gap={4}
+          fontWeight={500}
+          hidden={isMobileSize || isTabletSize}
+        >
           {[links]}
         </List>
 
         <HStack
-          clipPath={"polygon(14% 0, 100% 0%, 100% 100%, 0% 100%);"}
-          bg={"gs-yellow.400"}
+          // clipPath={"polygon(14% 0, 100% 0%, 100% 100%, 0% 100%);"}
+          // bg={"gs-yellow.400"}
           minW={{ base: 250, lg: 350 }}
           px={4}
           pr={8}
-          py={2} h={'full'}
+          py={2}
+          h={"full"}
           justify={"flex-end"}
         >
-          {!(isMobileSize || isTabletSize) && <ConnectOrLogout openModal={onOpen}/>}
+          {!(isMobileSize || isTabletSize) && (
+            <ConnectOrLogout openModal={onOpen} />
+          )}
 
           {(isMobileSize || isTabletSize) && (
-            <IconButton ml={3} onClick={onMobileNavbarToggle} fontSize={24} aria-label="toggle mobile menu">
+            <IconButton
+              ml={3}
+              onClick={onMobileNavbarToggle}
+              fontSize={24}
+              aria-label="toggle mobile menu"
+            >
               <LuMenu />
             </IconButton>
           )}
@@ -126,7 +144,13 @@ export function HeaderNav() {
             <DrawerCloseButton />
             <DrawerHeader />
             <DrawerBody>
-              <List my={10} display={"flex"} flexDir={"column"} gap={4} fontWeight={500}>
+              <List
+                my={10}
+                display={"flex"}
+                flexDir={"column"}
+                gap={4}
+                fontWeight={500}
+              >
                 {[links]}
               </List>
               <HStack
@@ -136,7 +160,7 @@ export function HeaderNav() {
                 p={2}
                 // justify={"center"}
               >
-              <ConnectOrLogout openModal={onOpen}/>
+                <ConnectOrLogout openModal={onOpen} />
               </HStack>
             </DrawerBody>
           </DrawerContent>

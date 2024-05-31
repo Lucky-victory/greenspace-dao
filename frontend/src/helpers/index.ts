@@ -10,16 +10,21 @@ import slugify from "slugify";
 export function shortenText(text: string, len = 50) {
   return text?.length > len ? text?.substring(0, len) + "..." : text;
 }
-export const formatChatTimestamp = (timestamp: number | Date) => {
+export const formatChatTimestamp = (timestamp: number | Date | string) => {
   const currentDate = new Date();
-  const messageDate = new Date(timestamp);
-
+  let messageDate;
+  if (typeof timestamp === "string" || typeof timestamp === "number") {
+    messageDate = new Date(timestamp);
+  }
+  if (!(messageDate instanceof Date)) {
+    return "";
+  }
   if (isToday(messageDate)) {
     return `Today ${format(messageDate, "h:mm a")}`;
   } else if (isYesterday(messageDate)) {
     return `Yesterday ${format(messageDate, "h:mm a")}`;
   } else {
-    return format(messageDate, "yyyy/M/d h:mm a");
+    return format(messageDate, "d/M/yyyy h:mm a");
   }
 };
 export function maskHexAddress(address: string) {

@@ -25,10 +25,7 @@ const WalletProvider: FC<Props> = ({ children }) => {
   const { address } = useAccount();
   const publicClient = usePublicClient();
   const { data: walletClient } = useWalletClient();
-  const [isReady, setIsReady] = useState(false);
-  useEffect(() => {
-    setIsReady(true);
-  }, []);
+
   return (
     <WalletContext.Provider value={{ address, publicClient, walletClient }}>
       {children}

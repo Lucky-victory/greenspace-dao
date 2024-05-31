@@ -1,3 +1,4 @@
+
 import { generateCommunityId, generateNumId, generateUrlSafeId, generateUsername } from "src/utils";
 import { relations } from "drizzle-orm";
 import {
@@ -91,17 +92,46 @@ export const fitnessPlans = mysqlTable(
     })
 );
 export const nutritionists = mysqlTable("Nutritionists", {
-    bio: varchar("bio", { length: 255 }),
-    city: varchar("city", { length: 100 }),
-    country: varchar("country", { length: 255 }),
+
+  id: int("id").autoincrement().primaryKey(),
+  bio: varchar("bio", { length: 255 }),
+  city: varchar("city", { length: 100 }),
+  country: varchar("country", { length: 255 }),
+  username: varchar("username", { length: 50 })
+    .unique()
+    .$defaultFn(() => generateUsername("GN_")),
+  sex: mysqlEnum("sex", ["male", "female", "other"]),
+  birthDate: datetime("birth_date"),
+
+  email: varchar("email", { length: 255 }).unique(),
+  address: varchar("address", { length: 100 }).default(""),
+  fullName: varchar("full_name", { length: 255 }),
+  avatar: varchar("avatar", { length: 255 }),
+  authId: varchar("auth_id", { length: 255 }).$defaultFn(generateUrlSafeId),
+  emailVerified: boolean("email_verified").default(false),
+  credentialsCid: varchar("credentials_cid", { length: 255 }),
+  verificationStatus: mysqlEnum("verification_status", [
+    "verified",
+    "pending",
+    "rejected",
+  ]).default("pending"),
+  updatedAt: timestamp("updated_at").onUpdateNow(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+export const users = mysqlTable(
+  "Users",
+  {
+
     id: int("id").autoincrement().primaryKey(),
     username: varchar("username", { length: 50 })
-        .unique()
-        .$defaultFn(() => generateUsername("GN_")),
-    userType: mysqlEnum("user_type", ["member", "nutritionist"]).default("nutritionist").notNull(),
-    sex: mysqlEnum("sex", ["male", "female", "other"]),
-    birthDate: datetime("birth_date"),
-    fullName: varchar("full_name", { length: 255 }),
+
+      .unique()
+      .notNull()
+      .$defaultFn(generateUsername),
+    email: varchar("email", { length: 255 }).unique(),
+    address: varchar("address", { length: 100 }).default(""),
+
+
     avatar: varchar("avatar", { length: 255 }),
     authId: varchar("auth_id", { length: 255 }).$defaultFn(generateUrlSafeId),
     emailVerified: boolean("email_verified").default(false),
@@ -220,6 +250,16 @@ export const communityEvents = mysqlTable("CommunityEvents", {
     createdAt: timestamp("created_at").defaultNow(),
     updatedAt: timestamp("updated_at").onUpdateNow(),
 });
+export const communityEventParticipants = mysqlTable(
+  "CommunityEventParticipants",
+  {
+    id: int("id").autoincrement().primaryKey(),
+    eventId: int("event_id"),
+    userId: varchar("user_id", { length: 255 }),
+
+    createdAt: timestamp("created_at").defaultNow(),
+  }
+);
 export const communityChallenges = mysqlTable("CommunityChallenges", {
     id: int("id").autoincrement().primaryKey(),
     title: varchar("title", { length: 255 }).notNull(),
@@ -237,6 +277,16 @@ export const communityChallenges = mysqlTable("CommunityChallenges", {
     createdAt: timestamp("created_at").defaultNow(),
     updatedAt: timestamp("updated_at").onUpdateNow(),
 });
+export const communityChallengeParticipants = mysqlTable(
+  "CommunityChallengeParticipants",
+  {
+    id: int("id").autoincrement().primaryKey(),
+    challengeId: int("challenge_id"),
+    userId: varchar("user_id", { length: 255 }),
+
+    createdAt: timestamp("created_at").defaultNow(),
+  }
+);
 export const communityMembers = mysqlTable("CommunityMembers", {
     id: int("id").autoincrement().primaryKey(),
     communityId: int("community_id"),
@@ -307,8 +357,26 @@ export const communityChallengesRelations = relations(communityChallenges, ({ on
         fields: [communityChallenges.communityId],
         references: [communities.id],
     }),
-}));
-export const communityChallengesTagsRelations = relations(communityChallengesTags, ({ one, many }) => ({
+
+  })
+);
+export const communityChallengeParticipantRelations = relations(
+  communityChallengeParticipants,
+  ({ one }) => ({
+    user: one(users, {
+      fields: [communityChallengeParticipants.userId],
+      references: [users.authId],
+    }),
+    community: one(communityChallenges, {
+      fields: [communityChallengeParticipants.challengeId],
+      references: [communityChallenges.id],
+    }),
+  })
+);
+export const communityChallengesTagsRelations = relations(
+  communityChallengesTags,
+  ({ one, many }) => ({
+
     challenges: one(communityChallenges, {
         fields: [communityChallengesTags.challengeId],
         references: [communityChallenges.id],
@@ -326,8 +394,26 @@ export const communityEventsRelations = relations(communityEvents, ({ one, many 
         fields: [communityEvents.communityId],
         references: [communities.id],
     }),
-}));
-export const communityMembersRelations = relations(communityMembers, ({ one, many }) => ({
+
+  })
+);
+export const communityEventParticipantRelations = relations(
+  communityEventParticipants,
+  ({ one }) => ({
+    user: one(users, {
+      fields: [communityEventParticipants.userId],
+      references: [users.authId],
+    }),
+    community: one(communities, {
+      fields: [communityEventParticipants.eventId],
+      references: [communities.id],
+    }),
+  })
+);
+export const communityMembersRelations = relations(
+  communityMembers,
+  ({ one, many }) => ({
+
     user: one(users, {
         fields: [communityMembers.userId],
         references: [users.authId],

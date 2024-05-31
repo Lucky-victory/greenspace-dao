@@ -1,4 +1,4 @@
-import { Box, Flex } from "@chakra-ui/react";
+import { Flex } from "@chakra-ui/react";
 import PageLoader from "src/components/PageLoader";
 import DashboardSideNav from "src/components/DashboardSidebar";
 import DashboardHeader from "src/components/DashboardHeader";
@@ -8,8 +8,6 @@ import {
   HiOutlineDocumentText,
   HiOutlineSquares2X2,
   HiOutlineCog6Tooth,
-  HiOutlinePresentationChartLine,
-  HiOutlineLightBulb,
   HiOutlineUserGroup,
   HiOutlineUser,
 } from "react-icons/hi2";
@@ -24,32 +22,43 @@ export default function AdminDashboardLayout({
       title: "Overview",
       icon: HiOutlineSquares2X2,
       child: [],
+      nestedChild: [],
     },
     {
       url: "communities",
       title: "Communities",
       icon: HiOutlineUserGroup,
       child: ["new"],
+      nestedChild: ["challenges", "events"],
     },
     {
       url: "nutritionists",
       title: "Nutritionists",
       icon: HiOutlineCalendarDays,
       child: [],
+      nestedChild: [],
     },
     {
       url: "users",
       title: "Users",
       icon: HiOutlineUser,
       child: ["new"],
+      nestedChild: [],
     },
     {
       url: "articles",
       title: "Articles",
       icon: HiOutlineDocumentText,
       child: ["new"],
+      nestedChild: [],
     },
-    { url: "settings", title: "Settings", icon: HiOutlineCog6Tooth, child: [] },
+    {
+      url: "settings",
+      title: "Settings",
+      icon: HiOutlineCog6Tooth,
+      child: [],
+      nestedChild: [],
+    },
   ];
   return (
     <PageLoader>

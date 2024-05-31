@@ -111,6 +111,14 @@ export const theme = extendTheme({
               },
             };
           }
+          if (styleProps.colorScheme === "red") {
+            return {
+              bg: "red.500",
+              _hover: {
+                bg: "red.600",
+              },
+            };
+          }
         },
       },
       defaultProps: {

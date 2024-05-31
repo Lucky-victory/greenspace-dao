@@ -44,7 +44,7 @@ export default function CommunityChatInput({
 
   return (
     <HStack
-      bg={"black"}
+      bg={"gray.800"}
       px={0}
       py={3}
       as={"form"}

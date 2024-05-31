@@ -1,14 +1,7 @@
-import React, { ChangeEvent, useEffect, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
-//import { useRouter } from 'next/router'
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import * as Yup from "yup";
-import {
-  resolveIPFSURI,
-  uploadPromptToIpfs,
-  uploadToThirdWeb,
-} from "src/helpers";
+import React, { ChangeEvent, useRef, useState } from "react";
+import { useRouter } from "next/router";
+
+import { resolveIPFSURI } from "src/helpers";
 import axios from "axios";
 import {
   Box,
@@ -28,11 +21,15 @@ import {
   Stack,
   Text,
   useDisclosure,
+  useToast,
 } from "@chakra-ui/react";
 import { countries } from "src/utils/countries";
 import { Link } from "@chakra-ui/next-js";
 import { useFormik } from "formik";
 import { useStorageUpload } from "@thirdweb-dev/react";
+import { useAddNutritionistMutation } from "src/state/services";
+import { Sex } from "src/state/types";
+import { useWallet } from "src/context/WalletProvider";
 
 const NutritionistForm = ({
   showModal = true,
@@ -41,13 +38,22 @@ const NutritionistForm = ({
   showModal?: boolean;
   closeFormModal: () => void;
 }) => {
-  //const auth = useAuth()
+  const toast = useToast({
+    position: "top",
+    duration: 3000,
+    status: "success",
+    title: "Application was successful",
+    isClosable: true,
+  });
   const { mutateAsync: uploadToThirdWeb } = useStorageUpload();
   const router = useRouter();
+  const { address } = useWallet();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [cid, setCid] = useState("");
   const [fileToUpload, setFileToUpload] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const [addNutritionists, { isLoading }] = useAddNutritionistMutation();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const formik = useFormik({
     initialValues: {
@@ -62,28 +68,54 @@ const NutritionistForm = ({
       formikHelpers.setSubmitting(true);
       setIsSubmitting(true);
       try {
+        setIsUploading(true);
         const credentialUri = await handleFileUpload();
         const dataToUpload = { ...values, credentials: credentialUri };
         const [uploadUri] = await uploadToThirdWeb({ data: [dataToUpload] });
-        console.log({ uploadUri: resolveIPFSURI(uploadUri) });
+        setIsUploading(false);
+        await addNutritionists({
+          credentialsCid: credentialUri,
+          address: address!,
+          fullName: values.fullName,
+          email: values.email,
+          sex: values.sex as Sex,
+          country: values.country,
+          birthDate: values.birthDate,
+        }).unwrap();
         setCid(uploadUri);
         await axios.post("/api/email/nutritionist/apply", {
           email: values.email,
           name: values.fullName,
         });
         closeFormModal?.();
+        onOpen();
+        toast({
+          status: "success",
+          title: "Application was successful",
+        });
         setTimeout(() => {
           if (fileInputRef.current) fileInputRef.current.value = "";
           formik.resetForm();
-          // router.push('/nutritionist/dashboard');
-          onOpen();
+          router.push("/nutritionist/check-status");
           setIsSubmitting(false);
         }, 2000);
         formikHelpers.setSubmitting(false);
-      } catch (error) {}
+      } catch (error) {
+        formikHelpers.setSubmitting(false);
+        setIsSubmitting(false);
+        toast({
+          status: "error",
+          title: "An error occured, please try again...",
+          description: "An error occured",
+        });
+      }
     },
   });
-
+  function loadingText() {
+    if (isUploading) return "Uploading credentials...";
+    if (isLoading) return "Creating account...";
+    return "Submitting...";
+  }
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files![0];
     setFileToUpload(file);
@@ -212,6 +244,7 @@ const NutritionistForm = ({
           <Button
             type="submit"
             isLoading={isSubmitting}
+            loadingText={loadingText()}
             colorScheme={"gs-yellow"}
             rounded={"full"}
           >

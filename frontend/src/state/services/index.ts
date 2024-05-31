@@ -6,8 +6,11 @@ import {
   MEETING_RECORD,
   NEW_MEETING,
   NEW_MEETING_RECORD,
+  NEW_NUTRITIONIST,
   NEW_USER,
+  Nutritionist,
   USER,
+  VerificationStatus,
 } from "../types";
 import {
   FitnessPlan,
@@ -41,6 +44,7 @@ export const GreenSpaceDAOApi = createApi({
     "CommunityMessages",
     "CommunityChallenges",
     "Appointments",
+    "Nutritionists",
   ],
 
   endpoints: (builder) => ({
@@ -225,6 +229,56 @@ export const GreenSpaceDAOApi = createApi({
         return [{ type: "Users" as const, id: usernameOrAuthId }];
       },
     }),
+    checkNutritionistStatus: builder.mutation<
+      APIResponse<{ status: VerificationStatus }>,
+      { address: string }
+    >({
+      query(data) {
+        return {
+          url: `users/nutritionists/status`,
+          method: "POST",
+          body: data,
+        };
+      },
+    }),
+    getNutritionist: builder.query<
+      Partial<APIResponse<Nutritionist>>,
+      { usernameOrAuthId: string; params?: Record<string, any> }
+    >({
+      query: ({ usernameOrAuthId, params }) => {
+        return {
+          url: `users/nutritionists/${usernameOrAuthId}?${objectToSearchParams(
+            params!
+          )}`,
+        };
+      },
+      providesTags: (result, error, { usernameOrAuthId }) => {
+        return [{ type: "Nutritionists" as const, id: usernameOrAuthId }];
+      },
+    }),
+    getNutritionists: builder.query<
+      Partial<APIResponse<Nutritionist[]>>,
+      { status?: VerificationStatus }
+    >({
+      query: (params) => {
+        return {
+          url: `users/nutritionists?${objectToSearchParams(params)}`,
+        };
+      },
+      providesTags: (result) =>
+        // is result available?
+        result?.data
+          ? // successful query
+            [
+              ...result?.data.map(({ authId }) => ({
+                type: "Nutritionists" as const,
+                id: authId,
+              })),
+              { type: "Nutritionists", id: "LIST" },
+            ]
+          : // an error occurred, but we still want to refetch this query when `{ type: 'FitnessPlans', id: 'LIST' }` is invalidated
+            [{ type: "Nutritionists", id: "LIST" }],
+    }),
     getMeeting: builder.query<
       Partial<APIResponse<MEETING>>,
       Record<string, any> & { roomId: string }
@@ -364,22 +418,7 @@ export const GreenSpaceDAOApi = createApi({
           )}`,
         };
       },
-      // async onCacheEntryAdded(
-      //   id,
-      //   {
-      //     dispatch,
-      //     getState,
-      //     extra,
-      //     requestId,
-      //     cacheEntryRemoved,
-      //     cacheDataLoaded,
-      //     getCacheEntry,
-      //     updateCachedData,
-      //   }
-      // ) {
-      //   const { data } = (await cacheDataLoaded).data;
-      //   dispatch(update({ data: data! }));
-      // },
+
       providesTags: (result) =>
         // is result available?
         result?.data
@@ -583,6 +622,17 @@ export const GreenSpaceDAOApi = createApi({
       }),
       invalidatesTags: [{ type: "Users" as const, id: "LIST" }],
     }),
+    addNutritionist: builder.mutation<
+      APIResponse<Nutritionist>,
+      NEW_NUTRITIONIST
+    >({
+      query: (data) => ({
+        url: `users/nutritionists`,
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: [{ type: "Nutritionists" as const, id: "LIST" }],
+    }),
     addMeeting: builder.mutation<APIResponse<MEETING>, NEW_MEETING>({
       query: (data) => ({
         url: `meetings`,
@@ -716,6 +766,11 @@ export const GreenSpaceDAOApi = createApi({
 });
 export const {
   useSendUserInfoToAIMutation,
+  useAddNutritionistMutation,
+  useCheckNutritionistStatusMutation,
+  useGetNutritionistQuery,
+  useGetNutritionistsQuery,
+  useLazyGetNutritionistQuery,
   useJoinCommunityMutation,
   useCheckHasJoinCommunityMutation,
   useCheckHasJoinCommunityChallengeMutation,

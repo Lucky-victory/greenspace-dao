@@ -4,6 +4,7 @@ import {
   HStack,
   Menu,
   MenuButton,
+  MenuDivider,
   MenuGroup,
   MenuItem,
   MenuList,
@@ -15,7 +16,6 @@ import { Link } from "@chakra-ui/next-js";
 import { usePrivy } from "@privy-io/react-auth";
 import { useGetUserQuery } from "src/state/services";
 import BoringAvatar from "boring-avatars";
-import { BsChevronDown } from "react-icons/bs";
 import { useEffect, useState } from "react";
 import { USER } from "src/state/types";
 export const UserMenu = () => {
@@ -91,6 +91,7 @@ export const UserMenu = () => {
                   </MenuItem>
                 )}
               </MenuGroup>
+              <MenuDivider />
               <MenuItem as={LogoutButton}>Logout</MenuItem>
             </MenuList>
           </Portal>

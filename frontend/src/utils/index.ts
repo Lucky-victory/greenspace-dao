@@ -9,6 +9,13 @@ import slugify from "slugify";
 import isEmpty from "just-is-empty";
 import { format } from "date-fns";
 
+export function filterNullOrEmpty<T extends Record<string,any>>(obj:T) {
+  return Object.fromEntries(
+    Object.entries(obj).filter(
+      ([_, value]) => value !== null && value !== undefined && value !== ""
+    )
+  );
+}
 export function getOrdinalSuffix(day: number) {
   if (day > 3 && day < 21) return "th"; // Covers 11th to 19th
   switch (day % 10) {

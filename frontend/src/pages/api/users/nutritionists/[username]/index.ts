@@ -1,5 +1,5 @@
 import { db } from "src/db";
-import { users } from "src/db/schema";
+import { nutritionists } from "src/db/schema";
 import {
   HTTP_METHOD_CB,
   errorHandlerCallback,
@@ -30,28 +30,28 @@ export const GET: HTTP_METHOD_CB = async (
   try {
     let { username } = req.query;
 
-    const user = await db.query.users.findFirst({
+    const nutritionist = await db.query.nutritionists.findFirst({
       where: or(
-        eq(users.username, username as string),
-        eq(users.authId, username as string),
-        eq(users.address, username as string)
+        eq(nutritionists.username, username as string),
+        eq(nutritionists.authId, username as string),
+        eq(nutritionists.address, username as string)
       ),
     });
 
-    if (isEmpty(user)) {
+    if (isEmpty(nutritionist)) {
       return await successHandlerCallback(
         req,
         res,
         {
-          message: `User with '${username}' does not exist`,
-          data: user,
+          message: `nutritionist with '${username}' does not exist`,
+          data: nutritionist,
         },
         404
       );
     }
     return await successHandlerCallback(req, res, {
-      message: `User retrieved successfully`,
-      data: user,
+      message: `nutritionist retrieved successfully`,
+      data: nutritionist,
     });
   } catch (error: any) {
     return await errorHandlerCallback(req, res, {
@@ -68,16 +68,20 @@ export const PUT: HTTP_METHOD_CB = async (
     const { ...rest } = req.body;
     let { username } = req.query;
 
-    const user = await db.query.users.findFirst({
-      where: eq(users.username, username as string),
+    const nutritionist = await db.query.nutritionists.findFirst({
+      where: or(
+        eq(nutritionists.username, username as string),
+        eq(nutritionists.authId, username as string),
+        eq(nutritionists.address, username as string)
+      ),
     });
-    if (isEmpty(user)) {
+    if (isEmpty(nutritionist)) {
       return await successHandlerCallback(
         req,
         res,
         {
-          message: `User with '${username}' does not exist`,
-          data: user,
+          message: `nutritionist with '${username}' does not exist`,
+          data: nutritionist,
         },
         404
       );
@@ -85,15 +89,20 @@ export const PUT: HTTP_METHOD_CB = async (
     //TODO: Add authorization check
     const updatedRecord = await db.transaction(async (tx) => {
       await tx
-        .update(users)
+        .update(nutritionists)
         .set(rest)
-        .where(eq(users.username, username as string));
-      return tx.query.users.findFirst({
-        where: eq(users.username, username as string),
+        .where(
+          or(
+            eq(nutritionists.username, username as string),
+            eq(nutritionists.authId, username as string)
+          )
+        );
+      return tx.query.nutritionists.findFirst({
+        where: eq(nutritionists.username, username as string),
       });
     });
     return await successHandlerCallback(req, res, {
-      message: "user updated successfully",
+      message: "nutritionist updated successfully",
       data: updatedRecord,
     });
   } catch (error: any) {

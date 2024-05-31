@@ -23,6 +23,7 @@ import {
   useToast,
   Text,
   Spinner,
+  IconButton,
 } from "@chakra-ui/react";
 import { NewUserType, RegisterType } from "src/components/NewUserType";
 
@@ -352,14 +353,15 @@ const RegisterForm = ({
           <ModalHeader fontSize={{ lg: "3xl", base: "xl" }}>
             <HStack spacing={4} align={"center"}>
               {activeSlideIndex === 1 && (
-                <Button
-                  variant={"outline"}
+                <IconButton
+                  aria-label=""
+                  variant={"ghost"}
                   rounded={"full"}
                   size={"sm"}
                   onClick={() => swiperRef.current?.swiper.slidePrev()}
                 >
                   <Icon size={20} name="arrow_back" />
-                </Button>
+                </IconButton>
               )}
               <span>Register</span>
             </HStack>

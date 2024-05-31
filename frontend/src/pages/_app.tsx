@@ -48,11 +48,8 @@ export default function App({ Component, pageProps }: AppProps) {
       >
         <WagmiProvider config={config}>
           <ReduxProvider store={store}>
-            <ThirdwebProvider
-              clientId="7d6dd3b28e4d16bb007c78b1f6c90b04"
-              activeChain="sepolia"
-            >
-              <QueryClientProvider client={queryClient}>
+            <QueryClientProvider client={queryClient}>
+              <ThirdwebProvider clientId="7d6dd3b28e4d16bb007c78b1f6c90b04" activeChain="sepolia">
                 <HuddleProvider client={huddleClient}>
                   <ChakraProvider theme={theme}>
                     <WalletProvider>
@@ -60,8 +57,8 @@ export default function App({ Component, pageProps }: AppProps) {
                     </WalletProvider>
                   </ChakraProvider>
                 </HuddleProvider>
-              </QueryClientProvider>
-            </ThirdwebProvider>
+              </ThirdwebProvider>
+            </QueryClientProvider>
           </ReduxProvider>
         </WagmiProvider>
       </PrivyProvider>

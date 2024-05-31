@@ -1,6 +1,3 @@
-// import Icon from "src/components/Icon";
-
-// import DashboardSideBar from "src/components/DashboardSideBar";
 import {
   Td,
   Box,
@@ -19,27 +16,23 @@ import {
 import { format } from "date-fns";
 import NutritionistDashBoardLayout from "src/components/NutritionistDashboardLayout";
 import Head from "next/head";
-// import { useRouter } from "next/router";
+
 import axios from "axios";
-import { AccessToken, Role } from "@huddle01/server-sdk/auth";
-import { useDevices, useRoom } from "@huddle01/react/hooks";
+
 import { useRouter } from "next/router";
 import { useState } from "react";
 import PageWrapper from "src/components/PageWrapper";
 import PageLoader from "src/components/PageLoader";
 import { HiPhone } from "react-icons/hi2";
 import DashboardEmptyArea from "src/components/DashboardEmptyArea";
-import {
-  useAddMeetingMutation,
-  useCreateRoomMutation,
-} from "src/state/services";
-import { useAuth } from "src/hooks/common";
+import { useAddMeetingMutation, useCreateRoomMutation } from "src/state/services";
+import { useInAppAuth } from "src/hooks/common";
 
 export default function DashBoard() {
   const today = new Date().getTime();
   const router = useRouter();
-  const { user } = useAuth();
-  const [meetingTitle, setMeetingTitle] = useState("Health discussions");
+  const { user } = useInAppAuth();
+  const [meetingTitle, setMeetingTitle] = useState("Discussion");
   const [isSending, setIsSending] = useState(false);
 
   const [createRoom, { isLoading, isSuccess }] = useCreateRoomMutation();
@@ -60,12 +53,11 @@ export default function DashBoard() {
       const data = response.data.data;
 
       const roomId = data?.roomId;
-      console.log({ roomId });
 
       await addMeeting({
         roomId: roomId as string,
         title: meetingTitle,
-        userId: user?.authId,
+        userId: user?.id,
       })
         .unwrap()
         .then(() => {
@@ -115,11 +107,7 @@ export default function DashBoard() {
                       <Td>
                         {" "}
                         <Flex align={"center"} gap={3}>
-                          <Avatar
-                            size={"sm"}
-                            rounded={"md"}
-                            src="/images/user-59.jpg"
-                          />{" "}
+                          <Avatar size={"sm"} rounded={"md"} src="/images/user-59.jpg" />{" "}
                           <Text as={"span"} fontWeight={"semibold"}>
                             Lilian James
                           </Text>
@@ -140,11 +128,7 @@ export default function DashBoard() {
                           >
                             <HiPhone size={20} name="phone" /> Start Call
                           </Button>
-                          <Button
-                            size={"sm"}
-                            variant={"outline"}
-                            rounded={"full"}
-                          >
+                          <Button size={"sm"} variant={"outline"} rounded={"full"}>
                             View Details
                           </Button>
                         </Flex>
@@ -153,11 +137,7 @@ export default function DashBoard() {
                     <Tr bg={"gray.800"} rounded={"md"} my={4}>
                       <Td>
                         <Flex align={"center"} gap={3}>
-                          <Avatar
-                            size={"sm"}
-                            rounded={"md"}
-                            src="/images/user-53.jpg"
-                          />
+                          <Avatar size={"sm"} rounded={"md"} src="/images/user-53.jpg" />
                           <Text as={"span"} fontWeight={"semibold"}>
                             Chris Eze
                           </Text>
@@ -177,11 +157,7 @@ export default function DashBoard() {
                           >
                             <HiPhone size={20} name="phone" /> Start Call
                           </Button>
-                          <Button
-                            size={"sm"}
-                            variant={"outline"}
-                            rounded={"full"}
-                          >
+                          <Button size={"sm"} variant={"outline"} rounded={"full"}>
                             View Details
                           </Button>
                         </Flex>
@@ -195,10 +171,7 @@ export default function DashBoard() {
                 <Heading mb={5} size={"lg"}>
                   Upcoming Appointments
                 </Heading>
-                <DashboardEmptyArea
-                  isLoading={false}
-                  text="No upcoming appointments"
-                ></DashboardEmptyArea>
+                <DashboardEmptyArea isLoading={false} text="No upcoming appointments"></DashboardEmptyArea>
               </Box>
 
               <Box>
@@ -219,11 +192,7 @@ export default function DashBoard() {
                         <Td>
                           {" "}
                           <Flex align={"center"} gap={3}>
-                            <Avatar
-                              size={"sm"}
-                              rounded={"md"}
-                              src="/images/user-59.jpg"
-                            />{" "}
+                            <Avatar size={"sm"} rounded={"md"} src="/images/user-59.jpg" />{" "}
                             <Text as={"span"} fontWeight={"semibold"}>
                               Lilian James
                             </Text>
@@ -244,13 +213,7 @@ export default function DashBoard() {
                             >
                               Accept
                             </Button>
-                            <Button
-                              px={4}
-                              size={"sm"}
-                              variant={"outline"}
-                              rounded={"full"}
-                              colorScheme="red"
-                            >
+                            <Button px={4} size={"sm"} variant={"outline"} rounded={"full"} colorScheme="red">
                               Decline
                             </Button>
                           </Flex>
@@ -259,11 +222,7 @@ export default function DashBoard() {
                       <Tr bg={"gray.800"} rounded={"md"} my={4}>
                         <Td>
                           <Flex align={"center"} gap={3}>
-                            <Avatar
-                              size={"sm"}
-                              rounded={"md"}
-                              src="/images/user-53.jpg"
-                            />
+                            <Avatar size={"sm"} rounded={"md"} src="/images/user-53.jpg" />
                             <Text as={"span"} fontWeight={"semibold"}>
                               Chris Eze
                             </Text>
@@ -276,13 +235,7 @@ export default function DashBoard() {
                             <Button px={4} size={"sm"} rounded={"full"} gap={2}>
                               Accept
                             </Button>
-                            <Button
-                              px={4}
-                              size={"sm"}
-                              variant={"outline"}
-                              rounded={"full"}
-                              colorScheme="red"
-                            >
+                            <Button px={4} size={"sm"} variant={"outline"} rounded={"full"} colorScheme="red">
                               Decline
                             </Button>
                           </Flex>

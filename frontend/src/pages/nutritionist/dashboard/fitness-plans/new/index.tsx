@@ -1,13 +1,4 @@
-import {
-  Box,
-  Button,
-  Flex,
-  HStack,
-  Input,
-  Stack,
-  Textarea,
-  useToast,
-} from "@chakra-ui/react";
+import { Box, Button, Flex, HStack, Input, Stack, Textarea, useToast } from "@chakra-ui/react";
 import NutritionistDashboardLayout from "src/components/NutritionistDashboardLayout";
 import { ChangeEvent, useCallback, useEffect, useState } from "react";
 import ReactMde from "react-mde";
@@ -20,19 +11,16 @@ import { generateSlug } from "src/utils";
 
 import { useRouter } from "next/router";
 import { NewArticle, NewFitnessPlan, PostStatus } from "src/types/shared";
-import {
-  useAddArticleMutation,
-  useAddFitnessPlanMutation,
-} from "src/state/services";
+import { useAddArticleMutation, useAddFitnessPlanMutation } from "src/state/services";
 import { shortenText } from "src/utils";
 import { useAppContext } from "src/context/state";
-import { useAuth } from "src/hooks/common";
+import { useInAppAuth } from "src/hooks/common";
 import { useStorageUpload } from "@thirdweb-dev/react";
 import { resolveIPFSURI } from "src/helpers";
+import TextEditor from "src/components/TextEditor";
 
 export default function NewPostPage() {
-  const [addFitnessPlan, { isLoading, status, isSuccess, isError, data }] =
-    useAddFitnessPlanMutation();
+  const [addFitnessPlan, { isLoading, status, isSuccess, isError, data }] = useAddFitnessPlanMutation();
 
   const router = useRouter();
   const toast = useToast({
@@ -41,7 +29,7 @@ export default function NewPostPage() {
     status: "success",
     title: " Successful",
   });
-  const { user } = useAuth();
+  const { user } = useInAppAuth();
   const [imageFile, setImageFile] = useState<string>();
   const { mutateAsync: uploadToThirdWeb } = useStorageUpload();
 
@@ -55,18 +43,15 @@ export default function NewPostPage() {
     intro: "",
     image: "",
     status: "draft",
-    userId: user?.authId!,
+    userId: user?.id!,
   });
 
   const [selectedTab, setSelectedTab] = useState<"write" | "preview">("write");
-  const onImageChangeHandler = useCallback(
-    (hasImage: boolean, files: File[], image: string) => {
-      if (hasImage) {
-        setImageFile(image);
-      }
-    },
-    []
-  );
+  const onImageChangeHandler = useCallback((hasImage: boolean, files: File[], image: string) => {
+    if (hasImage) {
+      setImageFile(image);
+    }
+  }, []);
   const handleFileUpload = async () => {
     try {
       const [fileUri] = await uploadToThirdWeb({ data: [coverImageFile] });
@@ -114,9 +99,7 @@ export default function NewPostPage() {
     setPost((prev) => ({ ...prev, content: value }));
   }
 
-  function handleInputChange(
-    event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ): void {
+  function handleInputChange(event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void {
     const { name, value } = event.target;
     setPost((prev) => ({ ...prev, [name]: value }));
   }
@@ -128,7 +111,7 @@ export default function NewPostPage() {
       intro: "",
       image: "",
       status: "draft",
-      userId: user?.authId!,
+      userId: user?.id!,
     });
     setContentValue("");
     setImageFile(undefined);
@@ -150,9 +133,9 @@ export default function NewPostPage() {
     setPost((prev) => ({
       ...prev,
       content: contentValue,
-      userId: user?.authId!,
+      userId: user?.id!,
     }));
-  }, [contentValue, user?.authId]);
+  }, [contentValue, user?.id]);
   return (
     <>
       <NutritionistDashboardLayout>
@@ -172,30 +155,17 @@ export default function NewPostPage() {
             >
               {" "}
               <HStack gap={4}>
-                <Button
-                  isLoading={isLoading}
-                  onClick={saveAsPublished}
-                  rounded={"full"}
-                  px={6}
-                  size="md"
-                >
+                <Button isLoading={isLoading} onClick={saveAsPublished} rounded={"full"} px={6} size="md">
                   Publish{" "}
                 </Button>{" "}
-                <Button
-                  isLoading={isLoading}
-                  onClick={saveAsDraft}
-                  rounded={"full"}
-                  variant={"outline"}
-                >
+                <Button isLoading={isLoading} onClick={saveAsDraft} rounded={"full"} variant={"outline"}>
                   Save as draft
                 </Button>
               </HStack>
             </Flex>
             <Stack px={4} py={6} gap={3}>
               <DragAndDropImage
-                onUploadChange={(hasImage, files, image) =>
-                  onImageChangeHandler(hasImage, files, image)
-                }
+                onUploadChange={(hasImage, files, image) => onImageChangeHandler(hasImage, files, image)}
               />{" "}
               <Input
                 name="title"
@@ -215,17 +185,7 @@ export default function NewPostPage() {
                 maxH={"200px"}
                 placeholder="A short introduction for the Fitness plan..."
               ></Textarea>
-              <Box py={4}>
-                <ReactMde
-                  value={contentValue}
-                  onChange={(value: string) => handleEditorChange(value)}
-                  selectedTab={selectedTab}
-                  onTabChange={setSelectedTab}
-                  generateMarkdownPreview={(markdown: string) =>
-                    Promise.resolve(<MarkdownRenderer markdown={markdown} />)
-                  }
-                />
-              </Box>
+              <TextEditor initialValue={contentValue} onContentChange={(value: string) => handleEditorChange(value)} />
               <Box></Box>
             </Stack>
           </Box>

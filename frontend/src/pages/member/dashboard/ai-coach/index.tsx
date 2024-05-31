@@ -54,9 +54,7 @@ const AiCoachPage = () => {
   const [activeResponse, setActiveResponse] = useState("");
 
   // Ref for the socket instance
-  const socketRef = useRef<Socket<DefaultEventsMap, DefaultEventsMap> | null>(
-    null
-  );
+  const socketRef = useRef<Socket<DefaultEventsMap, DefaultEventsMap> | null>(null);
   // Ref to store the latest state
   const stateRef = useRef(state);
   const activeResponseRef = useRef(activeResponse);
@@ -251,29 +249,20 @@ const AiCoachPage = () => {
                   </p>
                   <div className="flex gap-4">
                     {samplePrompts.map((body, index) => (
-                      <SamplePromptsCard
-                        key={index}
-                        title={"Chat"}
-                        body={body}
-                      />
+                      <SamplePromptsCard key={index} title={"Chat"} body={body} />
                     ))}
                   </div>
                 </div>
 
                 <div className="flex flex-col gap-8 items-center">
-                  {state.thread_threadIds
-                    ?.split(" ")
-                    .map((threadIdWithDate: string) => {
-                      const [threadId, date] = threadIdWithDate.split("::");
-                      return (
-                        <div
-                          key={threadId}
-                          onClick={() => handleGetThread(threadId)}
-                        >
-                          {threadId} {date}
-                        </div>
-                      );
-                    })}
+                  {state.thread_threadIds?.split(" ").map((threadIdWithDate: string) => {
+                    const [threadId, date] = threadIdWithDate.split("::");
+                    return (
+                      <div key={threadId} onClick={() => handleGetThread(threadId)}>
+                        {threadId} {date}
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             ) : (

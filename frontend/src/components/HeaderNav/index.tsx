@@ -77,6 +77,11 @@ export function HeaderNav() {
           Governance
         </Link>
       </ListItem>
+      <ListItem>
+        <Link {...linkStyles} href={"/shop/supplements"}>
+          Shop
+        </Link>
+      </ListItem>
     </>,
   ];
   return (

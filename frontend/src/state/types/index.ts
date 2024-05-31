@@ -17,6 +17,7 @@ export type USER = {
   userType?: "member" | "nutritionist";
   emailVerified?: boolean;
   username: string;
+  userCid: string;
 };
 export type Sex = "male" | "female" | "other";
 
@@ -71,6 +72,7 @@ export type USER_SESSION = {
 
 export type NEW_USER = Pick<
   USER,
+
   | "address"
   | "chainId"
   | "fullName"
@@ -79,6 +81,7 @@ export type NEW_USER = Pick<
   | "userType"
   | "email"
   | "emailVerified"
+
 >;
 export type MEETING = {
   id: number;

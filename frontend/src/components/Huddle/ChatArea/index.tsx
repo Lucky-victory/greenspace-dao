@@ -1,21 +1,10 @@
-import {
-  Box,
-  Button,
-  HStack,
-  Heading,
-  IconButton,
-  Input,
-  Stack,
-  Text,
-} from "@chakra-ui/react";
+import { Box, Button, HStack, Heading, IconButton, Stack, Text } from "@chakra-ui/react";
 import { useDataMessage, useLocalPeer } from "@huddle01/react/hooks";
-import { format, formatDistanceToNowStrict } from "date-fns";
-import { ChangeEvent, KeyboardEvent, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { CgClose } from "react-icons/cg";
-import { FiMessageCircle, FiSend } from "react-icons/fi";
+import { FiMessageCircle } from "react-icons/fi";
 import { Room } from "@huddle01/web-core";
 import { TPeerMetadata } from "src/types";
-import { BsChatDots } from "react-icons/bs";
 import ChatInput from "src/components/Huddle/ChatInput";
 import Linkify from "linkify-react";
 export type TMessage = {
@@ -26,21 +15,11 @@ export type TMessage = {
 };
 
 // TODO move the chat input to a separate component
-export const ChatArea = ({
-  room,
-  onMinimized,
-}: {
-  room: Room;
-  onMinimized: (isMinimized: boolean) => void;
-}) => {
+export const ChatArea = ({ room, onMinimized }: { room: Room; onMinimized: (isMinimized: boolean) => void }) => {
   const [messages, setMessages] = useState<TMessage[]>([]);
 
   const [isMinimized, setIsMinimized] = useState<boolean>(true);
-  const {
-    peerId,
-    role,
-    metadata: localPeerMetadata,
-  } = useLocalPeer<TPeerMetadata>();
+  const { peerId, role, metadata: localPeerMetadata } = useLocalPeer<TPeerMetadata>();
   // room.peerIds
   const scrollToBottomRef = useRef<HTMLDivElement>(null);
   const { sendData } = useDataMessage({
@@ -69,35 +48,7 @@ export const ChatArea = ({
   function isLocalPeer(senderId: string): boolean {
     return peerId === senderId;
   }
-  function formatMessageTime(time: number): string {
-    let label = "";
-    const distance = formatDistanceToNowStrict(new Date(time));
-    const splitDistance = distance.split(" ");
-    const distanceTime = splitDistance[0];
-    const distanceLabel = splitDistance[1];
 
-    switch (distanceLabel) {
-      case "seconds":
-        label = "s";
-        break;
-      case "minutes":
-      case "minute":
-        label = "m";
-        break;
-      case "hours":
-      case "hour":
-        label = "h";
-        break;
-      case "days":
-      case "day":
-        label = "d";
-        break;
-
-      default:
-        break;
-    }
-    return `${distanceTime}${label}`;
-  }
   useEffect(() => {
     if (messages.length) {
       scrollToBottomRef.current?.scrollIntoView({
@@ -152,13 +103,7 @@ export const ChatArea = ({
         // translateX={200}
       >
         <Stack h={"full"} p={2} pb={1}>
-          <HStack
-            justify={"center"}
-            roundedTop={"20px"}
-            px={4}
-            py={2}
-            bg={"black"}
-          >
+          <HStack justify={"center"} roundedTop={"20px"} px={4} py={2} bg={"black"}>
             <Heading flex={1} size={"sm"}>
               Room Chat
             </Heading>
@@ -184,19 +129,8 @@ export const ChatArea = ({
           >
             {messages.map((message, i) => {
               return isLocalPeer(message.senderId) ? (
-                <Stack
-                  gap={1}
-                  key={"chat" + i}
-                  alignSelf={"flex-end"}
-                  p={1}
-                  maxW={"280px"}
-                >
-                  <HStack
-                    gap={1}
-                    align={"flex-start"}
-                    fontSize={"12px"}
-                    justify={"space-between"}
-                  >
+                <Stack gap={1} key={"chat" + i} alignSelf={"flex-end"} p={1} maxW={"280px"}>
+                  <HStack gap={1} align={"flex-start"} fontSize={"12px"} justify={"space-between"}>
                     <Text as={"span"} fontWeight={500}>
                       {message?.senderName} (You)
                     </Text>
@@ -234,11 +168,7 @@ export const ChatArea = ({
                   maxW={"280px"}
                   pos={"relative"}
                 >
-                  <HStack
-                    align={"flex-start"}
-                    fontSize={"12px"}
-                    justify={"space-between"}
-                  >
+                  <HStack align={"flex-start"} fontSize={"12px"} justify={"space-between"}>
                     <Text as={"span"} fontWeight={500}>
                       {message?.senderName}
                     </Text>
@@ -270,6 +200,7 @@ export const ChatArea = ({
             })}
           </Stack>
           {/* message input area */}
+          {/* @ts-ignore */}
           <ChatInput sendData={sendData} />
         </Stack>
       </Box>

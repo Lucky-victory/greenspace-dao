@@ -107,9 +107,6 @@ export const nutritionists = mysqlTable("Nutritionists", {
   username: varchar("username", { length: 50 })
     .unique()
     .$defaultFn(() => generateUsername("GN_")),
-  userType: mysqlEnum("user_type", ["member", "nutritionist"])
-    .default("nutritionist")
-    .notNull(),
   sex: mysqlEnum("sex", ["male", "female", "other"]),
   birthDate: datetime("birth_date"),
 
@@ -119,6 +116,7 @@ export const nutritionists = mysqlTable("Nutritionists", {
   avatar: varchar("avatar", { length: 255 }),
   authId: varchar("auth_id", { length: 255 }).$defaultFn(generateUrlSafeId),
   emailVerified: boolean("email_verified").default(false),
+  credentialsCid: varchar("credentials_cid", { length: 255 }),
   verificationStatus: mysqlEnum("verification_status", [
     "verified",
     "pending",
@@ -141,7 +139,6 @@ export const users = mysqlTable(
       .unique()
       .notNull()
       .$defaultFn(generateUsername),
-    password: varchar("password", { length: 255 }),
     email: varchar("email", { length: 255 }).unique(),
     address: varchar("address", { length: 100 }).default(""),
     avatar: varchar("avatar", { length: 255 }),

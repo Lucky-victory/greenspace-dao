@@ -21,7 +21,7 @@ export const LoginModal = ({ isOpen, onClose }: Props) => {
       <ModalOverlay />
       <ModalContent py={6} rounded={"30px"} alignSelf={"center"}>
         <ModalHeader>
-          <Heading>Login</Heading>
+          <Heading size={'md'}>Login</Heading>
           <ModalCloseButton />
         </ModalHeader>
         <ModalBody>

@@ -18,21 +18,40 @@ export type USER = {
   emailVerified?: boolean;
   username: string;
 };
+export type Sex = "male" | "female" | "other";
+
+export type VerificationStatus = "verified" | "pending" | "rejected";
+
 export type Nutritionist = {
   fullName: string;
-  location: string;
+  country: string;
   bio?: string;
   id: number;
-  isVerified?: boolean;
-  address?: string;
-  role?: "admin" | "user";
+  city?: string;
+  verificationStatus: VerificationStatus;
+  sex: Sex;
+  address: string;
   avatar?: string;
   authId?: string;
-  email?: string;
-  userType?: "member" | "nutritionist";
+  email: string;
   emailVerified?: boolean;
-  username?: string;
+  username: string;
+  birthDate: string | Date;
+  credentialsCid?: string;
 };
+export type NEW_NUTRITIONIST = Pick<
+  Nutritionist,
+  | "address"
+  | "authId"
+  | "emailVerified"
+  | "email"
+  | "fullName"
+  | "sex"
+  | "city"
+  | "country"
+  | "birthDate"
+  | "credentialsCid"
+>;
 export type USER_SESSION = {
   user: Pick<
     USER,

@@ -186,7 +186,7 @@ export default function EventPage({
                 <Heading size={"lg"} fontWeight={600} mb={2}>
                   Event Details
                 </Heading>
-                <Stack as={List} gap={3} mb={4}>
+                <Stack as={List} pl={0} gap={3} mb={4}>
                   <ListItem>
                     <HStack>
                       <FiCalendar size={20} />

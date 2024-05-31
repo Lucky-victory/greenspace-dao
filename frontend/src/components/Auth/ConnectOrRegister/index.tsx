@@ -1,18 +1,28 @@
-import { usePrivy } from "@privy-io/react-auth"
-import { LogoutButton } from "../Logout";
+import { usePrivy } from "@privy-io/react-auth";
 import { CustomConnectButton } from "../ConnectButton";
-import { useWallet } from "src/context/WalletProvider";
 import { LoginAndRegisterButtons } from "../LoginAndRegisterButtons";
+import { UserMenu } from "../UserMenu";
 
-export const ConnectOrLogout=({openModal}:{openModal:()=>void})=>{
-    const {ready,user}=usePrivy()
+import { useEffect } from "react";
+import { useWallet } from "src/context/WalletProvider";
 
-const {address}=useWallet()
-    return (
-        <>
-        {(ready && !address)&&<CustomConnectButton/>}
-        {(ready && address && !user)&& <LoginAndRegisterButtons openModal={openModal}/>  }
-        {(ready && address && user)&& <LogoutButton />  }
-        </>
-    )
-}
+export const ConnectOrLogout = ({ openModal }: { openModal: () => void }) => {
+  const { ready, user } = usePrivy();
+
+  const { address } = useWallet();
+  console.log({ address: address });
+
+  useEffect(() => {
+    console.log({ address: address }, "in effect");
+  }, [address]);
+
+  return (
+    <>
+      {ready && !address && <CustomConnectButton />}
+      {ready && address && !user && (
+        <LoginAndRegisterButtons openModal={openModal} />
+      )}
+      {ready && address && user && <UserMenu />}
+    </>
+  );
+};

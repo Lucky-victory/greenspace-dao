@@ -6,8 +6,6 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 import { useAppContext } from "src/context/state";
 
-
-import { ethers } from "ethers";
 import {
   Stack,
   Modal,
@@ -25,6 +23,8 @@ import {
   useToast,
   Text,
   Spinner,
+  IconButton,
+
 } from "@chakra-ui/react";
 import { NewUserType, RegisterType } from "src/components/NewUserType";
 
@@ -33,24 +33,24 @@ import SwiperMain from "swiper";
 import Icon from "../Icon";
 import NutritionistForm from "src/components/NutritionistForm";
 import { countries } from "src/utils/countries";
-import { useCustomSign, useDebounce } from "src/hooks/common";
+import { useDebounce } from "src/hooks/common";
 import { communityAbi } from "../../../abis";
 import { communityAddr } from "src/utils/constants";
-import { useStorageUpload } from "@thirdweb-dev/react";
-import {
-  useAddUserMutation,
-  useSendUserInfoToAIMutation,
-} from "src/state/services";
+
+import { useStorageUpload, useStorage } from "@thirdweb-dev/react";
+import { useAddUserMutation, useSendUserInfoToAIMutation } from "src/state/services";
 import { generateUsername } from "src/utils";
+
 
 import { parseEther, parseGwei } from "viem";
 
 import { useAccount } from "wagmi";
-import { simulateContract , writeContract,} from "@wagmi/core";
+import { simulateContract, writeContract } from "@wagmi/core";
 import { config } from "src/config/wagmi";
 import { useLogin, useSignMessage } from "@privy-io/react-auth";
 
 export interface RegisterFormFields {
+
   fullName: string;
   sex: string;
   country?: string;
@@ -64,8 +64,8 @@ export interface RegisterFormFields {
   sleepLength: string;
   overallHealth: string;
   birthDate: string;
-  smokingStopped?: string;  // Optional fields are marked with a question mark
-  smokingLength?: string;  // Optional fields are marked with a question mark
+  smokingStopped?: string; // Optional fields are marked with a question mark
+  smokingLength?: string; // Optional fields are marked with a question mark
 }
 const RegisterForm = ({
   isOpen,
@@ -78,36 +78,38 @@ const RegisterForm = ({
     createUser,
     { data: createdUser, isLoading: isCreatingUser, isSuccess },
   ] = useAddUserMutation();
-  const {signMessage}=useSignMessage()
-  // const { publicKey } = useWallet();
-  // const address = publicKey?.toBase58();
+  const { signMessage } = useSignMessage();
+
   const { address } = useAccount();
-  
+
   const [sendUserToAI, { data: userAIdataResponse }] =
-  useSendUserInfoToAIMutation();
+    useSendUserInfoToAIMutation();
   const userAIdata = userAIdataResponse?.data;
-  
+
   const toast = useToast({
     // duration: 3000,
     // position: 'top',
     // status: 'success',
     // title: 'Sign up was successful',
   });
-  
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
   const swiperRef = useRef<SwiperRef>();
   const swiperNestedRef = useRef<SwiperRef>();
   const [activeSlideIndex, setActiveSlideIndex] = useState(0);
   const [selectedUserType, setSelectedUserType] =
-  useState<RegisterType>("member");
+    useState<RegisterType>("member");
   const { user, setUser, allTokensData } = useAppContext();
   const [amount, setAmount] = useState("0.01");
   const debouncedAmount = useDebounce<string>(amount, 500);
   const [hasError, setHasError] = useState(false);
   const [inTx, setInTx] = useState(false);
- const validationSchema = Yup.object().shape({
+  const validationSchema = Yup.object().shape({
     fullName: Yup.string().required("Field is required"),
+    email: Yup.string()
+      .required("Field is required")
+      .email("please enter a valid email address"),
     sex: Yup.string().required("Field is required"),
     country: Yup.string().required("Field is required"),
     weight: Yup.string().required("Field is required"),
@@ -125,30 +127,54 @@ const RegisterForm = ({
   });
   const formOptions = { resolver: yupResolver(validationSchema) };
   const { register, handleSubmit, formState, reset } = useForm(formOptions);
-  
-const [formData,setFormData]=useState<RegisterFormFields|null>(null)
 
-  const {login} = useLogin({
-    onComplete:async function (user, isNewUser, wasAlreadyAuthenticated, loginMethod, loginAccount) {
+  const [formData, setFormData] = useState<RegisterFormFields | null>(null);
+
+  const { login } = useLogin({
+    onComplete: async function (
+      user,
+      isNewUser,
+      wasAlreadyAuthenticated,
+      loginMethod,
+      loginAccount
+    ) {
       // TODO: Add logic to handle new user, if the user does not exist, trigger them to register by redirecting them to an onboarding page oor modal.
-      console.log({ user, isNewUser, wasAlreadyAuthenticated, loginMethod, loginAccount });
-      if(isNewUser) {
-        await createUser({
-          fullName: formData?.fullName,authId:user?.id,
-          address: address!, 
-          userType: selectedUserType,
-        }).unwrap();
+      console.log({
+        user,
+        isNewUser,
+        wasAlreadyAuthenticated,
+        loginMethod,
+        loginAccount,
+      });
+      if (isNewUser) {
+        if (loginMethod === "google") {
+          await createUser({
+            fullName: user?.google?.name,
+            authId: user?.id,
+            email: user?.google?.email,
+            address: address!,
+            emailVerified: true,
+            userType: selectedUserType,
+          }).unwrap();
+        } else {
+          await createUser({
+            fullName: formData?.fullName,
+            authId: user?.id,
+            address: address!,
+            userType: selectedUserType,
+          }).unwrap();
+        }
         sendUserToAI(formData);
       }
-        setUser?.({
-          ...user,
-          userAddress: address,
-          userCidData: cid,
-          name: formData?.fullName,
-        });
+      setUser?.({
+        ...user,
+        userAddress: address,
+        userCidData: cid,
+        name: formData?.fullName,
+      });
     },
-  })
- 
+  });
+
   // get functions to build form with useForm() hook
   const { errors, isValid, isSubmitSuccessful } = formState;
   const [cid, setCid] = useState<string>("");
@@ -158,17 +184,15 @@ const [formData,setFormData]=useState<RegisterFormFields|null>(null)
   const registerUserTx = async () => {
     try {
       setInTx(true);
-      const {request}=await simulateContract(config,{
+      const { request } = await simulateContract(config, {
         address: communityAddr,
         abi: communityAbi as readonly unknown[],
         functionName: "registerUser",
         args: [cid, allTokensData.userNftUri],
         //@ts-ignore
         value: parseEther(debouncedAmount || "0"),
-      }
-
-      )
-      const hash  = await writeContract(config,request);
+      });
+      const hash = await writeContract(config, request);
 
       //toast.success("Registration Successful on Avalanche");
 
@@ -184,7 +208,6 @@ const [formData,setFormData]=useState<RegisterFormFields|null>(null)
       console.log(error);
     }
   };
-
 
   const onInvalidSubmit: SubmitErrorHandler<FieldValues> = (errors: any) => {
     if (!isValid) {
@@ -210,6 +233,8 @@ const [formData,setFormData]=useState<RegisterFormFields|null>(null)
         // Serialize the form data into a JSON object
         const formDataObject = {
           fullName: data.fullName,
+          email: data.email,
+          // country: data?.country,
           sex: data.sex,
           weight: data.weight,
           height: data.height,
@@ -224,35 +249,35 @@ const [formData,setFormData]=useState<RegisterFormFields|null>(null)
           smokingStopped: data.smokingStopped,
           smokingLength: data.smokingLength,
         };
-setFormData(formDataObject)
+        setFormData(formDataObject);
         const dataToUpload = [formDataObject];
         const cid = await upload({ data: dataToUpload });
         console.log("The index of 0 in the cid array: ", cid[0]);
         // console.log(chainId);
 
         setCid(cid[0]);
-        onClose()
-        login()
-//         setUser?.({
-//           ...user,
-//           userAddress: address,
-//           userCidData: cid[0],
-//           name: data.fullName,
-//         });
-// // await new Promise((resolve) => setTimeout(()=>resolve(login())));
-//         await createUser({
-//           fullName: data?.fullName,
-//           address: address!, 
-//           userType: selectedUserType,
-//         }).unwrap();
-//         sendUserToAI(formDataObject);
+        onClose();
+        login();
+        //         setUser?.({
+        //           ...user,
+        //           userAddress: address,
+        //           userCidData: cid[0],
+        //           name: data.fullName,
+        //         });
+        // // await new Promise((resolve) => setTimeout(()=>resolve(login())));
+        //         await createUser({
+        //           fullName: data?.fullName,
+        //           address: address!,
+        //           userType: selectedUserType,
+        //         }).unwrap();
+        //         sendUserToAI(formDataObject);
         //TODO: Call contract to register user
         // await registerUserTx();
         // await new Promise((resolve) => setTimeout(resolve, 2000));
         // if (address) {
-        
+
         //     await signMessage('Sign in to GreenspaceDAO');
-          
+
         // } else {
         //   // setSigned(false);
         // }
@@ -260,7 +285,6 @@ setFormData(formDataObject)
         // if (typeof window !== "undefined") {
         //   window.localStorage.setItem("userData", JSON.stringify(userAIdata));
         // }
-      
 
         reset();
         setIsSubmitting(false);
@@ -327,18 +351,19 @@ setFormData(formDataObject)
         size={"lg"}
       >
         <ModalOverlay />
-        <ModalContent>
+        <ModalContent rounded={"30px"} alignSelf={"center"}>
           <ModalHeader fontSize={{ lg: "3xl", base: "xl" }}>
             <HStack spacing={4} align={"center"}>
               {activeSlideIndex === 1 && (
-                <Button
-                  variant={"outline"}
+                <IconButton
+                  aria-label=""
+                  variant={"ghost"}
                   rounded={"full"}
                   size={"sm"}
                   onClick={() => swiperRef.current?.swiper.slidePrev()}
                 >
                   <Icon size={20} name="arrow_back" />
-                </Button>
+                </IconButton>
               )}
               <span>Register</span>
             </HStack>
@@ -390,6 +415,16 @@ setFormData(formDataObject)
                             />
                             <div className="text-red-500">
                               {errors.fullName?.message}
+                            </div>
+                          </div>
+                          <div>
+                            <Input
+                              className=" w-full max-w-[100%]"
+                              {...register("email")}
+                              placeholder="Email address"
+                            />
+                            <div className="text-red-500">
+                              {errors.email?.message}
                             </div>
                           </div>
                           <div>
@@ -448,6 +483,7 @@ setFormData(formDataObject)
 
                         <HStack my={6} justify={"flex-end"}>
                           <Button
+                            rounded={"full"}
                             colorScheme="gray"
                             onClick={() => swiperNestedNext()}
                           >
@@ -519,6 +555,7 @@ setFormData(formDataObject)
 
                         <HStack gap={4} my={6} justify={"flex-end"}>
                           <Button
+                            rounded={"full"}
                             colorScheme="gray"
                             variant={"outline"}
                             onClick={() => swiperNestedPrev()}
@@ -526,6 +563,7 @@ setFormData(formDataObject)
                             Back
                           </Button>
                           <Button
+                            rounded={"full"}
                             colorScheme="gray"
                             onClick={() => swiperNestedNext()}
                           >
@@ -621,6 +659,7 @@ setFormData(formDataObject)
 
                         <HStack gap={4} my={6} justify={"flex-end"}>
                           <Button
+                            rounded={"full"}
                             colorScheme="gray"
                             variant={"outline"}
                             onClick={() => swiperNestedPrev()}
@@ -628,6 +667,7 @@ setFormData(formDataObject)
                             Back
                           </Button>
                           <Button
+                            rounded={"full"}
                             colorScheme="gray"
                             onClick={() => swiperNestedNext()}
                           >
@@ -705,6 +745,7 @@ setFormData(formDataObject)
 
                         <HStack gap={4} my={6} justify={"flex-end"}>
                           <Button
+                            rounded={"full"}
                             variant={"outline"}
                             colorScheme="gray"
                             onClick={() => swiperNestedPrev()}
@@ -712,30 +753,359 @@ setFormData(formDataObject)
                             Back
                           </Button>
 
-                          <Button type="submit" isLoading={isSubmitting}>
+                          <Button
+                            rounded={"full"}
+                            colorScheme={"gs-yellow"}
+                            type="submit"
+                            isLoading={isSubmitting}
+                          >
                             Complete Sign Up
                           </Button>
                           {/* {isSubmitting && <Spinner />} */}
-                        </HStack>
-                      </SwiperSlide>
-                    </Swiper>
-                  </form>
-                )}
-                {selectedUserType === "nutritionist" &&
-                  activeSlideIndex === 1 && (
-                    <Box>
-                      <NutritionistForm closeFormModal={onClose} />
-                    </Box>
-                  )}
-              </SwiperSlide>
-            </Box>
-          </ModalBody>
 
-          <ModalFooter></ModalFooter>
-        </ModalContent>
-      </Modal>
-    </>
-  );
+
+                        </HStack>
+                        {hasError && activeSlideIndex > 0 && selectedUserType !== "nutritionist" && (
+                            <Text color="red.600" my={1} fontWeight={"medium"} fontSize={"md"} as={"span"}>
+                                Please fill out all fields
+                            </Text>
+                        )}
+                    </ModalHeader>
+                    <ModalCloseButton />
+                    <ModalBody>
+                        <Box
+                            as={Swiper}
+                            onActiveIndexChange={(swiper: SwiperMain) => {
+                                setActiveSlideIndex(swiper.activeIndex);
+                            }}
+                            ref={swiperRef as RefObject<SwiperRef>}
+                            allowTouchMove={false}
+                        >
+                            <SwiperSlide>
+                                <NewUserType
+                                    onClick={() => swiperRef.current?.swiper.slideNext()}
+                                    getValue={setSelectedUserType}
+                                />
+                            </SwiperSlide>
+                            <SwiperSlide>
+                                {selectedUserType == "member" && activeSlideIndex > 0 && (
+                                    <form onSubmit={handleSubmit(onValidSubmit, onInvalidSubmit)}>
+                                        <Swiper
+                                            nested
+                                            allowTouchMove={false}
+                                            ref={swiperNestedRef as RefObject<SwiperRef>}
+                                        >
+                                            <SwiperSlide>
+                                                <Stack spacing={5}>
+                                                    <div>
+                                                        <Input
+                                                            className=" w-full max-w-[100%]"
+                                                            {...register("fullName")}
+                                                            placeholder="Full name"
+                                                        />
+                                                        <div className="text-red-500">{errors.fullName?.message}</div>
+                                                    </div>
+                                                    <div>
+                                                        <Input
+                                                            type="date"
+                                                            id="start"
+                                                            {...register("birthDate")}
+                                                            className=" w-full max-w-[100%]"
+                                                        />
+                                                        <div className="text-red-500">{errors.birthDate?.message}</div>
+                                                    </div>
+                                                    <div>
+                                                        <Select
+                                                            className="Select w-full max-w-[100%]"
+                                                            {...register("country")}
+                                                            // placeholder="What's your biological sex?"
+                                                            defaultValue=""
+                                                        >
+                                                            <option value="" disabled>
+                                                                Select your country
+                                                            </option>
+
+                                                            {countries.map((country, i) => (
+                                                                <option key={"country" + i} value={country.name}>
+                                                                    {country.name}
+                                                                </option>
+                                                            ))}
+                                                        </Select>
+                                                        <div className="text-red-500">{errors.country?.message}</div>
+                                                    </div>
+                                                    <div>
+                                                        <Select
+                                                            className="Select w-full max-w-[100%]"
+                                                            {...register("sex")}
+                                                            // placeholder="What's your biological sex?"
+                                                            defaultValue=""
+                                                        >
+                                                            <option value="" disabled>
+                                                                What&apos;s your biological sex?
+                                                            </option>
+                                                            <option value="name">Male</option>
+                                                            <option value="female">Female</option>
+                                                        </Select>
+                                                        <div className="text-red-500">{errors.sex?.message}</div>
+                                                    </div>
+                                                </Stack>
+
+                                                <HStack my={6} justify={"flex-end"}>
+                                                    <Button colorScheme="gray" onClick={() => swiperNestedNext()}>
+                                                        Next
+                                                    </Button>
+                                                </HStack>
+                                            </SwiperSlide>
+
+                                            <SwiperSlide>
+                                                <Stack spacing={4}>
+                                                    <div>
+                                                        <Input
+                                                            className="Input w-full max-w-[100%]"
+                                                            {...register("weight")}
+                                                            placeholder="What's your weight in kg?"
+                                                        />
+                                                        <div className="text-red-500">{errors.weight?.message}</div>
+                                                    </div>
+                                                    <div>
+                                                        <Input
+                                                            className="Input w-full max-w-[100%]"
+                                                            {...register("height")}
+                                                            placeholder="What's your height in feet and inches?"
+                                                        />
+                                                        <div className="text-red-500">{errors.height?.message}</div>
+                                                    </div>
+                                                    <div>
+                                                        <Select
+                                                            className="Select w-full max-w-[100%]"
+                                                            {...register("diet")}
+                                                            // placeholder='Tell us about your diet?'
+                                                            defaultValue=""
+                                                        >
+                                                            <option value="" disabled>
+                                                                Tell us about your diet?
+                                                            </option>
+                                                            {dietOptions.map((diet, i) => (
+                                                                <option key={"diet" + i} value={diet}>
+                                                                    {diet}
+                                                                </option>
+                                                            ))}
+                                                        </Select>
+                                                        <div className="text-red-500">{errors.diet?.message}</div>
+                                                    </div>
+                                                    <div>
+                                                        <Select
+                                                            {...register("active")}
+                                                            className="Select w-full max-w-[100%]"
+                                                            defaultValue=""
+                                                        >
+                                                            <option value="" disabled>
+                                                                How active are you on an average week?
+                                                            </option>
+                                                            <option value="inactive">inactive</option>
+                                                            <option value="active">active</option>
+                                                            <option value="very active">very active</option>
+                                                        </Select>
+                                                        <div className="text-red-500">{errors.active?.message}</div>
+                                                    </div>
+                                                </Stack>
+
+                                                <HStack gap={4} my={6} justify={"flex-end"}>
+                                                    <Button
+                                                        colorScheme="gray"
+                                                        variant={"outline"}
+                                                        onClick={() => swiperNestedPrev()}
+                                                    >
+                                                        Back
+                                                    </Button>
+                                                    <Button colorScheme="gray" onClick={() => swiperNestedNext()}>
+                                                        Next
+                                                    </Button>
+                                                </HStack>
+                                            </SwiperSlide>
+                                            <SwiperSlide>
+                                                <Stack spacing={4}>
+                                                    <div>
+                                                        <Select
+                                                            {...register("sitting")}
+                                                            className="Select w-full max-w-[100%]"
+                                                            defaultValue=""
+                                                        >
+                                                            <option value="" disabled>
+                                                                How many hours a day are you sitting
+                                                            </option>
+                                                            {Array.from({ length: 23 }, (_, i) => (
+                                                                <option value={i + 1} key={"sitting" + i}>
+                                                                    {i + 1}
+                                                                </option>
+                                                            ))}
+                                                        </Select>
+                                                        <div className="text-red-500">{errors.sitting?.message}</div>
+                                                    </div>
+                                                    <div>
+                                                        <Select
+                                                            {...register("alcohol")}
+                                                            className="Select w-full max-w-[100%]"
+                                                            defaultValue=""
+                                                        >
+                                                            <option value="" disabled>
+                                                                How much alcohol do you drink
+                                                            </option>
+                                                            <option value="0 - 10 drinks a week">
+                                                                0 - 10 drinks a week
+                                                            </option>
+                                                            <option value="10 - 20 drinks a week">
+                                                                10 - 20 drinks a week
+                                                            </option>
+                                                            <option value="greater than 20 drinks a week">
+                                                                greater than 20 drinks a week
+                                                            </option>
+                                                        </Select>
+                                                        <div className="text-red-500">{errors.alcohol?.message}</div>
+                                                    </div>
+                                                    <div>
+                                                        <Select
+                                                            {...register("smoke")}
+                                                            className="Select w-full max-w-[100%]"
+                                                            defaultValue=""
+                                                        >
+                                                            <option value="" disabled>
+                                                                Do you smoke?
+                                                            </option>
+                                                            <option value="Never smoked">Never smoked</option>
+                                                            <option value="Ex smoker">Ex smoker</option>
+                                                            <option value="Current smoker">Current smoker</option>
+                                                        </Select>
+                                                        <div className="text-red-500">{errors.smoke?.message}</div>
+                                                    </div>
+                                                    <div>
+                                                        <Select
+                                                            {...register("smokingStopped")}
+                                                            className="Select w-full max-w-[100%]"
+                                                            defaultValue=""
+                                                        >
+                                                            <option value="" disabled>
+                                                                If you are an ex-smoker, how many months ago did you
+                                                                stop?
+                                                            </option>
+                                                            <option value="less than 6 months ago">
+                                                                less than 6 months ago
+                                                            </option>
+                                                            <option value="six to twelve months ago">
+                                                                six to twelve months ago
+                                                            </option>
+                                                            <option value="more than twelve months ago">
+                                                                more than twelve months ago
+                                                            </option>
+                                                        </Select>
+                                                    </div>
+                                                </Stack>
+
+                                                <HStack gap={4} my={6} justify={"flex-end"}>
+                                                    <Button
+                                                        colorScheme="gray"
+                                                        variant={"outline"}
+                                                        onClick={() => swiperNestedPrev()}
+                                                    >
+                                                        Back
+                                                    </Button>
+                                                    <Button colorScheme="gray" onClick={() => swiperNestedNext()}>
+                                                        Next
+                                                    </Button>
+                                                </HStack>
+                                            </SwiperSlide>
+                                            <SwiperSlide>
+                                                <Stack spacing={4}>
+                                                    <div>
+                                                        <Select
+                                                            {...register("smokingLength")}
+                                                            className="Select w-full max-w-[100%]"
+                                                            defaultValue=""
+                                                        >
+                                                            <option value="" disabled>
+                                                                If you are a current smoker, how many cigarettes do you
+                                                                smoke per day?
+                                                            </option>
+                                                            {smokingOptions.map((smokingOpt, i) => (
+                                                                <option key={"smokingOpt" + i} value={smokingOpt}>
+                                                                    {smokingOpt}
+                                                                </option>
+                                                            ))}
+                                                        </Select>
+                                                    </div>
+                                                    <div>
+                                                        <Select
+                                                            {...register("sleepLength")}
+                                                            className="Select w-full max-w-[100%]"
+                                                            defaultValue=""
+                                                        >
+                                                            <option value="" disabled>
+                                                                How many hours of sleep do you get per day?
+                                                            </option>
+                                                            {Array.from({ length: 13 }, (_, item) => (
+                                                                <option value={item + 1} key={"sleepLength" + item}>
+                                                                    {item + 1}
+                                                                </option>
+                                                            ))}
+                                                        </Select>
+                                                        <div className="text-red-500">
+                                                            {errors.sleepLength?.message}
+                                                        </div>
+                                                    </div>
+                                                    <div>
+                                                        <Select
+                                                            {...register("overallHealth")}
+                                                            className="Select w-full max-w-[100%]"
+                                                            defaultValue=""
+                                                        >
+                                                            <option value="" disabled>
+                                                                Rate your overall Health
+                                                            </option>
+                                                            {overallHealthOptions.map((healthOpt, i) => (
+                                                                <option key={"overallHealth" + i} value={healthOpt}>
+                                                                    {healthOpt}
+                                                                </option>
+                                                            ))}
+                                                        </Select>
+                                                        <div className="text-red-500">
+                                                            {errors.overallHealth?.message}
+                                                        </div>
+                                                    </div>
+                                                </Stack>
+
+                                                <HStack gap={4} my={6} justify={"flex-end"}>
+                                                    <Button
+                                                        variant={"outline"}
+                                                        colorScheme="gray"
+                                                        onClick={() => swiperNestedPrev()}
+                                                    >
+                                                        Back
+                                                    </Button>
+
+                                                    <Button type="submit" isLoading={isSubmitting}>
+                                                        Complete Sign Up
+                                                    </Button>
+                                                    {/* {isSubmitting && <Spinner />} */}
+                                                </HStack>
+                                            </SwiperSlide>
+                                        </Swiper>
+                                    </form>
+                                )}
+                                {selectedUserType === "nutritionist" && activeSlideIndex === 1 && (
+                                    <Box>
+                                        <NutritionistForm closeFormModal={onClose} />
+                                    </Box>
+                                )}
+                            </SwiperSlide>
+                        </Box>
+                    </ModalBody>
+
+                    <ModalFooter></ModalFooter>
+                </ModalContent>
+            </Modal>
+        </>
+    );
 };
 
 export default RegisterForm;
+

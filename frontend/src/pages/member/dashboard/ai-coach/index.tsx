@@ -14,7 +14,8 @@ import { TextContentBlock } from "openai/resources/beta/threads/messages";
 import DashBoardLayout from "src/components/MemberDashboardLayout";
 
 import { Box, Textarea } from "@chakra-ui/react";
-import { useAuth } from "src/hooks/common";
+import { useInAppAuth } from "src/hooks/common";
+import { useAccount } from "wagmi";
 
 const samplePrompts = [
   "What nutrition is best for a female BMI of 20?",
@@ -32,9 +33,8 @@ interface ChatState {
 }
 
 const AiCoachPage = () => {
-  // const { publicKey } = useWallet();
-  const {session} = useAuth()
-  const address=session?.user?.address
+  // const {user}=useInAppAuth()
+  // const {address} =useAccount()
   const [state, updateState] = useReducer(
     (current: ChatState, update: Partial<ChatState>): ChatState => ({
       ...current,
@@ -54,9 +54,7 @@ const AiCoachPage = () => {
   const [activeResponse, setActiveResponse] = useState("");
 
   // Ref for the socket instance
-  const socketRef = useRef<Socket<DefaultEventsMap, DefaultEventsMap> | null>(
-    null
-  );
+  const socketRef = useRef<Socket<DefaultEventsMap, DefaultEventsMap> | null>(null);
   // Ref to store the latest state
   const stateRef = useRef(state);
   const activeResponseRef = useRef(activeResponse);
@@ -251,29 +249,20 @@ const AiCoachPage = () => {
                   </p>
                   <div className="flex gap-4">
                     {samplePrompts.map((body, index) => (
-                      <SamplePromptsCard
-                        key={index}
-                        title={"Chat"}
-                        body={body}
-                      />
+                      <SamplePromptsCard key={index} title={"Chat"} body={body} />
                     ))}
                   </div>
                 </div>
 
                 <div className="flex flex-col gap-8 items-center">
-                  {state.thread_threadIds
-                    ?.split(" ")
-                    .map((threadIdWithDate: string) => {
-                      const [threadId, date] = threadIdWithDate.split("::");
-                      return (
-                        <div
-                          key={threadId}
-                          onClick={() => handleGetThread(threadId)}
-                        >
-                          {threadId} {date}
-                        </div>
-                      );
-                    })}
+                  {state.thread_threadIds?.split(" ").map((threadIdWithDate: string) => {
+                    const [threadId, date] = threadIdWithDate.split("::");
+                    return (
+                      <div key={threadId} onClick={() => handleGetThread(threadId)}>
+                        {threadId} {date}
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             ) : (

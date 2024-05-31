@@ -13,26 +13,46 @@ export type USER = {
   role?: "admin" | "user";
   avatar?: string;
   authId?: string;
-  email: string;
-  userType?: "member" | "nutritionist";
-  emailVerified: boolean;
-  username: string;
-};
-export type Nutritionist = {
-  fullName: string;
-  location: string;
-  bio?: string;
-  id: number;
-  isVerified?: boolean;
-  address?: string;
-  role?: "admin" | "user";
-  avatar?: string;
-  authId?: string;
   email?: string;
   userType?: "member" | "nutritionist";
   emailVerified?: boolean;
-  username?: string;
+  username: string;
+  userCid: string;
 };
+export type Sex = "male" | "female" | "other";
+
+export type VerificationStatus = "verified" | "pending" | "rejected";
+
+export type Nutritionist = {
+  fullName: string;
+  country: string;
+  bio?: string;
+  id: number;
+  city?: string;
+  verificationStatus: VerificationStatus;
+  sex: Sex;
+  address: string;
+  avatar?: string;
+  authId?: string;
+  email: string;
+  emailVerified?: boolean;
+  username: string;
+  birthDate: string | Date;
+  credentialsCid?: string;
+};
+export type NEW_NUTRITIONIST = Pick<
+  Nutritionist,
+  | "address"
+  | "authId"
+  | "emailVerified"
+  | "email"
+  | "fullName"
+  | "sex"
+  | "city"
+  | "country"
+  | "birthDate"
+  | "credentialsCid"
+>;
 export type USER_SESSION = {
   user: Pick<
     USER,
@@ -52,7 +72,16 @@ export type USER_SESSION = {
 
 export type NEW_USER = Pick<
   USER,
-  "address" | "chainId" | "fullName" | "avatar" | "authId" | "userType"
+
+  | "address"
+  | "chainId"
+  | "fullName"
+  | "avatar"
+  | "authId"
+  | "userType"
+  | "email"
+  | "emailVerified"
+
 >;
 export type MEETING = {
   id: number;

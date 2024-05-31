@@ -31,9 +31,6 @@ export const GET: HTTP_METHOD_CB = async (
     let { username } = req.query;
 
     const user = await db.query.users.findFirst({
-      columns: {
-        password: false,
-      },
       where: or(
         eq(users.username, username as string),
         eq(users.authId, username as string),

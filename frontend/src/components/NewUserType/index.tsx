@@ -40,7 +40,13 @@ export const NewUserType = ({
           </Radio>
         </Stack>
       </RadioGroup>
-      <Button px={"8"} my={6} onClick={() => onClick?.()}>
+      <Button
+        px={"8"}
+        my={6}
+        onClick={() => onClick?.()}
+        rounded={"full"}
+        colorScheme="gs-green"
+      >
         Continue
       </Button>
     </Box>

@@ -1,5 +1,6 @@
-import { Box, Heading, Text } from "@chakra-ui/react";
+import { Box, Heading, Text, Stack } from "@chakra-ui/react";
 import MarkdownRenderer from "src/components/MarkdownRenderer";
+import { TabHeading } from "../../TabHeading";
 
 export default function About({
   spaceIdOrId,
@@ -9,10 +10,8 @@ export default function About({
   description: string;
 }) {
   return (
-    <>
-      <Heading size={"lg"} fontWeight={600} mb={5}>
-        About this community
-      </Heading>
+    <Stack flex={1} maxH={"full"} overflowY={"auto"} pb={6}>
+      <TabHeading title="About this community" />
 
       {description && <MarkdownRenderer markdown={description} />}
       {!description && (
@@ -20,6 +19,6 @@ export default function About({
           No description provided
         </Text>
       )}
-    </>
+    </Stack>
   );
 }

@@ -9,9 +9,9 @@ import {
   Flex,
 } from "@chakra-ui/react";
 import { Link } from "@chakra-ui/next-js";
-import { useGetCommunitiesQuery } from "src/state/services";
 import MarkdownRenderer from "src/components/MarkdownRenderer";
 import { shortenText } from "src/utils";
+import isEmpty from "just-is-empty";
 export default function EventCards({
   spaceIdOrId,
   event,
@@ -48,7 +48,7 @@ export default function EventCards({
           h={"full"}
           objectFit={"cover"}
           alt=""
-          src={"/assets/community-dp.png"}
+          src={event?.coverImage || "/assets/community-dp.png"}
         />
       </Box>
       <Stack flex={1}>
@@ -57,20 +57,15 @@ export default function EventCards({
           <MarkdownRenderer markdown={shortenText(event?.details, 150)} />
         </Box>
         <Box>
-          <HStack>
-            <Text as={"span"} {...tagStyles}>
-              Health
-            </Text>
-            <Text as={"span"} {...tagStyles}>
-              Fun
-            </Text>
-            <Text as={"span"} {...tagStyles}>
-              Meetup
-            </Text>
-            <Text as={"span"} {...tagStyles}>
-              Grow
-            </Text>
-          </HStack>
+          {!isEmpty(event?.tags) && (
+            <HStack>
+              {event?.tags.map((tag: { name: string }) => (
+                <Text as={"span"} {...tagStyles}>
+                  {tag?.name}
+                </Text>
+              ))}
+            </HStack>
+          )}
           <Button
             rounded={"full"}
             mt={4}

@@ -4,9 +4,9 @@ export const CardLoading = ({ isLoaded = false }: { isLoaded?: boolean }) => {
     <HStack wrap={{ base: "wrap", md: "nowrap" }}>
       <Skeleton
         w={{ md: 200, base: "full" }}
-        minH={{ md: "100%", base: 200 }}
+        h={{ md: "150px", base: 200 }}
         maxH={{ base: 250 }}
-        bg={"gay.900"}
+        bg={"gray.900"}
         rounded={"8px"}
       ></Skeleton>
       <Stack flex={1}>

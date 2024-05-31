@@ -1,10 +1,8 @@
-import { useAuth } from "src/hooks/common";
+import { useInAppAuth } from "src/hooks/common";
 import {
   useAddMeetingMutation,
   useCreateRoomMutation,
 } from "src/state/services";
-import { update } from "src/state/slices";
-import { useAppDispatch } from "src/state/store";
 
 import {
   Button,
@@ -20,7 +18,7 @@ import { KeyboardEvent, useState } from "react";
 
 export default function NewMeeting() {
   const router = useRouter();
-  const { user } = useAuth();
+  const { user } = useInAppAuth();
   const [meetingTitle, setMeetingTitle] = useState("Health discussions");
   const [isSending, setIsSending] = useState(false);
 
@@ -47,7 +45,7 @@ export default function NewMeeting() {
       await addMeeting({
         roomId: roomId as string,
         title: meetingTitle,
-        userId: user?.authId,
+        userId: user?.id,
       }).unwrap();
 
       setIsSending(false);

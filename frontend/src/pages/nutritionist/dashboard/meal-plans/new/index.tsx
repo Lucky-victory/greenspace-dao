@@ -1,10 +1,7 @@
-import { Box, Button, Flex, FormLabel, HStack, Input, Select, Stack, Text, Textarea, useToast } from "@chakra-ui/react";
+import { Box, Button, Flex, FormLabel, HStack, Input, Select, Stack, Textarea, useToast } from "@chakra-ui/react";
 import NutritionistDashboardLayout from "src/components/NutritionistDashboardLayout";
 import { ChangeEvent, useCallback, useEffect, useState } from "react";
-import ReactMde from "react-mde";
 
-import "react-mde/lib/styles/css/react-mde-all.css";
-import MarkdownRenderer from "src/components/MarkdownRenderer";
 import DragAndDropImage from "src/components/DragAndDropImage";
 
 import { generateSlug } from "src/utils";
@@ -12,9 +9,8 @@ import { generateSlug } from "src/utils";
 import { useRouter } from "next/router";
 import { NewMealPlan, PostStatus } from "src/types/shared";
 import { useAddMealPlanMutation } from "src/state/services";
-import { useAppContext } from "src/context/state";
 import { useInAppAuth } from "src/hooks/common";
-import { resolveIPFSURI, uploadToThirdWeb } from "src/helpers";
+import { resolveIPFSURI } from "src/helpers";
 import { useStorageUpload } from "@thirdweb-dev/react";
 import TextEditor from "src/components/TextEditor";
 

@@ -1,19 +1,15 @@
 import { Box, Button, Flex, HStack, Input, Stack, Textarea, useToast } from "@chakra-ui/react";
 import NutritionistDashboardLayout from "src/components/NutritionistDashboardLayout";
 import { ChangeEvent, useCallback, useEffect, useState } from "react";
-import ReactMde from "react-mde";
 
-import "react-mde/lib/styles/css/react-mde-all.css";
-import MarkdownRenderer from "src/components/MarkdownRenderer";
+
 import DragAndDropImage from "src/components/DragAndDropImage";
 
 import { generateSlug } from "src/utils";
 
 import { useRouter } from "next/router";
-import { NewArticle, NewFitnessPlan, PostStatus } from "src/types/shared";
-import { useAddArticleMutation, useAddFitnessPlanMutation } from "src/state/services";
-import { shortenText } from "src/utils";
-import { useAppContext } from "src/context/state";
+import { NewFitnessPlan, PostStatus } from "src/types/shared";
+import { useAddFitnessPlanMutation } from "src/state/services";
 import { useInAppAuth } from "src/hooks/common";
 import { useStorageUpload } from "@thirdweb-dev/react";
 import { resolveIPFSURI } from "src/helpers";

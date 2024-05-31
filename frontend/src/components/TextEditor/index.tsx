@@ -2,13 +2,7 @@ import Highlight from "@tiptap/extension-highlight";
 import TextAlign from "@tiptap/extension-text-align";
 import { Editor, EditorProvider, useCurrentEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
-import {
-  forwardRef,
-  useCallback,
-  useEffect,
-  useImperativeHandle,
-  useState,
-} from "react";
+import { forwardRef, useCallback, useEffect, useImperativeHandle, useState } from "react";
 import Typography from "@tiptap/extension-typography";
 import Image from "@tiptap/extension-image";
 import Link from "@tiptap/extension-link";
@@ -27,9 +21,7 @@ const TextEditor = forwardRef<
     returnMarkdown?: boolean;
   }
 >(({ onContentChange, initialValue, returnMarkdown = true }, ref) => {
-  const [editorContent, setEditorContent] = useState<string>(
-    initialValue || ""
-  );
+  const [editorContent, setEditorContent] = useState<string>(initialValue || "");
   const { editor } = useCurrentEditor();
   const { markdown, updateHtml } = useHTMLToMarkdownConverter();
   const extensions = [
@@ -58,6 +50,7 @@ const TextEditor = forwardRef<
         editor?.commands?.clearContent();
       },
     }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [initialValue]
   );
 
@@ -65,7 +58,7 @@ const TextEditor = forwardRef<
     (content: string) => {
       onContentChange(content);
     },
-    [onContentChange, editorContent]
+    [onContentChange]
   );
 
   function handleEditorUpdate(editor: Editor) {
@@ -98,4 +91,5 @@ const TextEditor = forwardRef<
   );
 });
 
+TextEditor.displayName = "TextEditor";
 export default TextEditor;

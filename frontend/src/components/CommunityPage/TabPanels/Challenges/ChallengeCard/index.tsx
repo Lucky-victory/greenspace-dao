@@ -58,8 +58,8 @@ export default function ChallengeCard({
           {!isEmpty(challenge?.tags) && (
 
             <HStack>
-              {challenge?.tags.map((tag:{name:string}) => (
-                <Text as={"span"} {...tagStyles}>
+              {challenge?.tags.map((tag:{name:string},i:number) => (
+                <Text as={"span"} {...tagStyles} key={tag?.name+i}>
                   {tag?.name}
                 </Text>
              ) )}

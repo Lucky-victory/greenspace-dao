@@ -1,28 +1,17 @@
 import { db } from "src/db";
 import { appointments } from "src/db/schema";
-import {
-  HTTP_METHOD_CB,
-  errorHandlerCallback,
-  mainHandler,
-  successHandlerCallback,
-} from "src/utils";
+import { HTTP_METHOD_CB, errorHandlerCallback, mainHandler, successHandlerCallback } from "src/utils";
 import { eq, or } from "drizzle-orm";
 import isEmpty from "just-is-empty";
 import { NextApiRequest, NextApiResponse } from "next";
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   return mainHandler(req, res, {
     GET,
   });
 }
 
-export const GET: HTTP_METHOD_CB = async (
-  req: NextApiRequest,
-  res: NextApiResponse
-) => {
+export const GET: HTTP_METHOD_CB = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     const { slugId } = req.query as { slugId: string };
 
@@ -36,7 +25,6 @@ export const GET: HTTP_METHOD_CB = async (
             fullName: true,
             avatar: true,
             username: true,
-            userType: true,
           },
         },
         nutritionist: {
@@ -46,7 +34,6 @@ export const GET: HTTP_METHOD_CB = async (
             fullName: true,
             avatar: true,
             username: true,
-            userType: true,
           },
         },
       },

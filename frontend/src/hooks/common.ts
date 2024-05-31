@@ -37,6 +37,7 @@ export function useHTMLToMarkdownConverter() {
     if (html) {
       setMarkdown(turndownService.turndown(html));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [html]);
 
   const updateHtml = useCallback((newHtml: string) => {
@@ -50,8 +51,7 @@ export const useScrollToBottom = (triggerOnLoad = false) => {
 
   const scrollToBottom = () => {
     if (chatContainerRef.current) {
-      chatContainerRef.current.scrollTop =
-        chatContainerRef.current.scrollHeight;
+      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
     }
   };
 
@@ -59,7 +59,7 @@ export const useScrollToBottom = (triggerOnLoad = false) => {
     if (triggerOnLoad) {
       scrollToBottom();
     }
-  }, []);
+  }, [triggerOnLoad]);
 
   const scrollToBottomOnNewMessage = () => {
     scrollToBottom();
@@ -211,9 +211,7 @@ export const useAuth = () => {
   };
 };
 
-export const useActiveTab = (
-  paramName: string = "tab"
-): [string, (tabName: string) => void] => {
+export const useActiveTab = (paramName: string = "tab"): [string, (tabName: string) => void] => {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState("");
 

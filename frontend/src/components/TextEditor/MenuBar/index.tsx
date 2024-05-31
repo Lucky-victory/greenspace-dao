@@ -84,27 +84,12 @@ export const MenuBar = () => {
       }
 
       // update link
-      editor
-        ?.chain()
-        .focus()
-        .extendMarkRange("link")
-        .setLink({ href: url })
-        .run();
+      editor?.chain().focus().extendMarkRange("link").setLink({ href: url }).run();
       onClose();
     },
   });
   const [isUploadingImage, setIsUploadingImage] = useState<boolean>(false);
   const { files, resetImages, open: openFileUpload } = useDragAndDropImage();
-  if (!editor) {
-    return null;
-  }
-  const openLinkModal = useCallback(() => {
-    onOpen();
-  }, []);
-
-  function handleUploadOpen() {
-    openFileUpload();
-  }
   useEffect(() => {
     async function handleImageUpload() {
       if (isEmpty(files)) return;
@@ -122,7 +107,16 @@ export const MenuBar = () => {
       } catch (error) {}
     }
     handleImageUpload();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [files]);
+  if (!editor) {
+    return <></>;
+  }
+
+  function handleUploadOpen() {
+    openFileUpload();
+  }
+
   return (
     <HStack
       wrap={"wrap"}
@@ -290,28 +284,14 @@ export const MenuBar = () => {
       >
         <BsImage size={20} />
       </IconButton>
-      <Popover
-        onClose={onClose}
-        onOpen={onOpen}
-        isOpen={isOpen}
-        initialFocusRef={initialFocusRef}
-      >
+      <Popover onClose={onClose} onOpen={onOpen} isOpen={isOpen} initialFocusRef={initialFocusRef}>
         <PopoverTrigger>
-          <IconButton
-            aria-label=""
-            {...btnStyles}
-            variant={editor.isActive("link") ? "solid" : "ghost"}
-          >
+          <IconButton aria-label="" {...btnStyles} variant={editor.isActive("link") ? "solid" : "ghost"}>
             <BsLink size={20} />
           </IconButton>
         </PopoverTrigger>
         <Portal>
-          <PopoverContent
-            zIndex={100000}
-            bg={"gray.800"}
-            borderColor="gray.800"
-            py={4}
-          >
+          <PopoverContent zIndex={100000} bg={"gray.800"} borderColor="gray.800" py={4}>
             <PopoverArrow />
             <PopoverCloseButton />
             <PopoverHeader fontWeight="bold" border="0">
@@ -323,9 +303,7 @@ export const MenuBar = () => {
                 /* @ts-ignore */
                 onSubmit={(e) => {
                   e.preventDefault();
-                  formik.handleSubmit(
-                    e as unknown as FormEvent<HTMLFormElement>
-                  );
+                  formik.handleSubmit(e as unknown as FormEvent<HTMLFormElement>);
                 }}
               >
                 <Input

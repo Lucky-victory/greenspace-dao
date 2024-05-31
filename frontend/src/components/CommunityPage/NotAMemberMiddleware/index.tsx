@@ -1,11 +1,7 @@
 import { Box, Button, Flex, Text } from "@chakra-ui/react";
-import { ReactNode, useEffect } from "react";
+import { ReactNode, useCallback, useEffect } from "react";
 import { useInAppAuth } from "src/hooks/common";
-import {
-  useCheckHasJoinCommunityMutation,
-  useGetCommunityQuery,
-  useJoinCommunityMutation,
-} from "src/state/services";
+import { useCheckHasJoinCommunityMutation, useGetCommunityQuery, useJoinCommunityMutation } from "src/state/services";
 import { Community } from "src/types/shared";
 
 type Props = {
@@ -29,8 +25,7 @@ export const NotAMemberMiddlewareComp = ({
     spaceIdOrId,
   });
   const community = communityResponse?.data!;
-  const [joinCommunity, { isLoading: isLoadingJoin }] =
-    useJoinCommunityMutation();
+  const [joinCommunity, { isLoading: isLoadingJoin }] = useJoinCommunityMutation();
 
   async function handleCommunityJoin() {
     if (!isLoggedIn) {
@@ -49,22 +44,21 @@ export const NotAMemberMiddlewareComp = ({
       spaceIdOrId: community?.spaceId,
     }).unwrap();
   }
-  const [
-    checkCommunityJoin,
-    { isLoading: isLoadingHasJoin, data: hasJoinResponse },
-  ] = useCheckHasJoinCommunityMutation();
+  const [checkCommunityJoin, { isLoading: isLoadingHasJoin, data: hasJoinResponse }] =
+    useCheckHasJoinCommunityMutation();
   const hasJoined = hasJoinResponse?.data?.hasJoined;
 
+  const checkCommunityJoinCb = useCallback(checkCommunityJoin, [isLoggedIn, spaceIdOrId, checkCommunityJoin]);
   useEffect(() => {
     if (isLoggedIn && community?.id) {
-      checkCommunityJoin({
+      checkCommunityJoinCb({
         communityId: community?.id,
         userId: user?.id as string,
 
         spaceIdOrId: community?.spaceId,
       });
     }
-  }, [isLoggedIn, user?.id as string, community?.id]);
+  }, [isLoggedIn, user?.id, community?.spaceId, community?.id, checkCommunityJoinCb]);
   return (
     <>
       {!isLoadingHasJoin && hasJoined && children ? children : <></>}

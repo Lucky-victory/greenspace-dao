@@ -37,13 +37,13 @@ export default function EventPage({
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const { connect, isLoggedIn, user } = useInAppAuth();
   const router = useRouter();
-  const eventId = eventIdFromServer || (router.query?.eventId as string);
+  const eventSlug = eventIdFromServer || (router.query?.eventId as string);
   const {
     data: eventResponse,
     isLoading,
     isFetching,
   } = useGetCommunityEventQuery({
-    slugId: eventId,
+    slugId: eventSlug,
   });
   const event = eventResponse?.data;
 
@@ -71,19 +71,23 @@ export default function EventPage({
     await joinEvent({
       eventId: event?.id,
       userId: user?.id as string,
-      slugId: eventId,
+      slugId: eventSlug,
     }).unwrap();
   }
 
-  useEffect(() => {
-    if (isLoggedIn && event?.id) {
-      checkEventJoin({
-        eventId: event?.id,
-        userId: user?.id as string,
-        slugId: eventId,
-      });
-    }
-  }, [isLoadingJoin, isLoading, isLoggedIn, user?.id, event?.id]);
+  useEffect(
+    () => {
+      if (isLoggedIn && event?.id) {
+        checkEventJoin({
+          eventId: event?.id,
+          userId: user?.id as string,
+          slugId: eventSlug,
+        });
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [isLoadingJoin, isLoading, isLoggedIn, user?.id, event?.id, eventSlug]
+  );
   return (
     <>
       <Head>

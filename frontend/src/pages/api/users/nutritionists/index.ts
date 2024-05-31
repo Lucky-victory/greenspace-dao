@@ -11,31 +11,28 @@ import { and, eq, or } from "drizzle-orm";
 import { NextApiRequest, NextApiResponse } from "next";
 import { VerificationStatus } from "src/state/types";
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   return mainHandler(req, res, {
     GET,
     POST,
   });
 }
 
-export const GET: HTTP_METHOD_CB = async (
-  req: NextApiRequest,
-  res: NextApiResponse
-) => {
+export const GET: HTTP_METHOD_CB = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     const { status = "verified" } = req.query;
+
     const verificationStatus = status as VerificationStatus;
 
     const nutritionists = await db.query.nutritionists.findMany({
       columns: {
         email: false,
       },
-      where(fields, operators) {
-        return operators.eq(fields.verificationStatus, verificationStatus);
-      },
+      ...(status !== "all" && {
+        where(fields, operators) {
+          return operators.eq(fields.verificationStatus, verificationStatus);
+        },
+      }),
     });
     return successHandlerCallback(req, res, {
       message: "nutritionists retrieved successfully",
@@ -48,10 +45,7 @@ export const GET: HTTP_METHOD_CB = async (
     });
   }
 };
-export const POST: HTTP_METHOD_CB = async (
-  req: NextApiRequest,
-  res: NextApiResponse
-) => {
+export const POST: HTTP_METHOD_CB = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     const { authId, email, address, birthDate, ...data } = req.body;
     const existingNutritionist = await db.query.nutritionists.findFirst({

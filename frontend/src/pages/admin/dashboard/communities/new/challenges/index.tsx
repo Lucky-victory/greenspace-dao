@@ -168,7 +168,7 @@ const NewChallengePage = ({
 
   useEffect(() => {
     formik.setFieldValue("details", detailsContent);
-    console.log({ vv: formik.values });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [detailsContent]);
   return (
     <DashboardLayout>

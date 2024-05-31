@@ -2,18 +2,7 @@ import { HeaderNav } from "src/components/HeaderNav";
 import Head from "next/head";
 import PageWrapper from "src/components/PageWrapper";
 import PageLoader from "src/components/PageLoader";
-import {
-  Box,
-  Button,
-  Flex,
-  HStack,
-  Heading,
-  Image,
-  List,
-  ListItem,
-  Stack,
-  Text,
-} from "@chakra-ui/react";
+import { Box, Button, Flex, HStack, Heading, Image, List, ListItem, Stack, Text } from "@chakra-ui/react";
 import MarkdownRenderer from "src/components/MarkdownRenderer";
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 import {
@@ -36,22 +25,18 @@ export default function EventPage({
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const { connect, isLoggedIn, user } = useInAppAuth();
   const router = useRouter();
-  const challengeId =
-    challengeIdFromServer || (router.query?.challengeId as string);
+  const challengeSlug = challengeIdFromServer || (router.query?.challengeId as string);
   const {
     data: challengeResponse,
     isLoading,
     isFetching,
   } = useGetCommunityChallengeQuery({
-    slugId: challengeId,
+    slugId: challengeSlug,
   });
   const challenge = challengeResponse?.data;
-  const [joinChallenge, { isLoading: isLoadingJoin }] =
-    useJoinCommunityChallengeMutation();
-  const [
-    checkChallengeJoin,
-    { isLoading: isLoadingHasJoin, data: hasJoinResponse },
-  ] = useCheckHasJoinCommunityChallengeMutation();
+  const [joinChallenge, { isLoading: isLoadingJoin }] = useJoinCommunityChallengeMutation();
+  const [checkChallengeJoin, { isLoading: isLoadingHasJoin, data: hasJoinResponse }] =
+    useCheckHasJoinCommunityChallengeMutation();
   const hasJoined = hasJoinResponse?.data?.hasJoined;
   function formatDate(date: Date | string, fmt: string = "MMM d, yyyy") {
     if (isEmpty(date)) return "";
@@ -70,7 +55,7 @@ export default function EventPage({
     await joinChallenge({
       challengeId: challenge?.id,
       userId: user?.id as string,
-      slugId: challengeId,
+      slugId: challengeSlug,
     }).unwrap();
   }
 
@@ -79,10 +64,11 @@ export default function EventPage({
       checkChallengeJoin({
         challengeId: challenge?.id,
         userId: user?.id as string,
-        slugId: challengeId,
+        slugId: challengeSlug,
       });
     }
-  }, [isLoadingJoin, isLoading, isLoggedIn, user?.id, challenge?.id]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLoadingJoin, isLoading, isLoggedIn, user?.id, challenge?.id, challengeSlug]);
   return (
     <>
       <Head>
@@ -99,15 +85,9 @@ export default function EventPage({
         <meta property="og:locale:alternate" content="en_US" />
         <meta property="og:locale:alternate" content="en_GB" />
       </Head>
-      <PageLoader
-        isLoading={isLoading || isFetching}
-        text="Fetching challenge..."
-      >
+      <PageLoader isLoading={isLoading || isFetching} text="Fetching challenge...">
         <HeaderNav />
-        <PageWrapper
-          props={{ pt: 30, px: { base: 4, md: 5, lg: 8 } }}
-          bg="transaprent"
-        >
+        <PageWrapper props={{ pt: 30, px: { base: 4, md: 5, lg: 8 } }} bg="transaprent">
           <Box>
             <Box
               mb={16}
@@ -153,23 +133,16 @@ export default function EventPage({
                 bg={"blackAlpha.800"}
               >
                 <Heading mb={4} size={{ base: "xl", md: "2xl" }}>
-                  {challenge?.title} (Starts{" "}
-                  {formatDate(challenge?.startDate, "MMM")}{" "}
+                  {challenge?.title} (Starts {formatDate(challenge?.startDate, "MMM")}{" "}
                   {formatDateWithOrdinal(challenge?.startDate)})
                 </Heading>
                 <Text fontSize={"lg"}>
-                  Challenge dates: {formatDate(challenge?.startDate)} -{" "}
-                  {formatDate(challenge?.endDate)}
+                  Challenge dates: {formatDate(challenge?.startDate)} - {formatDate(challenge?.endDate)}
                 </Text>
               </Box>
             </Box>
           </Box>
-          <Flex
-            align={"flex-start"}
-            wrap={{ base: "wrap", lg: "nowrap" }}
-            gap={{ base: 12, lg: 10 }}
-            mb={10}
-          >
+          <Flex align={"flex-start"} wrap={{ base: "wrap", lg: "nowrap" }} gap={{ base: 12, lg: 10 }} mb={10}>
             <Box>
               <Heading size={"xl"} fontWeight={600} mb={4}>
                 Challenge Information
@@ -198,10 +171,7 @@ export default function EventPage({
                         <Text as={"span"} color={"gray.400"}>
                           Start Date:
                         </Text>{" "}
-                        {formatDate(
-                          challenge?.startDate,
-                          "MMM dd, yyyy HH:mm a"
-                        )}
+                        {formatDate(challenge?.startDate, "MMM dd, yyyy HH:mm a")}
                       </Text>
                     </HStack>
                   </ListItem>

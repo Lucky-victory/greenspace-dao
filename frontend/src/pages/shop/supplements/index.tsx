@@ -37,7 +37,7 @@ function Shop({ data }: InferGetServerSidePropsType<typeof getServerSideProps>) 
       <Box h={"full"} bg={"rgba(41, 41, 41,0.44)"} backdropFilter={"blur(30px)"}>
         <HeaderNav />
         <Heading mb={6} mt={4} width={"100%"} size={"xl"} display={"flex"} justifyContent={"center"}>
-          Suppliments <Text color={"gs-green.500"}>&nbsp;SHOP</Text>
+          Supplements <Text color={"gs-green.500"}>&nbsp;SHOP</Text>
           <Text color={"gs-yellow.400"}>!</Text>
         </Heading>
         <Flex p={4} flexDirection={"column"}>
@@ -80,7 +80,7 @@ function Shop({ data }: InferGetServerSidePropsType<typeof getServerSideProps>) 
                       </Flex>
                     ))}
                     <Flex flex={1} alignItems={"flex-end"}>
-                      <Link style={{width:"100%"}} href={item.link} target="_blank">
+                      <Link style={{ width: "100%" }} href={item.link} target="_blank">
                         <Button width={"full"} variant={"outline"} mt={3}>
                           Buy Now
                         </Button>

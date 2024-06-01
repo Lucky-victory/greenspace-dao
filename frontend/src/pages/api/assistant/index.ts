@@ -254,15 +254,19 @@ async function getUserByAddressOrUsername(addressOrUsername: string) {
 }
 
 async function getAssistantId() {
-  const globalInfo = await db.query.global.findFirst();
-  let assistantId = globalInfo?.greenspaceAIId;
+  try {
+    const globalInfo = await db.query.global.findFirst();
+    let assistantId = globalInfo?.greenspaceAIId;
 
-  if (!assistantId) {
-    assistantId = await createAssistant();
-    await db.update(global).set({ greenspaceAIId: assistantId });
+    if (!assistantId) {
+      assistantId = await createAssistant();
+      await db.insert(global).values({ greenspaceAIId: assistantId });
+    }
+
+    return assistantId;
+  } catch (error) {
+    return "";
   }
-
-  return assistantId;
 }
 
 function removeWordFromString(inputString: string, wordToRemove: string) {

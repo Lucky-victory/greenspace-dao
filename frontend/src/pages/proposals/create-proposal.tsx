@@ -1,6 +1,6 @@
-import DaoLayout from "@/components/DaoLayout";
+import DaoLayout from "src/components/DaoLayout";
 
-import PageWrapper from "@/components/PageWrapper";
+import PageWrapper from "src/components/PageWrapper";
 import { useEffect, useState } from "react";
 //import toast, { Toaster } from "react-hot-toast";
 import {useToast} from "@chakra-ui/react"

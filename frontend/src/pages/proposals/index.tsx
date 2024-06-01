@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import Link from "next/link";
 // import Footer from "@/components/Footer";
 // import { HeaderNav } from "@/components/HeaderNav";
-import PageWrapper from "@/components/PageWrapper";
-import DaoLayout from "@/components/DaoLayout";
+import PageWrapper from "src/components/PageWrapper";
+import DaoLayout from "src/components/DaoLayout";
 
 const Proposals = () => {
   const proposals = [

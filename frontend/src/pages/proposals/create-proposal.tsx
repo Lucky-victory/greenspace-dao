@@ -3,12 +3,10 @@ import DaoLayout from "src/components/DaoLayout";
 import PageWrapper from "src/components/PageWrapper";
 import { useEffect, useState } from "react";
 //import toast, { Toaster } from "react-hot-toast";
-import {useToast} from "@chakra-ui/react"
+import { useToast } from "@chakra-ui/react";
 //import { Web3Storage } from "web3.storage";
 //import { ADDRESSES } from "@/constants/addresses";
 //import { ABI } from "@/constants/abi";
-import { useContractWrite, useNetwork } from "wagmi";
-import { prepareWriteContract, writeContract } from "@wagmi/core";
 
 // Construct with token and endpoint
 // const client = new Web3Storage({
@@ -39,13 +37,13 @@ const CreateProposal = () => {
   const [tab2, setTab2] = useState<boolean>(false);
   const [name, setName] = useState("");
   const [proposalName, setProposalName] = useState("");
-  const [proposalType, setProposalType] = useState('');
+  const [proposalType, setProposalType] = useState("");
   const [campaignId, setCampaignId] = useState("");
   const [projectDetails, setProjectDetails] = useState("");
   const [coverImage, setCoverImage] = useState<File | null>(null);
   const [endDate, setEndDate] = useState("");
   const [inTxn, setInTxn] = useState(false);
-  const toast = useToast({})
+  const toast = useToast({});
 
   const handleTabChange = () => {
     if (!name || !proposalName) {
@@ -62,64 +60,62 @@ const CreateProposal = () => {
     }
   };
 
-//   const CreateCampaign = async (e: any) => {
-//     e.preventDefault();
-//     if (!name || !proposalName || !link || !projectDetails || !coverImage) {
-//       toast.error("Please fill out all the fields");
-//       return;
-//     }
-//     try {
-      
-//       setInTxn(true)
-//       const imgHash = await client.put([coverImage], {
-//         wrapWithDirectory: false,
-//       });
-//       console.log("Image hash: ", imgHash);
-//       //creating object containing all the data
-//       const obj = {
-//         name,
-//         proposalName,
-//         link,
-//         projectDetails,
-//         coverImage: imgHash,
-//       };
-//       console.log("Obj: ", obj);
-//       //converting object to a blob
-//       const blob = new Blob([JSON.stringify(obj)], {
-//         type: "application/json",
-//       });
-//       //and then to a file
-//       const file = [new File([blob], "obj.json")];
-//       //uploading file to ipfs
-//       const objHash = await client.put(file);
-//       console.log("Obj hash: ", objHash);
+  //   const CreateCampaign = async (e: any) => {
+  //     e.preventDefault();
+  //     if (!name || !proposalName || !link || !projectDetails || !coverImage) {
+  //       toast.error("Please fill out all the fields");
+  //       return;
+  //     }
+  //     try {
 
-//       const satelliteAddr = '0x47A62Af19657263E3E0b60312f97F7464F70Ba35';
+  //       setInTxn(true)
+  //       const imgHash = await client.put([coverImage], {
+  //         wrapWithDirectory: false,
+  //       });
+  //       console.log("Image hash: ", imgHash);
+  //       //creating object containing all the data
+  //       const obj = {
+  //         name,
+  //         proposalName,
+  //         link,
+  //         projectDetails,
+  //         coverImage: imgHash,
+  //       };
+  //       console.log("Obj: ", obj);
+  //       //converting object to a blob
+  //       const blob = new Blob([JSON.stringify(obj)], {
+  //         type: "application/json",
+  //       });
+  //       //and then to a file
+  //       const file = [new File([blob], "obj.json")];
+  //       //uploading file to ipfs
+  //       const objHash = await client.put(file);
+  //       console.log("Obj hash: ", objHash);
 
-//       console.log( `SATE: `,satelliteAddr)
+  //       const satelliteAddr = '0x47A62Af19657263E3E0b60312f97F7464F70Ba35';
 
-//       const _target = Number(target);
-//       console.log(objHash, _target, satelliteAddr)
+  //       console.log( `SATE: `,satelliteAddr)
 
-//       const configure = await prepareWriteContract({
-//         address: "0xb4439634ad988555F2a5EB3810ae589A353A2B77",
-//         abi: ABI.campaignFactory,
-//         functionName: "createCampaign",
-//         args: [objHash, _target, satelliteAddr],
-//       });
-//       const data = await writeContract(configure);
-     
+  //       const _target = Number(target);
+  //       console.log(objHash, _target, satelliteAddr)
 
+  //       const configure = await prepareWriteContract({
+  //         address: "0xb4439634ad988555F2a5EB3810ae589A353A2B77",
+  //         abi: ABI.campaignFactory,
+  //         functionName: "createCampaign",
+  //         args: [objHash, _target, satelliteAddr],
+  //       });
+  //       const data = await writeContract(configure);
 
-//       const tx = await data.wait();
-//       toast.success('Campaign Successfully created!')
-//       setInTxn(false)
-//     } catch (error) {
-//       setInTxn(false)
-//       toast.error('Something Went wrong')
-//       console.log(error);
-//     }
-//   };
+  //       const tx = await data.wait();
+  //       toast.success('Campaign Successfully created!')
+  //       setInTxn(false)
+  //     } catch (error) {
+  //       setInTxn(false)
+  //       toast.error('Something Went wrong')
+  //       console.log(error);
+  //     }
+  //   };
 
   return (
     <>
@@ -129,10 +125,7 @@ const CreateProposal = () => {
             <h1 className="font-bold startC">Create Proposal</h1>
           </div>
 
-          <h2 className="text-xl text-[#89D472] pl-20 pt-5">
-            Proposal Info{" "}
-            
-          </h2>
+          <h2 className="text-xl text-[#89D472] pl-20 pt-5">Proposal Info </h2>
 
           {/* <div className="position-indicator">
             
@@ -154,35 +147,36 @@ const CreateProposal = () => {
               </div>
               <div className="mb-7">
                 <label className="block text-white font-bold mb-2">Type of proposal</label>
-                
-                <select name="proposal Type"  onChange={(e) => {
+
+                <select
+                  name="proposal Type"
+                  onChange={(e) => {
                     setProposalType(e.target.value);
-                  }} className=" bg-gradient-to-r from-gray-900 to-gray-900 border-gray-900 text-white border rounded w-4/12 h-12 py-2 px-3  leading-tight "
-                  placeholder="Proposal Title">
-                     <option className="color-black" value="New Proposal" >New Proposal</option>
-                    <option className="color-black" value="Remove Campaign"  >Remove campaign</option>
-                   
+                  }}
+                  className=" bg-gradient-to-r from-gray-900 to-gray-900 border-gray-900 text-white border rounded w-4/12 h-12 py-2 px-3  leading-tight "
+                >
+                  <option className="color-black" value="New Proposal">
+                    New Proposal
+                  </option>
+                  <option className="color-black" value="Remove Campaign">
+                    Remove campaign
+                  </option>
                 </select>
               </div>
-             
 
-                <div className="mb-7">
+              <div className="mb-7">
                 <label className="block text-white font-bold mb-2">Campaign Id (optional)</label>
                 <input
-                onChange={(e) => {
+                  onChange={(e) => {
                     setCampaignId(e.target.value);
-                }}
-                className=" bg-gradient-to-r from-gray-900 to-gray-900 border-gray-900 text-white border rounded w-4/12 h-12 py-2 px-3  leading-tight "
-                placeholder="Enter Campaign Id to propose on"
+                  }}
+                  className=" bg-gradient-to-r from-gray-900 to-gray-900 border-gray-900 text-white border rounded w-4/12 h-12 py-2 px-3  leading-tight "
+                  placeholder="Enter Campaign Id to propose on"
                 />
-                </div>
+              </div>
 
-              
-             
               <div className="mb-7">
-                <label className="block text-white font-bold mb-2">
-                  Proposal Details
-                </label>
+                <label className="block text-white font-bold mb-2">Proposal Details</label>
                 <textarea
                   onChange={(e) => {
                     setProjectDetails(e.target.value);
@@ -192,11 +186,9 @@ const CreateProposal = () => {
                 />
               </div>
               <div className="mb-7">
-                <label className="block text-white font-bold mb-2">
-                 End Date
-                </label>
+                <label className="block text-white font-bold mb-2">End Date</label>
                 <input
-                type="date"
+                  type="date"
                   onChange={(e) => {
                     setEndDate(e.target.value);
                   }}
@@ -215,8 +207,6 @@ const CreateProposal = () => {
               </div>
             </form>
           )}
-
-        
         </div>
       </DaoLayout>
     </>

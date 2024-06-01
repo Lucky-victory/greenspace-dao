@@ -18,6 +18,7 @@ import {
 } from "@chakra-ui/react";
 import Head from "next/head";
 import { useState } from "react";
+import { BsEye } from "react-icons/bs";
 
 const MealPlansPage = () => {
   const [btnIcon, setBtnIcon] = useState("bookmark_add");
@@ -116,7 +117,7 @@ const MealPlansPage = () => {
                     variant="outline"
                     gap={"3"}
                   >
-                    <Icon name="visibility" size={20} /> <span>View plan</span>
+                    <BsEye name="visibility" size={20} /> <span>View plan</span>
                   </Button>
                   <Button
                     rounded={"full"}

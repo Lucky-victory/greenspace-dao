@@ -19,6 +19,7 @@ import {
   Avatar,
 } from "@chakra-ui/react";
 import { format } from "date-fns";
+import { BsPhone } from "react-icons/bs";
 export default function DashBoard() {
   const today = new Date().getTime();
   return (
@@ -73,7 +74,7 @@ export default function DashBoard() {
                       gap={2}
                       className="hover:bg-primaryYellow hover:text-primaryGreen text-primaryBeige bg-primaryGreen"
                     >
-                      <Icon size={20} name="phone" /> Start Call
+                      <BsPhone size={20} name="phone" /> Start Call
                     </Button>
                     <Button
                       size={"sm"}
@@ -109,7 +110,7 @@ export default function DashBoard() {
                       gap={2}
                       className="hover:bg-primaryYellow hover:text-primaryGreen text-primaryBeige bg-primaryGreen"
                     >
-                      <Icon size={20} name="phone" /> Start Call
+                      <BsPhone size={20} name="phone" /> Start Call
                     </Button>
                     <Button
                       size={"sm"}

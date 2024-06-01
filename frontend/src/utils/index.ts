@@ -9,11 +9,29 @@ import slugify from "slugify";
 import isEmpty from "just-is-empty";
 import { format } from "date-fns";
 
-export function filterNullOrEmpty<T extends Record<string,any>>(obj:T) {
+export function getCallerFunctionName(): string | null {
+  const error = new Error();
+  const stack = error.stack?.split("\n");
+
+  // Stack trace line format: "at FunctionName (file:line:column)"
+  // Skip the first line ("Error") and the second line (this function call)
+  if (stack && stack.length > 2) {
+    const callerLine = stack[2].trim();
+    const functionNameMatch = callerLine.match(/at (\w+)/);
+
+    if (functionNameMatch) {
+      return functionNameMatch[1];
+    }
+  }
+
+  return null;
+}
+export function logger(data: any, message?: string) {
+  console.log(`${getCallerFunctionName()}`, { data }, message);
+}
+export function filterNullOrEmpty<T extends Record<string, any>>(obj: T) {
   return Object.fromEntries(
-    Object.entries(obj).filter(
-      ([_, value]) => value !== null && value !== undefined && value !== ""
-    )
+    Object.entries(obj).filter(([_, value]) => value !== null && value !== undefined && value !== "")
   );
 }
 export function getOrdinalSuffix(day: number) {
@@ -49,16 +67,13 @@ export function convertJsDateToMysqlDate<T = Date>(jsDate: Date | string) {
   const date = jsDate instanceof Date ? jsDate : new Date(jsDate);
   return date.toISOString().slice(0, 19).replace("T", " ") as T;
 }
-export const convertMinutesToMillisececonds = (mins: number) =>
-  +mins * 1000 * 60;
+export const convertMinutesToMillisececonds = (mins: number) => +mins * 1000 * 60;
 
 export function addMinutesToDate(minutes: number, date: string | Date) {
   // Get the current date and time
   const now = new Date(date);
   // Calculate the new time by adding minutes
-  const newTime = new Date(
-    now.getTime() + convertMinutesToMillisececonds(minutes)
-  );
+  const newTime = new Date(now.getTime() + convertMinutesToMillisececonds(minutes));
 
   return newTime;
 }
@@ -110,10 +125,7 @@ export async function errorHandlerCallback<T>(
 ): Promise<void> {
   return res.status(status).json(data);
 }
-export function maskWalletAddress(
-  walletAddress: string,
-  visibleChars: number = 4
-): string {
+export function maskWalletAddress(walletAddress: string, visibleChars: number = 4): string {
   if (!walletAddress || walletAddress.length < visibleChars * 2) {
     return walletAddress;
   }
@@ -126,10 +138,7 @@ export function maskWalletAddress(
 }
 
 export type HTTP_METHOD = "GET" | "PUT" | "POST" | "DELETE";
-export type HTTP_METHOD_CB = (
-  req: NextApiRequest,
-  res: NextApiResponse
-) => Promise<void>;
+export type HTTP_METHOD_CB = (req: NextApiRequest, res: NextApiResponse) => Promise<void>;
 export async function mainHandler(
   req: NextApiRequest,
   res: NextApiResponse,
@@ -167,10 +176,7 @@ interface NestedObject {
   [key: string]: any;
 }
 
-export function flattenArray<T extends NestedObject, U>(
-  array: T[],
-  callback: (item: T) => U | null
-): U[] {
+export function flattenArray<T extends NestedObject, U>(array: T[], callback: (item: T) => U | null): U[] {
   const flattenedArray: U[] = [];
 
   array.forEach((item) => {
@@ -189,10 +195,7 @@ export function shortenText(text: string, len = 50, end = "..."): string {
   return text?.length > len ? text?.substring(0, len) + end : text;
 }
 
-export const apiPost = async (
-  endpoint: string,
-  params: Record<string, any>
-): Promise<{ message: string }> => {
+export const apiPost = async (endpoint: string, params: Record<string, any>): Promise<{ message: string }> => {
   const result = await axios.post(`${endpoint}`, params, {
     headers: {
       "content-type": "application/json",
@@ -235,8 +238,7 @@ export function selectObjectKeys<T extends object>(obj: T) {
   return Object.keys(obj).map((key) => {
     if (Object.prototype.hasOwnProperty.call(obj, key)) {
       const spacedKey = key.replace(/([a-z])([A-Z])/g, "$1 $2");
-      const formattedKey =
-        spacedKey.charAt(0).toUpperCase() + spacedKey.slice(1);
+      const formattedKey = spacedKey.charAt(0).toUpperCase() + spacedKey.slice(1);
 
       const keyString = `${formattedKey}`;
 
@@ -252,10 +254,7 @@ export const generateSlug = (text: string) =>
     remove: /[*+~.()'"!:@]/g,
     strict: true,
   });
-export function removeKeyFromObject<T extends object>(
-  arr: T[],
-  keysToRemove: (keyof T)[] = []
-) {
+export function removeKeyFromObject<T extends object>(arr: T[], keysToRemove: (keyof T)[] = []) {
   if (isEmpty(arr)) return [];
   return arr?.map((obj) => {
     const newObj: Record<string, any> = {};

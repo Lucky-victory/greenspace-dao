@@ -23,12 +23,12 @@ export default function MemberDashboardPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [data?.data?.userCid]
   );
-
+  useEffect(() => {}, [registerData]);
   return (
     <DashboardLayout>
       <Box className="min-h-full h-full" px={"4"} py={4}>
         <Flex direction={"column"} w={"full"} py={5} px={4} bg={"gray.700"} rounded={"md"}>
-          {registerData ? (
+          {registerData && (
             <>
               <Heading size="lg">Your Details</Heading>
               <Heading size="md" color="gray.500" mt={1}>
@@ -165,10 +165,6 @@ export default function MemberDashboardPage() {
                 </Card>
               </Box>
             </>
-          ) : (
-            <Heading size="md" textAlign="center" color="gray.300" mb={2} mt={4} fontWeight={"bold"}>
-              Register First
-            </Heading>
           )}
         </Flex>
       </Box>

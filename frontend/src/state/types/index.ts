@@ -17,7 +17,7 @@ export type USER = {
   userType?: "member" | "nutritionist";
   emailVerified?: boolean;
   username: string;
-  userCid: string;
+  userCid?: string;
 };
 export type Sex = "male" | "female" | "other";
 
@@ -56,32 +56,14 @@ export type NEW_NUTRITIONIST = Pick<
 export type USER_SESSION = {
   user: Pick<
     USER,
-    | "id"
-    | "address"
-    | "fullName"
-    | "authId"
-    | "email"
-    | "userType"
-    | "avatar"
-    | "role"
-    | "username"
-    | "emailVerified"
+    "id" | "address" | "fullName" | "authId" | "email" | "userType" | "avatar" | "role" | "username" | "emailVerified"
   >;
   expires: string;
 };
 
 export type NEW_USER = Pick<
   USER,
-
-  | "address"
-  | "chainId"
-  | "fullName"
-  | "avatar"
-  | "authId"
-  | "userType"
-  | "email"
-  | "emailVerified"
-
+  "address" | "chainId" | "fullName" | "avatar" | "authId" | "userType" | "email" | "emailVerified" | "userCid"
 >;
 export type MEETING = {
   id: number;

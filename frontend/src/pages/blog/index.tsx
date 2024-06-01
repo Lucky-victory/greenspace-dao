@@ -13,10 +13,10 @@ const BlogPage = () => {
     <>
       <Box as="main" className="min-h-screen" px={{ lg: 5, base: 4 }}>
         <Head>
-          <title>Rejuvenate AI | Blog</title>
+          <title>GreenspaceDAO | Blog</title>
         </Head>
         <HeaderNav />
-        <Box maxW={"1200px"} mx={"auto"}>
+        <Box maxW={"1350px"} mx={"auto"}>
           <Heading mt={5} mb={1}>
             Recent Post
           </Heading>
@@ -33,20 +33,13 @@ const BlogPage = () => {
             {(isFetching || isLoading) && (
               <Flex wrap={"wrap"} gap={5}>
                 {[0, 0, 0, 0].map((s, i) => (
-                  <Skeleton
-                    key={"skelon" + i}
-                    w={300}
-                    h={350}
-                    rounded={"sm"}
-                  ></Skeleton>
+                  <Skeleton key={"skelon" + i} w={300} h={350} rounded={"sm"}></Skeleton>
                 ))}
               </Flex>
             )}
             {!isLoading &&
               articles?.length &&
-              articles.map((article) => (
-                <ArticleCard key={article?.id} article={article} />
-              ))}
+              articles.map((article) => <ArticleCard key={article?.id} article={article} />)}
           </HStack>
         </Box>
       </Box>

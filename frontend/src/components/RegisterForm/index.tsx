@@ -125,13 +125,16 @@ const RegisterForm = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => voi
             emailVerified: true,
             userType: selectedUserType,
           }).unwrap();
+          router.push("/member/dashboard");
         } else {
           await createUser({
             fullName: formData?.fullName,
             authId: user?.id,
             address: address!,
             userType: selectedUserType,
+            userCid: cid,
           }).unwrap();
+          router.push("/member/dashboard");
         }
         sendUserToAI(formData);
       }
@@ -308,7 +311,7 @@ const RegisterForm = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => voi
                   size={"sm"}
                   onClick={() => swiperRef.current?.swiper.slidePrev()}
                 >
-                  <BsChevronLeft size={20}  />
+                  <BsChevronLeft size={20} />
                 </IconButton>
               )}
               <span>Register</span>

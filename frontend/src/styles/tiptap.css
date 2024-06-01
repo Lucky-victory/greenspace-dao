@@ -10,50 +10,48 @@
   margin-top: 0.75em;
 }
 
-/* .tiptap ul,
-.tiptap ol {
-  padding: 0 1rem;
-} */
-ul,
-ol {
+ul:not(.is-nav),
+ol:not(.is-nav) {
   padding-left: 1.5rem;
   margin: 1rem 0;
   list-style-position: outside;
 }
 
-ul {
+ul:not(.is-nav) {
   list-style-type: disc;
 }
 
-ol {
+ol:not(.is-nav) {
   list-style-type: decimal;
 }
 
-ul ul,
-ul ol,
-ol ul,
-ol ol {
+ul:not(.is-nav) ul,
+ul:not(.is-nav) ol,
+ol:not(.is-nav) ul,
+ol:not(.is-nav) ol {
   margin: 0.5rem 0;
   padding-left: 1rem;
   list-style-type: circle;
 }
 
-ul ul ul,
-ul ul ol,
-ul ol ul,
-ul ol ol,
-ol ul ul,
-ol ul ol,
-ol ol ul,
-ol ol ol {
+ul:not(.is-nav) ul ul,
+ul:not(.is-nav) ul ol,
+ul:not(.is-nav) ol ul,
+ul:not(.is-nav) ol ol,
+ol:not(.is-nav) ul ul,
+ol:not(.is-nav) ul ol,
+ol:not(.is-nav) ol ul,
+ol:not(.is-nav) ol ol {
   list-style-type: square;
 }
 
-li {
+ul:not(.is-nav) li,
+ol:not(.is-nav) li {
   margin-bottom: 0.5rem;
 }
 
-li::marker {
+ul:not(.is-nav) li::marker,
+ol:not(.is-nav) li::marker {
   color: #e0d5d5;
   font-size: 1em;
 }

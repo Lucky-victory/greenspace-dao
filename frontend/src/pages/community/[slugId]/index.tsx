@@ -234,7 +234,7 @@ export default function CommunityViewPage({
               // h={"full"}
               pos={"sticky"}
               bg={"gray.900"}
-              top={0}
+              top={0} className="is-nav"
             >
               {[tabButtons]}
             </Flex>

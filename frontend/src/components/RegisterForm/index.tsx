@@ -1,4 +1,4 @@
-import React, { RefObject, useEffect, useRef, useState } from "react";
+import React, { RefObject, useRef, useState } from "react";
 
 import { useRouter } from "next/router";
 import { FieldValues, SubmitErrorHandler, useForm } from "react-hook-form";
@@ -22,14 +22,12 @@ import {
   Select,
   useToast,
   Text,
-  Spinner,
   IconButton,
 } from "@chakra-ui/react";
 import { NewUserType, RegisterType } from "src/components/NewUserType";
 
 import { Swiper, SwiperRef, SwiperSlide } from "swiper/react";
 import SwiperMain from "swiper";
-import Icon from "../Icon";
 import NutritionistForm from "src/components/NutritionistForm";
 import { countries } from "src/utils/countries";
 import { useDebounce } from "src/hooks/common";
@@ -38,12 +36,13 @@ import { communityAddr } from "src/utils/constants";
 import { useStorageUpload } from "@thirdweb-dev/react";
 import { useAddUserMutation, useSendUserInfoToAIMutation } from "src/state/services";
 
-import { parseEther, parseGwei } from "viem";
+import { parseEther } from "viem";
 
 import { useAccount } from "wagmi";
 import { simulateContract, writeContract } from "@wagmi/core";
 import { config } from "src/config/wagmi";
 import { useLogin, useSignMessage } from "@privy-io/react-auth";
+import { BsChevronLeft } from "react-icons/bs";
 
 export interface RegisterFormFields {
   fullName: string;
@@ -309,7 +308,7 @@ const RegisterForm = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => voi
                   size={"sm"}
                   onClick={() => swiperRef.current?.swiper.slidePrev()}
                 >
-                  <Icon size={20} name="arrow_back" />
+                  <BsChevronLeft size={20}  />
                 </IconButton>
               )}
               <span>Register</span>

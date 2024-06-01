@@ -57,7 +57,7 @@
 :root {
   --chat-area-width: 330px;
 }
-.mde-header {
+/* .mde-header {
   background: #000 !important;
 }
 .mde-header ul.mde-header-group li.mde-header-item button {
@@ -67,9 +67,9 @@
 .mde-textarea-wrapper textarea.mde-text {
   background: #000 !important;
   color: #f0f0ef !important;
-}
+} */
 .link-in-chat {
-  color: var(--chakra-colors-blue-700);
+  color: var(--chakra-colors-gs-yellow-400);
   text-decoration: underline;
 }
 * {
@@ -87,10 +87,8 @@ body {
   font-variation-settings: "FILL" 1, "wght" 400, "GRAD" 0;
 }
 .material-symbols-outlined.bold {
-  font-variation-settings: "FILL" 0, "wght" 500, "GRAD" 0,
-    "opsz" var(--icon-size);
+  font-variation-settings: "FILL" 0, "wght" 500, "GRAD" 0, "opsz" var(--icon-size);
 }
 .material-symbols-outlined.fill {
-  font-variation-settings: "FILL" 1, "wght" 300, "GRAD" 0,
-    "opsz" var(--icon-size);
+  font-variation-settings: "FILL" 1, "wght" 300, "GRAD" 0, "opsz" var(--icon-size);
 }

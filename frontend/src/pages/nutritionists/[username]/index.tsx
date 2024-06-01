@@ -1,18 +1,11 @@
 import ArticleCards from "src/components/ArticleCards";
 import Icon from "src/components/Icon";
-// import MatIcon from "../../../components/MatIcon";
-import {
-  Avatar,
-  Box,
-  Button,
-  HStack,
-  Heading,
-  Stack,
-  Text,
-} from "@chakra-ui/react";
-import { useState } from "react";
 
-export default function CretorProfile() {
+import { Avatar, Box, Button, HStack, Heading, Stack, Text } from "@chakra-ui/react";
+import { useState } from "react";
+import { BsPlus } from "react-icons/bs";
+
+export default function CreatorProfile() {
   const [user, setUser] = useState({
     username: "mark-andre43",
     fullName: "Mark Andre",
@@ -72,16 +65,14 @@ export default function CretorProfile() {
           <Stack align={"center"}>
             <HStack>
               <Heading>{user.fullName}</Heading>
-              {user?.verified && (
-                <Icon name="verified" bold fill color="blue" />
-              )}
+              {user?.verified && <Icon name="verified" bold fill color="blue" />}
             </HStack>
             <Text textAlign={"center"} maxW={500} color={"appBlack.300"}>
               {user?.shortBio}
             </Text>
             <HStack my={4}>
               <Button variant={"solid"} rounded={"full"} gap={2}>
-                <Icon name="add" bold /> Follow
+                <BsPlus /> Follow
               </Button>
             </HStack>
             <HStack gap={4}>

@@ -1,10 +1,10 @@
 import { db } from "src/db";
 import { global, users } from "src/db/schema";
+import OpenAI from "openai";
 import { eq, or } from "drizzle-orm";
 import type { Server as HTTPServer } from "http";
 import type { Socket as NetSocket } from "net";
 import { NextApiRequest, NextApiResponse } from "next";
-import OpenAI from "openai";
 import type { Server as IOServer } from "socket.io";
 import { Server } from "socket.io";
 
@@ -23,10 +23,7 @@ interface NextApiResponseWithSocket extends NextApiResponse {
 let io: IOServer;
 const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
-export default function websocketHandler(
-  _: NextApiRequest,
-  res: NextApiResponseWithSocket
-) {
+export default function websocketHandler(_: NextApiRequest, res: NextApiResponseWithSocket) {
   if (res.socket.server.io) {
     console.log("Socket is already running");
   } else {
@@ -56,10 +53,7 @@ export default function websocketHandler(
   res.end();
 }
 
-async function messageRouter(
-  roomId: string,
-  data: { type: any; payload: any }
-) {
+async function messageRouter(roomId: string, data: { type: any; payload: any }) {
   switch (data.type) {
     case "LIST_THREAD_IDS":
       await handleListThreadIds(roomId, data.payload);
@@ -83,10 +77,7 @@ async function messageRouter(
 
 // Generic Assistant Wrapper Handlers
 
-async function handleListThreadIds(
-  roomId: string,
-  arg: { addressOrUsername: string }
-) {
+async function handleListThreadIds(roomId: string, arg: { addressOrUsername: string }) {
   const user = await getUserByAddressOrUsername(arg.addressOrUsername);
   console.log("user");
   console.log(user);
@@ -98,34 +89,23 @@ async function handleGetThread(roomId: string, arg: { threadId: string }) {
   io.to(roomId).emit("thread-messages", threadMessages);
 }
 
-async function handleCreateThread(
-  roomId: string,
-  arg: { content: string; addressOrUsername: string }
-) {
+async function handleCreateThread(roomId: string, arg: { content: string; addressOrUsername: string }) {
   try {
     const user = await getUserByAddressOrUsername(arg.addressOrUsername);
 
     // Create new thread and update users threads ids.
     const threadId = await createThread(arg.content);
-    const threadIds =
-      user?.aiCoachThreadIds + " " + threadId + "::" + Date.now();
+    const threadIds = user?.aiCoachThreadIds || "" + " " + threadId + "::" + Date.now();
     await db
       .update(users)
       .set({ aiCoachThreadIds: threadIds.trim() })
-      .where(
-        or(
-          eq(users.address, arg.addressOrUsername),
-          eq(users.username, arg.addressOrUsername)
-        )
-      );
+      .where(or(eq(users.address, arg.addressOrUsername), eq(users.username, arg.addressOrUsername)));
 
     io.to(roomId).emit("thread-created", threadId);
 
     // Run the stream for the new thread.
     const assistantId = await getAssistantId();
-    const instruction = user?.fullName
-      ? `Please address the user as ${user?.fullName}.`
-      : "";
+    const instruction = user?.fullName ? `Please address the user as ${user?.fullName}.` : "";
     createRunStream(
       threadId,
       assistantId,
@@ -144,26 +124,15 @@ async function handleCreateThread(
   }
 }
 
-async function handleDeleteThread(
-  roomId: string,
-  arg: { threadId: string; addressOrUsername: string }
-) {
+async function handleDeleteThread(roomId: string, arg: { threadId: string; addressOrUsername: string }) {
   try {
     // Remove thread from user db.
     const user = await getUserByAddressOrUsername(arg.addressOrUsername);
-    const aiCoachThreadIds = removeWordFromString(
-      user?.aiCoachThreadIds || "",
-      roomId
-    );
+    const aiCoachThreadIds = removeWordFromString(user?.aiCoachThreadIds || "", roomId);
     await db
       .update(users)
       .set({ aiCoachThreadIds })
-      .where(
-        or(
-          eq(users.address, arg.addressOrUsername),
-          eq(users.username, arg.addressOrUsername)
-        )
-      );
+      .where(or(eq(users.address, arg.addressOrUsername), eq(users.username, arg.addressOrUsername)));
 
     // Delete thread from Open AI servers.
     await deleteThread(arg.threadId);
@@ -186,9 +155,7 @@ async function handleAskQuestion(
     // Run the stream for the thread.
     const user = await getUserByAddressOrUsername(arg.addressOrUsername);
     const assistantId = await getAssistantId();
-    const instruction = user?.fullName
-      ? `Please address the user as ${user?.fullName}.`
-      : "";
+    const instruction = user?.fullName ? `Please address the user as ${user?.fullName}.` : "";
     createRunStream(
       arg.threadId,
       assistantId,
@@ -264,9 +231,7 @@ function createRunStream(
   const run = client.beta.threads.runs.stream(thread_id, {
     assistant_id,
     // Custom instructions overrides the default system instruction reinclude `defaultInstruction`
-    instructions: instructions
-      ? defaultInstruction + "\n\n" + instructions
-      : instructions,
+    instructions: instructions ? defaultInstruction + "\n\n" + instructions : instructions,
   });
   run.on("textDelta", (textDelta, snapshot) => {
     textCallback(textDelta.value || "");
@@ -277,10 +242,7 @@ function createRunStream(
 // Handlers helpers
 
 async function getUserByAddressOrUsername(addressOrUsername: string) {
-  const condition = or(
-    eq(users.address, addressOrUsername),
-    eq(users.username, addressOrUsername)
-  );
+  const condition = or(eq(users.address, addressOrUsername), eq(users.username, addressOrUsername));
 
   return await db.query.users.findFirst({
     columns: {

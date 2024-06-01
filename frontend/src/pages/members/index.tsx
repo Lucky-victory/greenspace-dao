@@ -1,26 +1,12 @@
-"use client";
-
-import Icon from "src/components/Icon";
 import Footer from "src/components/Footer";
 import { HeaderNav } from "src/components/HeaderNav";
 import { maskHexAddress } from "src/helpers";
-import { useGetMealPlansQuery, useGetUsersQuery } from "src/state/services";
-import { MealPlan } from "src/types/shared";
+import { useGetUsersQuery } from "src/state/services";
 import { Link } from "@chakra-ui/next-js";
-import {
-  Avatar,
-  Box,
-  Button,
-  HStack,
-  Heading,
-  Image,
-  Stack,
-  Text,
-} from "@chakra-ui/react";
+import { Avatar, Box, Button, HStack, Heading, Stack } from "@chakra-ui/react";
 import BoringAvatar from "boring-avatars";
 import isEmpty from "just-is-empty";
 import Head from "next/head";
-import { useState } from "react";
 import PageWrapper from "src/components/PageWrapper";
 
 const MembersPage = () => {
@@ -96,12 +82,7 @@ const MembersPage = () => {
               >
                 <Box>
                   {user?.avatar ? (
-                    <Avatar
-                      size={"md"}
-                      src={user?.avatar}
-                      w={"120px"}
-                      h={"120px"}
-                    />
+                    <Avatar size={"md"} src={user?.avatar} w={"120px"} h={"120px"} />
                   ) : (
                     <BoringAvatar size={"120px"} variant="pixel" />
                   )}
@@ -109,19 +90,11 @@ const MembersPage = () => {
 
                 <Box>
                   <Heading size={"md"} mb={4} mt={1}>
-                    {user?.fullName
-                      ? user?.fullName
-                      : maskHexAddress(user?.address)}
+                    {user?.fullName ? user?.fullName : maskHexAddress(user?.address)}
                   </Heading>
 
                   <HStack justify={"center"} spacing={"6"} flex={1}>
-                    <Button
-                      as={Link}
-                      href={"/members/"}
-                      size={"sm"}
-                      variant="outline"
-                      gap={"3"}
-                    >
+                    <Button as={Link} href={"/members/"} size={"sm"} variant="outline" gap={"3"}>
                       <span>View Profile</span>
                     </Button>
                   </HStack>

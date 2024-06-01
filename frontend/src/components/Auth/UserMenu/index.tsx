@@ -64,11 +64,7 @@ export const UserMenu = () => {
           >
             <HStack>
               <Text as={"span"}>Hi, {getFirstName(savedUser?.fullName!)}</Text>
-              <Avatar
-                size={"sm"}
-                name={savedUser?.fullName!}
-                src={savedUser?.avatar}
-              ></Avatar>{" "}
+              <Avatar size={"sm"} name={savedUser?.fullName!} src={savedUser?.avatar}></Avatar>{" "}
               {/* <BsChevronDown /> */}
             </HStack>
           </MenuButton>

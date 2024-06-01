@@ -26,8 +26,7 @@ export default function DashboardSideNav(props: {
     const isActive =
       lastPart === link?.url ||
       (beforeLastPart == link.url && link?.child?.includes(lastPart)) ||
-      (link?.child?.includes(beforeLastPart) &&
-        link?.nestedChild?.includes(lastPart)) ||
+      (link?.child?.includes(beforeLastPart) && link?.nestedChild?.includes(lastPart)) ||
       (link?.url === "overview" && lastPart === "dashboard");
 
     const buildLink = (entry: string, url: string) => (url.toLowerCase() === "overview" ? entry + "" : entry + url);
@@ -94,7 +93,7 @@ export default function DashboardSideNav(props: {
           {!isMobileSize && <Image alt="" src="/white-logo.svg" width={170} height={60 + "px"} />}
         </Link>
       </Box>
-      <Flex direction={"column"} as={List} gap={4}>
+      <Flex direction={"column"} as={List} gap={4} className="is-nav">
         {[_links]}
       </Flex>
     </Box>

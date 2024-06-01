@@ -91,7 +91,7 @@ export function HeaderNav() {
           />
         </Heading>
 
-        <List display={"flex"} gap={4} fontWeight={500} hidden={isMobileSize || isTabletSize}>
+        <List className="is-nav" display={"flex"} gap={4} fontWeight={500} hidden={isMobileSize || isTabletSize}>
           {[links]}
         </List>
 
@@ -121,7 +121,7 @@ export function HeaderNav() {
             <DrawerCloseButton />
             <DrawerHeader />
             <DrawerBody>
-              <List my={10} display={"flex"} flexDir={"column"} gap={4} fontWeight={500}>
+              <List my={10} className="is-nav" display={"flex"} flexDir={"column"} gap={4} fontWeight={500}>
                 {[links]}
               </List>
               <HStack

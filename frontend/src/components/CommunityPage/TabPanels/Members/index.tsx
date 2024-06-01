@@ -29,7 +29,7 @@ export default function Members({
       {showHeading && <TabHeading title="Members" />}
 
       {!isEmpty(communityMembers) && (
-        <Stack py={4} as={List}>
+        <Stack py={4} as={List} className='is-nav'>
           {communityMembers.map((member, i) => {
             return (
               <ListItem key={"member" + i}>

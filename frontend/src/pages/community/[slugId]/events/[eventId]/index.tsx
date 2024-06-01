@@ -2,19 +2,7 @@ import { HeaderNav } from "src/components/HeaderNav";
 import Head from "next/head";
 import PageWrapper from "src/components/PageWrapper";
 import PageLoader from "src/components/PageLoader";
-import {
-  Box,
-  Button,
-  Flex,
-  HStack,
-  Heading,
-  Image,
-  Input,
-  List,
-  ListItem,
-  Stack,
-  Text,
-} from "@chakra-ui/react";
+import { Box, Button, Flex, HStack, Heading, Image, Input, List, ListItem, Stack, Text } from "@chakra-ui/react";
 import MarkdownRenderer from "src/components/MarkdownRenderer";
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 import {
@@ -47,12 +35,9 @@ export default function EventPage({
   });
   const event = eventResponse?.data;
 
-  const [joinEvent, { isLoading: isLoadingJoin }] =
-    useJoinCommunityEventMutation();
-  const [
-    checkEventJoin,
-    { isLoading: isLoadingHasJoin, data: hasJoinResponse },
-  ] = useCheckHasJoinCommunityEventMutation();
+  const [joinEvent, { isLoading: isLoadingJoin }] = useJoinCommunityEventMutation();
+  const [checkEventJoin, { isLoading: isLoadingHasJoin, data: hasJoinResponse }] =
+    useCheckHasJoinCommunityEventMutation();
   const hasJoined = hasJoinResponse?.data?.hasJoined;
   function formatDate(date: Date | string, fmt: string = "MMM d, yyyy") {
     if (isEmpty(date)) return "";
@@ -106,10 +91,7 @@ export default function EventPage({
       </Head>
       <PageLoader isLoading={isLoading || isFetching} text="Fetching event...">
         <HeaderNav />
-        <PageWrapper
-          props={{ pt: 30, px: { base: 4, md: 5, lg: 8 } }}
-          bg="transaprent"
-        >
+        <PageWrapper props={{ pt: 30, px: { base: 4, md: 5, lg: 8 } }} bg="transaprent">
           <Box>
             <Box
               mb={16}
@@ -154,22 +136,16 @@ export default function EventPage({
                 bg={"blackAlpha.800"}
               >
                 <Heading mb={4} size={{ base: "xl", md: "2xl" }}>
-                  {event?.title} (Starts {formatDate(event?.startDate, "MMM")}{" "}
-                  {formatDateWithOrdinal(event?.startDate)})
+                  {event?.title} (Starts {formatDate(event?.startDate, "MMM")} {formatDateWithOrdinal(event?.startDate)}
+                  )
                 </Heading>
                 <Text fontSize={"lg"}>
-                  Event dates: {formatDate(event?.startDate)} -{" "}
-                  {formatDate(event?.endDate)}
+                  Event dates: {formatDate(event?.startDate)} - {formatDate(event?.endDate)}
                 </Text>
               </Box>
             </Box>
           </Box>
-          <Flex
-            align={"flex-start"}
-            wrap={{ base: "wrap", lg: "nowrap" }}
-            gap={{ base: 12, lg: 10 }}
-            mb={10}
-          >
+          <Flex align={"flex-start"} wrap={{ base: "wrap", lg: "nowrap" }} gap={{ base: 12, lg: 10 }} mb={10}>
             <Box>
               <Heading size={"xl"} fontWeight={600} mb={4}>
                 Event Information
@@ -190,7 +166,7 @@ export default function EventPage({
                 <Heading size={"lg"} fontWeight={600} mb={2}>
                   Event Details
                 </Heading>
-                <Stack as={List} pl={0} gap={3} mb={4}>
+                <Stack as={List} pl={0} gap={3} mb={4} className="is-nav">
                   <ListItem>
                     <HStack>
                       <FiCalendar size={20} />

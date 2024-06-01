@@ -68,29 +68,30 @@ export const UserMenu = () => {
               {/* <BsChevronDown /> */}
             </HStack>
           </MenuButton>
-          <Portal>
-            <MenuList zIndex={20} rounded={"12px"}>
-              <MenuGroup title="Profile">
-                {isMember && (
-                  <MenuItem as={Link} href={"/member/dashboard"}>
-                    Dashboard
-                  </MenuItem>
-                )}
-                {isNutritionist && (
-                  <MenuItem as={Link} href={"/nutritionist/dashboard"}>
-                    Dashboard
-                  </MenuItem>
-                )}
-                {isAdmin && (
-                  <MenuItem as={Link} href={"/admin/dashboard"}>
-                    Admin Dashboard
-                  </MenuItem>
-                )}
-              </MenuGroup>
-              <MenuDivider />
-              <MenuItem as={LogoutButton}>Logout</MenuItem>
-            </MenuList>
-          </Portal>
+          {/* <Portal> */}
+          <MenuList zIndex={200} rounded={"12px"}>
+            <MenuGroup>
+              {isMember && (
+                <MenuItem as={Link} href={"/member/dashboard"}>
+                  Dashboard
+                </MenuItem>
+              )}
+              {isNutritionist && (
+                <MenuItem as={Link} href={"/nutritionist/dashboard"}>
+                  Dashboard
+                </MenuItem>
+              )}
+              {isAdmin && (
+                <MenuItem as={Link} href={"/admin/dashboard"}>
+                  Admin Dashboard
+                </MenuItem>
+              )}
+            </MenuGroup>
+            <MenuDivider />
+
+            <LogoutButton as={"menuitem"} />
+          </MenuList>
+          {/* </Portal> */}
         </Menu>
       )}
     </>

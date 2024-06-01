@@ -124,7 +124,6 @@ export const users = mysqlTable(
     emailVerified: boolean("email_verified").default(false),
     fullName: varchar("full_name", { length: 120 }),
     username: varchar("username", { length: 50 }).unique().notNull().$defaultFn(generateUsername),
-    password: varchar("password", { length: 255 }),
     email: varchar("email", { length: 255 }).unique(),
     userCid: varchar("userCid", { length: 255 }),
     address: varchar("address", { length: 100 }).default(""),

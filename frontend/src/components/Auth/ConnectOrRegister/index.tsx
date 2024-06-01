@@ -11,17 +11,14 @@ export const ConnectOrLogout = ({ openModal }: { openModal: () => void }) => {
 
   const { address } = useWallet();
 
-
   useEffect(() => {
-   
-  }, [address]);
+    console.log({ user });
+  }, [user, address]);
 
   return (
     <>
       {ready && !address && <CustomConnectButton />}
-      {ready && address && !user && (
-        <LoginAndRegisterButtons openModal={openModal} />
-      )}
+      {ready && address && !user && <LoginAndRegisterButtons openModal={openModal} />}
       {ready && address && user && <UserMenu />}
     </>
   );

@@ -16,14 +16,7 @@ export const LogoutButton = () => {
     setIsLoading(false);
   }
   return (
-    <Button
-      isLoading={isLoading}
-      variant={"ghost"}
-      w={"full"}
-      colorScheme="red"
-      gap={3}
-      onClick={handleLogout}
-    >
+    <Button isLoading={isLoading} variant={"ghost"} w={"full"} colorScheme="red" gap={3} onClick={handleLogout}>
       <FiLogOut /> Logout
     </Button>
   );

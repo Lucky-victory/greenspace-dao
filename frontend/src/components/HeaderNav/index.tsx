@@ -1,5 +1,4 @@
 import {
-  Button,
   Drawer,
   DrawerBody,
   DrawerCloseButton,
@@ -17,14 +16,10 @@ import {
 import { Link } from "@chakra-ui/next-js";
 
 import { LuMenu } from "react-icons/lu";
-// import RegisterForm from "./RegisterForm";
+
 import { useResize } from "src/hooks/common";
-import { CustomConnectButton } from "src/components/Auth/ConnectButton";
 import { ConnectOrLogout } from "../Auth/ConnectOrRegister";
-import { useWallet } from "src/context/WalletProvider";
-import { useAccount } from "wagmi";
 import RegisterForm from "../RegisterForm";
-// import { DynamicWidget } from "@dynamic-labs/sdk-react-core";
 
 export function HeaderNav() {
   const { isMobileSize, isTabletSize } = useResize();
@@ -86,13 +81,7 @@ export function HeaderNav() {
   ];
   return (
     <>
-      <HStack
-        minH={"60px"}
-        pl={5}
-        bg={"blackAlpha.300"}
-        justify={"space-between"}
-        backdropFilter={"blur(5px)"}
-      >
+      <HStack minH={"60px"} pl={5} bg={"blackAlpha.300"} justify={"space-between"} backdropFilter={"blur(5px)"}>
         <Heading>
           <Image
             src={"/logo-with-text.png"}
@@ -102,12 +91,7 @@ export function HeaderNav() {
           />
         </Heading>
 
-        <List
-          display={"flex"}
-          gap={4}
-          fontWeight={500}
-          hidden={isMobileSize || isTabletSize}
-        >
+        <List display={"flex"} gap={4} fontWeight={500} hidden={isMobileSize || isTabletSize}>
           {[links]}
         </List>
 
@@ -121,17 +105,10 @@ export function HeaderNav() {
           h={"full"}
           justify={"flex-end"}
         >
-          {!(isMobileSize || isTabletSize) && (
-            <ConnectOrLogout openModal={onOpen} />
-          )}
+          {!(isMobileSize || isTabletSize) && <ConnectOrLogout openModal={onOpen} />}
 
           {(isMobileSize || isTabletSize) && (
-            <IconButton
-              ml={3}
-              onClick={onMobileNavbarToggle}
-              fontSize={24}
-              aria-label="toggle mobile menu"
-            >
+            <IconButton ml={3} onClick={onMobileNavbarToggle} fontSize={24} aria-label="toggle mobile menu">
               <LuMenu />
             </IconButton>
           )}
@@ -144,13 +121,7 @@ export function HeaderNav() {
             <DrawerCloseButton />
             <DrawerHeader />
             <DrawerBody>
-              <List
-                my={10}
-                display={"flex"}
-                flexDir={"column"}
-                gap={4}
-                fontWeight={500}
-              >
+              <List my={10} display={"flex"} flexDir={"column"} gap={4} fontWeight={500}>
                 {[links]}
               </List>
               <HStack

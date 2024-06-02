@@ -2,7 +2,9 @@
 
 pragma solidity 0.8.16;
 
-struct RegistrationParams {
+interface AutomationRegistrarInterface {
+    
+    struct RegistrationParams {
     string name;
     bytes encryptedEmail;
     address upkeepContract;
@@ -27,8 +29,6 @@ struct RegistrationParams {
  * bytes offchainConfig = 0x;
  * uint96 amount = 1000000000000000000;
  */
-
-interface AutomationRegistrarInterface {
     function registerUpkeep(
         RegistrationParams calldata requestParams
     ) external returns (uint256);

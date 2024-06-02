@@ -5,7 +5,7 @@ pragma solidity 0.8.16;
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import {IUserNFT} from "./interfaces/IUserNFT.sol";
-//import {AutomationRegistrarInterface} from "./interfaces/AutomationRegistrarInterface.sol";
+import {AutomationRegistrarInterface} from "./interfaces/AutomationRegistrarInterface.sol";
 import {INutritionistNFT} from "./interfaces/INutritionistNFT.sol";
 import {LinkTokenInterface} from "@chainlink/contracts/src/v0.8/shared/interfaces/LinkTokenInterface.sol";
 
@@ -26,38 +26,6 @@ error UnauthorizedMember(address caller);
 error InvalidDeadline();
 
 error InvalidSubStatus();
-
-struct RegistrationParams {
-    string name;
-    bytes encryptedEmail;
-    address upkeepContract;
-    uint32 gasLimit;
-    address adminAddress;
-    uint8 triggerType;
-    bytes checkData;
-    bytes triggerConfig;
-    bytes offchainConfig;
-    uint96 amount;
-}
-
-/**
- * string name = "test upkeep";
- * bytes encryptedEmail = 0x;
- * address upkeepContract = 0x...;
- * uint32 gasLimit = 500000;
- * address adminAddress = 0x....;
- * uint8 triggerType = 0;
- * bytes checkData = 0x;
- * bytes triggerConfig = 0x;
- * bytes offchainConfig = 0x;
- * uint96 amount = 1000000000000000000;
- */
-
-interface AutomationRegistrarInterface {
-    function registerUpkeep(
-        RegistrationParams calldata requestParams
-    ) external returns (uint256);
-}
 
 contract CommunityNetwork is Ownable {
     LinkTokenInterface public immutable i_link;
@@ -144,32 +112,6 @@ contract CommunityNetwork is Ownable {
     }
 
     Community[] public allCommunities;
-
-    struct RegistrationParams {
-        string name;
-        bytes encryptedEmail;
-        address upkeepContract;
-        uint32 gasLimit;
-        address adminAddress;
-        uint8 triggerType;
-        bytes checkData;
-        bytes triggerConfig;
-        bytes offchainConfig;
-        uint96 amount;
-    }
-
-    /**
-     * string name = "test upkeep";
-     * bytes encryptedEmail = 0x;
-     * address upkeepContract = 0x...;
-     * uint32 gasLimit = 500000;
-     * address adminAddress = 0x....;
-     * uint8 triggerType = 0;
-     * bytes checkData = 0x;
-     * bytes triggerConfig = 0x;
-     * bytes offchainConfig = 0x;
-     * uint96 amount = 1000000000000000000;
-     */
 
     struct NutritionistApplication {
         string dataURI;
@@ -632,7 +574,7 @@ contract CommunityNetwork is Ownable {
         return allCommunities;
     }
 
-    function registerAndPredictID(RegistrationParams memory params) public {
+    function registerAndPredictID(AutomationRegistrarInterface.RegistrationParams memory params) public {
         // LINK must be approved for transfer - this can be done every time or once
         // with an infinite approval
         i_link.approve(address(i_registrar), params.amount);

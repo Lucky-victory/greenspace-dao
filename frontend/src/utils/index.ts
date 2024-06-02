@@ -97,7 +97,7 @@ export const generateNumId = (prefix = "", len = 10, sep = "") => {
 export const generateUsername = (prefix = "GH", len = 10) => {
   return generateNumId(prefix, len, "_");
 };
-export function objectToSearchParams(obj: Record<string, string>) {
+export function objectToSearchParams(obj: Record<string, any>) {
   const params = new URLSearchParams();
 
   for (const key in obj) {

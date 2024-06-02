@@ -14,15 +14,13 @@ import {
 import { LogoutButton } from "../Logout";
 import { Link } from "@chakra-ui/next-js";
 import { usePrivy } from "@privy-io/react-auth";
-import { useGetUserQuery } from "src/state/services";
+import { useGetUserQuery, useLazyGetUserQuery } from "src/state/services";
 import BoringAvatar from "boring-avatars";
 import { useEffect, useState } from "react";
 import { USER } from "src/state/types";
 export const UserMenu = () => {
   const { user } = usePrivy();
-  const { data: savedUserResponse, isLoading } = useGetUserQuery({
-    usernameOrAuthId: user?.id as string,
-  });
+  const [getUser, { data: savedUserResponse, isLoading }] = useLazyGetUserQuery();
   const getFirstName = (name: string) => name.split(" ")[0];
   const [savedUser, setSavedUser] = useState<USER | undefined>();
   const [isAdmin, setIsAdmin] = useState(false);
@@ -30,12 +28,14 @@ export const UserMenu = () => {
   const [isNutritionist, setIsNutritionist] = useState(false);
 
   useEffect(() => {
+    if (!user) return;
+    getUser({ usernameOrAuthId: user?.id as string }, true);
     const savedUser = savedUserResponse?.data;
     setSavedUser(savedUserResponse?.data);
     setIsAdmin(savedUser?.role === "admin");
     setIsMember(savedUser?.userType === "member");
     setIsNutritionist(savedUser?.userType === "nutritionist");
-  }, [savedUserResponse?.data]);
+  }, [user, savedUserResponse?.data, isLoading]);
 
   return (
     <>

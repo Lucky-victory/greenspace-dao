@@ -5,9 +5,9 @@ pragma solidity 0.8.16;
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import {IUserNFT} from "./interfaces/IUserNFT.sol";
-import {AutomationRegistrarInterface} from "./interfaces/AutomationRegistrarInterface.sol";
+//import {AutomationRegistrarInterface} from "./interfaces/AutomationRegistrarInterface.sol";
 import {INutritionistNFT} from "./interfaces/INutritionistNFT.sol";
-import {LinkTokenInterface} from "@chainlink/contracts/src/v0.8/shared/interfaces/LinkTokenInterface.sol";
+//import {LinkTokenInterface} from "@chainlink/contracts/src/v0.8/shared/interfaces/LinkTokenInterface.sol";
 
 error AlreadyAMember();
 
@@ -28,8 +28,8 @@ error InvalidDeadline();
 error InvalidSubStatus();
 
 contract CommunityNetwork is Ownable {
-    LinkTokenInterface public immutable i_link;
-    AutomationRegistrarInterface public immutable i_registrar;
+    // LinkTokenInterface public immutable i_link;
+    // AutomationRegistrarInterface public immutable i_registrar;
 
     using Counters for Counters.Counter;
 
@@ -172,14 +172,14 @@ contract CommunityNetwork is Ownable {
     Articles[] public allArticles;
 
     constructor(
-        address _treasury,
-        LinkTokenInterface link,
-        AutomationRegistrarInterface registrar
+        address _treasury
+        // LinkTokenInterface link,
+        // AutomationRegistrarInterface registrar
     ) {
         treasury = _treasury;
         communityIdCounter.increment();
-        i_link = link;
-        i_registrar = registrar;
+        // i_link = link;
+        // i_registrar = registrar;
     }
 
     /// @notice Restrict access to trusted `nutritionists`
@@ -574,50 +574,50 @@ contract CommunityNetwork is Ownable {
         return allCommunities;
     }
 
-    function registerAndPredictID(AutomationRegistrarInterface.RegistrationParams memory params) public {
-        // LINK must be approved for transfer - this can be done every time or once
-        // with an infinite approval
-        i_link.approve(address(i_registrar), params.amount);
-        uint256 upkeepID = i_registrar.registerUpkeep(params);
-        if (upkeepID != 0) {
-            // DEV - Use the upkeepID however you see fit
-        } else {
-            revert("auto-approve disabled");
-        }
-    }
+    // function registerAndPredictID(AutomationRegistrarInterface.RegistrationParams memory params) public {
+    //     // LINK must be approved for transfer - this can be done every time or once
+    //     // with an infinite approval
+    //     i_link.approve(address(i_registrar), params.amount);
+    //     uint256 upkeepID = i_registrar.registerUpkeep(params);
+    //     if (upkeepID != 0) {
+    //         // DEV - Use the upkeepID however you see fit
+    //     } else {
+    //         revert("auto-approve disabled");
+    //     }
+    // }
 
-    function checkUpkeep(
-        bytes calldata /* checkData */
-    ) external view returns (bool upkeepNeeded, bytes memory performData) {
-        //decode check data if you using it
-        //if interval has passed then return true
+    // function checkUpkeep(
+    //     bytes calldata /* checkData */
+    // ) external view returns (bool upkeepNeeded, bytes memory performData) {
+    //     //decode check data if you using it
+    //     //if interval has passed then return true
 
-        bool status;
-        User[] memory newUserArr = new User[](allUsers.length);
-        for (uint16 i = 0; i < allUsers.length; i++) {
-            User memory user = allUsers[i];
-            if (block.timestamp > user.subDeadline) {
-                // user.subStatus = UserSubscriptionStatus.Expired;
-                // user.subDeadline = 0;
-                newUserArr[i] = user;
-                status = true;
-            }
-        }
-        //upkeepNeeded = (block.timestamp - lastTimeStamp) > interval;
-        upkeepNeeded = status;
-        performData = abi.encode(newUserArr);
-        //pass checkData through to performData
-    }
+    //     bool status;
+    //     User[] memory newUserArr = new User[](allUsers.length);
+    //     for (uint16 i = 0; i < allUsers.length; i++) {
+    //         User memory user = allUsers[i];
+    //         if (block.timestamp > user.subDeadline) {
+    //             // user.subStatus = UserSubscriptionStatus.Expired;
+    //             // user.subDeadline = 0;
+    //             newUserArr[i] = user;
+    //             status = true;
+    //         }
+    //     }
+    //     //upkeepNeeded = (block.timestamp - lastTimeStamp) > interval;
+    //     upkeepNeeded = status;
+    //     performData = abi.encode(newUserArr);
+    //     //pass checkData through to performData
+    // }
 
-    function performUpkeep(bytes calldata performData) external {
-        //We highly recommend revalidating the upkeep in the performUpkeep function
-        User[] memory usersArr = abi.decode(performData, (User[]));
-        for (uint16 i = 0; i < usersArr.length; i++) {
-            User memory user = usersArr[i];
-            address userAddress = user.userAddress;
-            if (block.timestamp > user.subDeadline) {
-                revokeUser(userAddress);
-            }
-        }
-    }
+    // function performUpkeep(bytes calldata performData) external {
+    //     //We highly recommend revalidating the upkeep in the performUpkeep function
+    //     User[] memory usersArr = abi.decode(performData, (User[]));
+    //     for (uint16 i = 0; i < usersArr.length; i++) {
+    //         User memory user = usersArr[i];
+    //         address userAddress = user.userAddress;
+    //         if (block.timestamp > user.subDeadline) {
+    //             revokeUser(userAddress);
+    //         }
+    //     }
+    // }
 }

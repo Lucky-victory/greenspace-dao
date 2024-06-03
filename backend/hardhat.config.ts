@@ -116,9 +116,14 @@ const config: HardhatUserConfig = {
       chainId: 43113,
       accounts: [`${process.env.PRIVATE_KEY}`],
     },
-    rtfight: {
-      url: "https://rpc-testnet.rtfight.com/",
-      chainId: 22999,
+    baseSepolia: {
+      url: "https://sepolia.base.org",
+      chainId: 84532,
+      accounts: [`${process.env.PRIVATE_KEY}`],
+    },
+    optimismSepolia: {
+      url: "https://optimism-sepolia.blockpi.network/v1/rpc/public",
+      chainId: 11155420,
       accounts: [`${process.env.PRIVATE_KEY}`],
     },
   },

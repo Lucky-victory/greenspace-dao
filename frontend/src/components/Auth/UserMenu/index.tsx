@@ -14,28 +14,37 @@ import {
 import { LogoutButton } from "../Logout";
 import { Link } from "@chakra-ui/next-js";
 import { usePrivy } from "@privy-io/react-auth";
-import { useGetUserQuery } from "src/state/services";
+import { useGetUserQuery, useLazyGetUserQuery } from "src/state/services";
 import BoringAvatar from "boring-avatars";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { USER } from "src/state/types";
 export const UserMenu = () => {
   const { user } = usePrivy();
-  const { data: savedUserResponse, isLoading } = useGetUserQuery({
-    usernameOrAuthId: user?.id as string,
-  });
+  const [getUser, { isLoading }] = useLazyGetUserQuery();
   const getFirstName = (name: string) => name.split(" ")[0];
   const [savedUser, setSavedUser] = useState<USER | undefined>();
   const [isAdmin, setIsAdmin] = useState(false);
   const [isMember, setIsMember] = useState(false);
   const [isNutritionist, setIsNutritionist] = useState(false);
 
+  const getUserCb = useCallback(getUser, [user, getUser]);
   useEffect(() => {
-    const savedUser = savedUserResponse?.data;
-    setSavedUser(savedUserResponse?.data);
-    setIsAdmin(savedUser?.role === "admin");
-    setIsMember(savedUser?.userType === "member");
-    setIsNutritionist(savedUser?.userType === "nutritionist");
-  }, [savedUserResponse?.data]);
+    const fetchUser = async () => {
+      if (!user) return;
+
+      await getUserCb({ usernameOrAuthId: user?.id as string }, true)
+        .unwrap()
+        .then((response) => {
+          const savedUser = response.data!;
+
+          setSavedUser(savedUser);
+          setIsAdmin(savedUser?.role === "admin");
+          setIsMember(savedUser?.userType === "member");
+          setIsNutritionist(savedUser?.userType === "nutritionist");
+        });
+    };
+    fetchUser();
+  }, [user, getUserCb]);
 
   return (
     <>

@@ -386,7 +386,7 @@ const RegisterForm = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => voi
                               <option value="" disabled>
                                 What&apos;s your biological sex?
                               </option>
-                              <option value="name">Male</option>
+                              <option value="male">Male</option>
                               <option value="female">Female</option>
                             </Select>
                             <div className="text-red-500">{errors.sex?.message}</div>

@@ -1,4 +1,4 @@
-import { useEffect, useReducer, useRef, useState } from "react";
+import { useEffect, useMemo, useReducer, useRef, useState } from "react";
 import io, { Socket } from "socket.io-client";
 
 // INSTALL npm install -D @tailwindcss/typography to properly display tables and such in md
@@ -17,12 +17,24 @@ import { Box, Textarea } from "@chakra-ui/react";
 import { useInAppAuth } from "src/hooks/common";
 import { useAccount } from "wagmi";
 import { useWallet } from "src/context/WalletProvider";
+import { Channel } from "pusher-js";
+import { pusherClient } from "src/lib/pusher/client";
+import { generateUrlSafeId, objectToSearchParams } from "src/utils";
 
 const samplePrompts = [
   "What nutrition is best for a female BMI of 20?",
   "Any exercises I can do, without hurting my back?",
 ];
+type ActionType = "LIST_THREAD_IDS" | "GET_THREAD" | "CREATE_THREAD_WITH_QUESTION" | "DELETE_THREAD" | "ASK_QUESTION";
 
+// Define the payload types
+type Payload<T = any> = T;
+
+// Define the data type
+interface Action {
+  type: ActionType;
+  payload: Payload;
+}
 interface ChatState {
   loading: boolean;
   thread_new: boolean;
@@ -35,6 +47,8 @@ interface ChatState {
 
 const AiCoachPage = () => {
   const { address } = useWallet();
+  const { user } = useInAppAuth();
+  const roomId = useMemo(() => generateUrlSafeId(16), []);
   const [state, updateState] = useReducer(
     (current: ChatState, update: Partial<ChatState>): ChatState => ({
       ...current,
@@ -50,11 +64,13 @@ const AiCoachPage = () => {
       active_question_disabled: false,
     }
   );
-
+  console.log({ state });
   const [activeResponse, setActiveResponse] = useState("");
 
   // Ref for the socket instance
-  const socketRef = useRef<Socket<DefaultEventsMap, DefaultEventsMap> | null>(null);
+  // const socketRef = useRef<Socket<DefaultEventsMap, DefaultEventsMap> | null>(null);
+  const channelRef = useRef<Channel>();
+
   // Ref to store the latest state
   const stateRef = useRef(state);
   const activeResponseRef = useRef(activeResponse);
@@ -70,25 +86,33 @@ const AiCoachPage = () => {
   }, [state]);
 
   useEffect(() => {
-    (async () => await socketInitializer())();
+    socketInitializer();
+
+    console.log({ channelRef });
+    channelRef.current = pusherClient.subscribe(roomId);
+
     return () => {
-      if (socketRef.current) {
-        socketRef.current.disconnect();
+      if (channelRef.current) {
+        channelRef.current?.unbind_all();
+        channelRef.current.unsubscribe();
       }
     };
-  }, []);
+  }, [roomId]);
 
   useEffect(() => {
-    if (!socketRef.current?.connected) return;
+    if (!channelRef.current) return;
 
-    socketRef.current.emit("message", {
-      type: "LIST_THREAD_IDS",
-      payload: {
-        addressOrUsername: address,
-      },
-    });
+    const fetchThreads = async () => {
+      // await sendData({
+      //   type: "LIST_THREAD_IDS",
+      //   payload: {
+      //     usernameOrAuthId: user?.id,
+      //   },
+      // });
+    };
+    if (user) fetchThreads();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [socketRef.current, address]);
+  }, [user, roomId]);
 
   // const container = useRef<HTMLDivElement>(null);
 
@@ -104,46 +128,44 @@ const AiCoachPage = () => {
   //   Scroll();
   // }, [state.thread_messages]);
 
-  const socketInitializer = async () => {
-    await fetch("/api/assistant");
-    socketRef.current = io();
-
-    console.log(socketRef.current);
-
-    socketRef.current.on("connect", () => {
-      console.log("Connected to the server");
+  async function sendData(data: any) {
+    await fetch(`/api/pusher/ai-coach?${objectToSearchParams({ addressOrAuthId: user?.id, roomId: roomId })}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
     });
-
-    socketRef.current.on("thread-ids", (data) => {
+  }
+  const socketInitializer = () => {
+    channelRef.current?.bind("evt::thread-ids", (data: any) => {
+      console.log("evt::thread-ids: ", data);
       updateState({
         thread_threadIds: data,
       });
-      console.log("thread-ids: ", data);
     });
 
-    socketRef.current.on("thread-messages", (data) => {
+    channelRef.current?.bind("evt::thread-messages", (data: any) => {
+      console.log("evt::thread-messages: ", data);
       updateState({
         thread_messages: data,
         loading: false,
       });
-      console.log("thread-messages: ", data);
     });
 
-    socketRef.current.on("thread-created", (data) => {
+    channelRef.current?.bind("evt::thread-created", (data: any) => {
+      console.log("evt::thread-created: ", data);
       updateState({
         thread_currentId: data,
         thread_new: false,
       });
-      console.log("thread-created: ", data);
     });
 
-    socketRef.current.on("stream-response", (data) => {
+    channelRef.current?.bind("evt::stream-response", (data: any) => {
       setActiveResponse((active) => {
         return active + data;
       });
     });
 
-    socketRef.current.on("stream-finished", (data) => {
+    channelRef.current?.bind("evt::stream-finished", (data: any) => {
       setActiveResponse("");
       updateState({
         active_question_disabled: false,
@@ -166,51 +188,51 @@ const AiCoachPage = () => {
           } as any,
         ],
       });
-      console.log("stream-finished: ", data);
+      console.log("evt::stream-finished: ", data);
     });
 
-    socketRef.current.on("thread-deleted", (data) => {
+    channelRef.current?.bind("evt::thread-deleted", (data: any) => {
       updateState({});
-      console.log("thread-deleted: ", data);
+      console.log("evt::thread-deleted: ", data);
     });
   };
 
-  const handleGetThread = (threadId: string) => {
+  const handleGetThread = async (threadId: string) => {
     updateState({
       thread_new: false,
       thread_currentId: threadId,
       loading: true,
     });
 
-    socketRef.current?.emit("message", {
-      type: "GET_THREAD",
-      payload: {
-        threadId,
-      },
-    });
+    // await sendData({
+    //   type: "GET_THREAD",
+    //   payload: {
+    //     threadId,
+    //   },
+    // });
   };
 
-  const handleAskQuestion = () => {
-    if (!state.active_question) {
+  const handleAskQuestion = async () => {
+    if (state.active_question === "") {
       return;
     }
 
-    state.thread_new
-      ? socketRef.current?.emit("message", {
-          type: "CREATE_THREAD_WITH_QUESTION",
-          payload: {
-            content: state.active_question,
-            addressOrUsername: address,
-          },
-        })
-      : socketRef.current?.emit("message", {
-          type: "ASK_QUESTION",
-          payload: {
-            threadId: state.thread_currentId,
-            content: state.active_question,
-            addressOrUsername: address,
-          },
-        });
+    // state.thread_new
+    //   ? await sendData({
+    //       type: "CREATE_THREAD_WITH_QUESTION",
+    //       payload: {
+    //         content: state.active_question,
+    //         usernameOrAuthId: user?.id,
+    //       },
+    //     })
+    //   : await sendData({
+    //       type: "ASK_QUESTION",
+    //       payload: {
+    //         threadId: state.thread_currentId,
+    //         content: state.active_question,
+    //         usernameOrAuthId: user?.id,
+    //       },
+    //     });
 
     updateState({
       active_question_disabled: true,
@@ -242,7 +264,7 @@ const AiCoachPage = () => {
         <div /* ref={container} */ className="flex">
           <div className="flex-1 flex flex-col gap-4 items-center px-8 pb-60">
             {isEmpty(state.thread_messages) ? (
-              <div className="flex flex-col gap-48 items-center">
+              <div className="flex flex-col gap-12 items-center">
                 <div className="flex flex-col gap-8 items-center">
                   <p className="max-w-prose text-balance text-center font-bellota text-2xl font-bold ">
                     I&apos;m here to help you live healthy and better!
@@ -258,7 +280,7 @@ const AiCoachPage = () => {
                   {state.thread_threadIds?.split(" ").map((threadIdWithDate: string) => {
                     const [threadId, date] = threadIdWithDate.split("::");
                     return (
-                      <div key={threadId} onClick={() => handleGetThread(threadId)}>
+                      <div key={threadId} onClick={async () => await handleGetThread(threadId)}>
                         {threadId} {date}
                       </div>
                     );
@@ -309,8 +331,8 @@ const AiCoachPage = () => {
 
               <div className="flex justify-end">
                 <MessageButton
-                  onClick={() => {
-                    handleAskQuestion();
+                  onClick={async () => {
+                    await handleAskQuestion();
                   }}
                 />
               </div>

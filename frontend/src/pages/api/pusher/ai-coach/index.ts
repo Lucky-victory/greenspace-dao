@@ -1,10 +1,18 @@
 import { getPusherInstance } from "src/lib/pusher/server";
-import { HTTP_METHOD_CB, errorHandlerCallback, logger, mainHandler, successHandlerCallback } from "src/utils";
+import {
+  HTTP_METHOD_CB,
+  errorHandlerCallback,
+  generateUrlSafeId,
+  logger,
+  mainHandler,
+  successHandlerCallback,
+} from "src/utils";
 import { db } from "src/db";
 import { global, users } from "src/db/schema";
 import OpenAI from "openai";
 import { eq, or } from "drizzle-orm";
 import { NextApiRequest, NextApiResponse } from "next";
+import isEmpty from "just-is-empty";
 const pusherServer = getPusherInstance();
 const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 // Define the action types
@@ -19,25 +27,9 @@ interface Action {
   payload: Payload;
 }
 
-// Define handler functions
-async function handleListThreadIds(roomId: string, payload: Payload): Promise<void> {
-  // Implementation here
-}
-
-async function handleGetThread(roomId: string, payload: Payload): Promise<void> {
-  // Implementation here
-}
-
-async function handleCreateThread(roomId: string, payload: Payload): Promise<void> {
-  // Implementation here
-}
-
-async function handleDeleteThread(roomId: string, payload: Payload): Promise<void> {
-  // Implementation here
-}
-
 // Function to handle actions
 async function handleAction(roomId: string, data: Action): Promise<void> {
+  logger({ roomId, data: JSON.stringify(data) });
   switch (data.type) {
     case "LIST_THREAD_IDS":
       await handleListThreadIds(roomId, data.payload);
@@ -67,25 +59,52 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
 export const pusherHandler: HTTP_METHOD_CB = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
-    const { usernameOrAuthId } = req.query as { usernameOrAuthId: string };
-    const user = await getUser(usernameOrAuthId);
+    const { addressOrAuthId, roomId } = req.query as { addressOrAuthId: string; roomId: string };
+    const data = req.body;
+    if (isEmpty(addressOrAuthId) || isEmpty(roomId)) throw new Error(" addressOrAuthId & roomId are required");
+    const user = await getUser(addressOrAuthId);
 
     if (!user) return errorHandlerCallback(req, res, { message: "Unauthorized" }, 401);
 
-    await pusherServer.trigger(user?.authId as string, "evt::message", {});
-  } catch (error) {}
-};
-export async function getUser(usernameOrAuthId: string) {
-  try {
-    return await db.query.users.findFirst({
-      where: or(eq(users.username, usernameOrAuthId), eq(users.authId, usernameOrAuthId)),
-      columns: {
-        authId: true,
-        fullName: true,
-        aiCoachThreadIds: true,
-      },
+    await handleAction(roomId, data);
+    return successHandlerCallback(req, res, {
+      message: "Success",
     });
-  } catch (error) {}
+  } catch (error) {
+    logger(error);
+    return errorHandlerCallback(req, res, { error, message: "Something went wrong..." }, 500);
+  }
+};
+async function handleDeleteThread(roomId: string, arg: { threadId: string; addressOrAuthId: string }) {
+  try {
+    // Remove thread from user db.
+    const user = await getUser(arg.addressOrAuthId);
+    const aiCoachThreadIds = removeWordFromString(user?.aiCoachThreadIds || "", roomId);
+    await db
+      .update(users)
+      .set({ aiCoachThreadIds })
+      .where(or(eq(users.address, arg.addressOrAuthId), eq(users.authId, arg.addressOrAuthId)));
+
+    // Delete thread from Open AI servers.
+    await deleteThread(arg.threadId);
+
+    await pusherServer.trigger(roomId, "evt::thread-deleted", true);
+  } catch {
+    await pusherServer.trigger(roomId, "evt::thread-deleted", false);
+    console.error("Unable to delete thread: ", arg.threadId);
+  }
+}
+async function getUser(addressOrAuthId: string) {
+  const user = await db.query.users.findFirst({
+    where: or(eq(users.address, addressOrAuthId), eq(users.authId, addressOrAuthId)),
+    columns: {
+      authId: true,
+      fullName: true,
+      aiCoachThreadIds: true,
+    },
+  });
+  logger(user, "getUser");
+  return user;
 }
 
 async function createAssistant() {
@@ -119,7 +138,7 @@ async function createThread(content: string) {
   const messageThread = await client.beta.threads.create({
     messages: [{ role: "user", content }],
   });
-  logger(messageThread);
+  logger({ messageThread });
   return messageThread.id;
 }
 async function deleteThread(thread_id: string) {
@@ -132,56 +151,105 @@ async function createThreadMessage(thread_id: string, content: string) {
     role: "user",
     content,
   });
-  logger(threadMessage);
+  logger(threadMessage, "thread message");
   return threadMessage;
 }
-async function listThreadMessages(thread_id: string) {
-  const threadMessages = await client.beta.threads.messages.list(thread_id);
-  logger(threadMessages);
-  return threadMessages.getPaginatedItems();
+async function handleGetThread(roomId: string, arg: { threadId: string }) {
+  const threadMessages = await listThreadMessages(arg.threadId);
+  logger({ threadId: arg.threadId, threadMessages });
+  await pusherServer.trigger(roomId, "evt::thread-messages", threadMessages);
 }
+async function listThreadMessages(thread_id: string) {
+  try {
+    const threadMessages = await client.beta.threads.messages.list(thread_id);
+    logger({ threadMessages });
+    return threadMessages.getPaginatedItems();
+  } catch (error) {
+    logger(error);
+  }
+}
+async function handleListThreadIds(roomId: string, arg: { addressOrAuthId: string }) {
+  console.log(arg);
 
-async function handleAskQuestion(roomId: string, arg: { threadId: string; content: string; usernameOrAuthId: string }) {
+  const user = await getUser(arg.addressOrAuthId);
+  console.log("user");
+  console.log({ user });
+  if (user && user?.aiCoachThreadIds)
+    await pusherServer.trigger(roomId, "evt::thread-ids", user?.aiCoachThreadIds || "");
+}
+async function handleCreateThread(roomId: string, arg: { content: string; addressOrAuthId: string }) {
+  try {
+    const user = await getUser(arg.addressOrAuthId);
+
+    // Create new thread and update users threads ids.
+    const threadId = await createThread(arg.content);
+    const threadIds = user?.aiCoachThreadIds || "" + " " + threadId + "::" + Date.now();
+    await db
+      .update(users)
+      .set({ aiCoachThreadIds: threadIds.trim() })
+      .where(or(eq(users.address, arg.addressOrAuthId), eq(users.authId, arg.addressOrAuthId)));
+
+    await pusherServer.trigger(roomId, "evt::thread-created", threadId);
+
+    // Run the stream for the new thread.
+    const assistantId = await getAssistantId();
+    const instruction = user?.fullName ? `Please address the user as ${user?.fullName}.` : "";
+    const stream = await client.chat.completions.create({
+      model: "gpt-3.5-turbo-0125",
+      messages: [{ role: "user", content: arg.content }],
+      stream: true,
+    });
+    for await (const chunk of stream) {
+      // process.stdout.write(chunk.choices[0]?.delta?.content || "");
+      await pusherServer.trigger(roomId, "evt::stream-response", chunk.choices?.[0]?.delta?.content);
+    }
+
+    await pusherServer.trigger(roomId, "evt::stream-finished", true);
+  } catch (error) {
+    console.error(error);
+    console.error("Uninitialized assistant Id 1");
+  }
+}
+async function handleAskQuestion(roomId: string, arg: { threadId: string; content: string; addressOrAuthId: string }) {
   try {
     // Add user message to the thread.
     await createThreadMessage(arg.threadId, arg.content);
 
     // Run the stream for the thread.
-    const user = await getUser(arg.usernameOrAuthId);
+    const user = await getUser(arg.addressOrAuthId);
     const assistantId = await getAssistantId();
     const instruction = user?.fullName ? `Please address the user as ${user?.fullName}.` : "";
-    createRunStream(
-      arg.threadId,
-      assistantId,
-      instruction,
-      (stream: string) => {
-        pusherServer.trigger(user?.authId as string, "stream-response", stream);
-      },
-      (done: boolean) => {
-        pusherServer.trigger(user?.authId as string, "stream-finished", done);
-      }
-    );
+    const stream = await client.chat.completions.create({
+      model: "gpt-3.5-turbo-0125",
+      messages: [{ role: "user", content: arg.content }],
+      stream: true,
+    });
+    for await (const chunk of stream) {
+      process.stdout.write(chunk.choices[0]?.delta?.content || "");
+      await pusherServer.trigger(roomId, "evt::stream-response", chunk.choices[0]?.delta?.content);
+    }
+    await pusherServer.trigger(roomId, "evt::stream-finished", true);
   } catch {
     console.error("Uninitialized assistant Id 2");
   }
 }
 
-function createRunStream(
+async function createRunStream(
   thread_id: string,
   assistant_id: string,
   instructions: string,
-  textCallback: (stream: string) => void,
-  doneCallback: (stream: boolean) => void
+  textCallback: (stream: string) => Promise<void>,
+  doneCallback: (stream: boolean) => Promise<void>
 ) {
   const run = client.beta.threads.runs.stream(thread_id, {
     assistant_id,
     // Custom instructions overrides the default system instruction reinclude `defaultInstruction`
     instructions: instructions ? defaultInstruction + "\n\n" + instructions : instructions,
   });
-  run.on("textDelta", (textDelta, snapshot) => {
-    textCallback(textDelta.value || "");
+  run.on("textDelta", async (textDelta, snapshot) => {
+    await textCallback(textDelta.value || "");
   });
-  run.on("messageDone", (text) => doneCallback(true));
+  run.on("messageDone", async (text) => await doneCallback(true));
 }
 
 // Assistant Logic Implementations
@@ -197,3 +265,7 @@ export const defaultInstruction = `
   Recipe Recommendations of tasty, nutritionist-approved recipes suited to the user's needs to expand their culinary skills while staying healthy.
   Your goal is to be an affordable, convenient virtual nutritionist, empowering users to take control of their diet and wellbeing through advanced AI capabilities. You should guide users through the onboarding process to customize your services for their individual needs and goals. Then provide an interactive experience allowing meal planning, food logging, coaching, grocery lists and recipes tailored specifically for each user.
 `;
+export const removeWordFromString = (inputString: string, wordToRemove: string) => {
+  const regex = new RegExp("\\b" + wordToRemove + "\\b", "gi");
+  return inputString.replace(regex, "").replace(/\s+/g, " ").trim();
+};

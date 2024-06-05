@@ -6,7 +6,7 @@ import { ChakraProvider } from "@chakra-ui/react";
 import { fonts } from "src/lib/fonts";
 import theme from "src/config/theme";
 import { WagmiProvider } from "wagmi";
-import WalletProvider from "src/context/WalletProvider";
+// import WalletProvider from "src/context/WalletProvider";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import { config } from "src/config/wagmi";
@@ -38,30 +38,30 @@ export default function App({ Component, pageProps }: AppProps) {
           }
         `}
       </style>
-      <PrivyProvider
-        appId={process.env.NEXT_PUBLIC_PRIVY_APP_ID!}
-        config={{
-          appearance: {
-            theme: "dark",
-          },
-        }}
-      >
-        <WagmiProvider config={config}>
+      <WagmiProvider config={config}>
+        <PrivyProvider
+          appId={process.env.NEXT_PUBLIC_PRIVY_APP_ID!}
+          config={{
+            appearance: {
+              theme: "dark",
+            },
+          }}
+        >
           <ReduxProvider store={store}>
             <QueryClientProvider client={queryClient}>
               <ThirdwebProvider clientId="7d6dd3b28e4d16bb007c78b1f6c90b04" activeChain="sepolia">
                 <HuddleProvider client={huddleClient}>
                   <ChakraProvider theme={theme}>
-                    <WalletProvider>
-                      <Component {...pageProps} />
-                    </WalletProvider>
+                    {/* <WalletProvider> */}
+                    <Component {...pageProps} />
+                    {/* </WalletProvider> */}
                   </ChakraProvider>
                 </HuddleProvider>
               </ThirdwebProvider>
             </QueryClientProvider>
           </ReduxProvider>
-        </WagmiProvider>
-      </PrivyProvider>
+        </PrivyProvider>
+      </WagmiProvider>
     </>
   );
 }

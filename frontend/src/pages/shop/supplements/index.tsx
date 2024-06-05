@@ -97,11 +97,11 @@ function Shop({ data }: InferGetServerSidePropsType<typeof getServerSideProps>) 
   );
 }
 
-export default Shop;
-
 export const getServerSideProps = (async (context) => {
   // Fetch data from external API
   const data = await getAllSupplements();
   // Pass data to the page via props
   return { props: { data } };
 }) satisfies GetServerSideProps<{ data: Supplement[] }>;
+
+export default Shop;

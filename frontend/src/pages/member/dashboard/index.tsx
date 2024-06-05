@@ -25,7 +25,7 @@ export default function MemberDashboardPage() {
   useEffect(() => {
     fetchDataFromIPFSStorage();
   }, [fetchDataFromIPFSStorage]);
-
+  useEffect(() => {}, [registerData]);
   return (
     <DashboardLayout>
       <Box className="min-h-full h-full" px={"4"} py={4}>

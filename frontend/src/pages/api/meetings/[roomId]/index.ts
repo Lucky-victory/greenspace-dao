@@ -30,7 +30,7 @@ export const GET: HTTP_METHOD_CB = async (
       with: {
         author: {
           columns: {
-            chainId: true,
+          
             authId: true,
             address: true,
             id: true,

@@ -1,5 +1,6 @@
 import { Button } from "@chakra-ui/react";
 import { useLogin, usePrivy } from "@privy-io/react-auth";
+import { useRouter } from "next/router";
 import { useGetUserQuery } from "src/state/services";
 
 export const LoginButton = ({
@@ -12,8 +13,15 @@ export const LoginButton = ({
   styleProps: Record<string, any>;
 }) => {
   const { user } = usePrivy();
+  const router = useRouter();
   const { login } = useLogin({
-    onComplete: async (user, isNewUser) => {},
+    onComplete: async (user, isNewUser) => {
+      if (type === "member") {
+        router.push("/member/dashboard");
+      } else {
+        router.push("/nutritionist/dashboard");
+      }
+    },
   });
   const { data: savedUserResponse } = useGetUserQuery({
     usernameOrAuthId: user?.id as string,

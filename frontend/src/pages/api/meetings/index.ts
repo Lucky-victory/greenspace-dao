@@ -1,28 +1,17 @@
 import { db } from "src/db";
 import { meetings } from "src/db/schema";
-import {
-  HTTP_METHOD_CB,
-  errorHandlerCallback,
-  mainHandler,
-  successHandlerCallback,
-} from "src/utils";
+import { HTTP_METHOD_CB, errorHandlerCallback, mainHandler, successHandlerCallback } from "src/utils";
 import { eq } from "drizzle-orm";
 import { NextApiRequest, NextApiResponse } from "next";
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   return mainHandler(req, res, {
     GET,
     POST,
   });
 }
 
-export const GET: HTTP_METHOD_CB = async (
-  req: NextApiRequest,
-  res: NextApiResponse
-) => {
+export const GET: HTTP_METHOD_CB = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     const meetings = await db.query.meetings.findMany();
     return successHandlerCallback(req, res, {
@@ -36,10 +25,7 @@ export const GET: HTTP_METHOD_CB = async (
     });
   }
 };
-export const POST: HTTP_METHOD_CB = async (
-  req: NextApiRequest,
-  res: NextApiResponse
-) => {
+export const POST: HTTP_METHOD_CB = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     const data = req.body;
     const createdMeeting = await db.transaction(async (tx) => {
@@ -51,7 +37,6 @@ export const POST: HTTP_METHOD_CB = async (
               id: true,
               authId: true,
               address: true,
-              chainId: true,
             },
           },
         },

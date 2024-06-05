@@ -35,9 +35,9 @@ export default function DashBoard() {
   const [meetingTitle, setMeetingTitle] = useState("Discussion");
   const [isSending, setIsSending] = useState(false);
 
-  const [createRoom, { isLoading, isSuccess }] = useCreateRoomMutation();
+  const [createRoom, {}] = useCreateRoomMutation();
 
-  const [addMeeting] = useAddMeetingMutation();
+  const [addMeeting, { isLoading }] = useAddMeetingMutation();
   async function handleCreateNewMeeting() {
     try {
       setIsSending(true);
@@ -124,7 +124,7 @@ export default function DashBoard() {
                             isLoading={isLoading}
                             onClick={async () => await handleCreateNewMeeting()}
                             gap={2}
-                            className="hover:bg-primaryYellowTrans hover:text-primaryGreen text-primaryBeige bg-primaryGreen"
+                            colorScheme="gs-yellow"
                           >
                             <HiPhone size={20} name="phone" /> Start Call
                           </Button>
@@ -153,7 +153,7 @@ export default function DashBoard() {
                             isLoading={isLoading}
                             onClick={async () => await handleCreateNewMeeting()}
                             gap={2}
-                            className="hover:bg-primaryYellowTrans hover:text-primaryGreen text-primaryBeige bg-primaryGreen"
+                            colorScheme="gs-yellow"
                           >
                             <HiPhone size={20} name="phone" /> Start Call
                           </Button>

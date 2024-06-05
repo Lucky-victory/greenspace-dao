@@ -1,7 +1,6 @@
 import { AccessToken, Role } from "@huddle01/server-sdk/auth";
 import axios from "axios";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { ENV_CONFIG } from "src/config/constants";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
@@ -17,7 +16,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       {
         headers: {
           "Content-Type": "application/json",
-          "x-api-key": ENV_CONFIG.HUDDLE_API_KEY as string,
+          "x-api-key": process.env.HUDDLE_API_KEY as string,
         },
       }
     );
@@ -32,13 +31,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 };
 
 // when a room is created, create a token for the room creator as admin
-export const createTokenForAdmin = async (
-  roomId: string,
-  metadata: any = {}
-) => {
+export const createTokenForAdmin = async (roomId: string, metadata: any = {}) => {
   try {
     const accessToken = new AccessToken({
-      apiKey: ENV_CONFIG.HUDDLE_API_KEY!,
+      apiKey: process.env.HUDDLE_API_KEY!,
       roomId: roomId as string,
       options: { metadata: metadata },
       role: Role.HOST,

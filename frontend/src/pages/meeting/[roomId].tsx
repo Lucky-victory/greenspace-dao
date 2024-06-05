@@ -39,19 +39,12 @@ export default function MeetPage({ roomId: roomIdFromServer }: InferGetServerSid
   const [meeting, setMeeting] = useState<MEETING | undefined>();
   const [queryMeeting, { isFetching, isLoading }] = useLazyGetMeetingQuery();
   const [user, setUser] = useState<USER | null>(null);
+  const activePeers = useActivePeers();
   // const { data } = useGetMeetingQuery({ roomId: roomId as string });
   // const meeting = data?.data;
 
   const { user: privyUser } = useInAppAuth();
   const [getUser, { data: savedUser }] = useLazyGetUserQuery();
-  useEffect(() => {
-    getUser({ usernameOrAuthId: privyUser?.id as string })
-      .unwrap()
-      .then((res) => {
-        setUser(res.data as USER);
-      });
-  }, [privyUser]);
-  const activePeers = useActivePeers();
 
   const [displayName, setDisplayName] = useState<string>("");
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -111,7 +104,13 @@ export default function MeetPage({ roomId: roomIdFromServer }: InferGetServerSid
   //     screenShareRef.current.srcObject = shareScreenStream;
   //   }
   // }, [shareScreenStream]);
-
+  useEffect(() => {
+    getUser({ usernameOrAuthId: privyUser?.id as string })
+      .unwrap()
+      .then((res) => {
+        setUser(res.data as USER);
+      });
+  }, [privyUser]);
   async function handleJoinRoom(token?: string) {
     try {
       // setIsJoining(true);
@@ -214,7 +213,6 @@ export default function MeetPage({ roomId: roomIdFromServer }: InferGetServerSid
           // h={"var(--chakra-vh)"}
           minH={"700px"}
           maxH={"1000px"}
-          bg={"red"}
           p={2}
         >
           {isIdle && (
@@ -279,7 +277,7 @@ export default function MeetPage({ roomId: roomIdFromServer }: InferGetServerSid
               transition={"0.65s ease-in-out"}
              */}
                 <Flex
-                  bg={"blue"}
+                  // bg={"blue"}
                   direction={{ base: "column", lg: "row" }}
                   minH="full"
                   flex={1}

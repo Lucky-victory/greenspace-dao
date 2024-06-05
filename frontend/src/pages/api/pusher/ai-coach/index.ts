@@ -194,21 +194,17 @@ async function handleCreateThread(roomId: string, arg: { content: string; addres
     // Run the stream for the new thread.
     const assistantId = await getAssistantId();
     const instruction = user?.fullName ? `Please address the user as ${user?.fullName}.` : "";
-    await createRunStream(
-      threadId,
-      assistantId,
-      instruction,
-      async (stream: string) => {
-        console.log({ stream });
+    const stream = await client.chat.completions.create({
+      model: "gpt-3.5-turbo-0125",
+      messages: [{ role: "user", content: arg.content }],
+      stream: true,
+    });
+    for await (const chunk of stream) {
+      // process.stdout.write(chunk.choices[0]?.delta?.content || "");
+      await pusherServer.trigger(roomId, "evt::stream-response", chunk.choices?.[0]?.delta?.content);
+    }
 
-        await pusherServer.trigger(roomId, "evt::stream-response", stream);
-      },
-      async (done: boolean) => {
-        console.log({ done });
-
-        await pusherServer.trigger(roomId, "evt::stream-finished", done);
-      }
-    );
+    await pusherServer.trigger(roomId, "evt::stream-finished", true);
   } catch (error) {
     console.error(error);
     console.error("Uninitialized assistant Id 1");
@@ -223,19 +219,16 @@ async function handleAskQuestion(roomId: string, arg: { threadId: string; conten
     const user = await getUser(arg.addressOrAuthId);
     const assistantId = await getAssistantId();
     const instruction = user?.fullName ? `Please address the user as ${user?.fullName}.` : "";
-    await createRunStream(
-      arg.threadId,
-      assistantId,
-      instruction,
-      async (stream: string) => {
-        console.log({ stream }, "handleAskQuestion");
-        await pusherServer.trigger(roomId, "evt::stream-response", stream);
-      },
-      async (done: boolean) => {
-        console.log({ done }, "handleAskQuestion");
-        await pusherServer.trigger(roomId, "evt::stream-finished", done);
-      }
-    );
+    const stream = await client.chat.completions.create({
+      model: "gpt-3.5-turbo-0125",
+      messages: [{ role: "user", content: arg.content }],
+      stream: true,
+    });
+    for await (const chunk of stream) {
+      process.stdout.write(chunk.choices[0]?.delta?.content || "");
+      await pusherServer.trigger(roomId, "evt::stream-response", chunk.choices[0]?.delta?.content);
+    }
+    await pusherServer.trigger(roomId, "evt::stream-finished", true);
   } catch {
     console.error("Uninitialized assistant Id 2");
   }

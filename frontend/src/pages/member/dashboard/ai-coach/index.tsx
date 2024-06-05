@@ -48,7 +48,7 @@ interface ChatState {
 const AiCoachPage = () => {
   const { address } = useWallet();
   const { user } = useInAppAuth();
-  const roomId = useMemo(() => generateUrlSafeId(16), [address, user]);
+  const roomId = useMemo(() => generateUrlSafeId(16), []);
   const [state, updateState] = useReducer(
     (current: ChatState, update: Partial<ChatState>): ChatState => ({
       ...current,
@@ -97,18 +97,18 @@ const AiCoachPage = () => {
         channelRef.current.unsubscribe();
       }
     };
-  }, []);
+  }, [roomId]);
 
   useEffect(() => {
     if (!channelRef.current) return;
 
     const fetchThreads = async () => {
-      await sendData({
-        type: "LIST_THREAD_IDS",
-        payload: {
-          usernameOrAuthId: user?.id,
-        },
-      });
+      // await sendData({
+      //   type: "LIST_THREAD_IDS",
+      //   payload: {
+      //     usernameOrAuthId: user?.id,
+      //   },
+      // });
     };
     if (user) fetchThreads();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -204,12 +204,12 @@ const AiCoachPage = () => {
       loading: true,
     });
 
-    await sendData({
-      type: "GET_THREAD",
-      payload: {
-        threadId,
-      },
-    });
+    // await sendData({
+    //   type: "GET_THREAD",
+    //   payload: {
+    //     threadId,
+    //   },
+    // });
   };
 
   const handleAskQuestion = async () => {
@@ -217,22 +217,22 @@ const AiCoachPage = () => {
       return;
     }
 
-    state.thread_new
-      ? await sendData({
-          type: "CREATE_THREAD_WITH_QUESTION",
-          payload: {
-            content: state.active_question,
-            usernameOrAuthId: user?.id,
-          },
-        })
-      : await sendData({
-          type: "ASK_QUESTION",
-          payload: {
-            threadId: state.thread_currentId,
-            content: state.active_question,
-            usernameOrAuthId: user?.id,
-          },
-        });
+    // state.thread_new
+    //   ? await sendData({
+    //       type: "CREATE_THREAD_WITH_QUESTION",
+    //       payload: {
+    //         content: state.active_question,
+    //         usernameOrAuthId: user?.id,
+    //       },
+    //     })
+    //   : await sendData({
+    //       type: "ASK_QUESTION",
+    //       payload: {
+    //         threadId: state.thread_currentId,
+    //         content: state.active_question,
+    //         usernameOrAuthId: user?.id,
+    //       },
+    //     });
 
     updateState({
       active_question_disabled: true,

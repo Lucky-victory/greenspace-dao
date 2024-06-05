@@ -9,7 +9,7 @@ import { useWallet } from "src/context/WalletProvider";
 export const ConnectOrLogout = ({ openModal }: { openModal: () => void }) => {
   const { ready, user } = usePrivy();
 
-  const { address } = useWallet();
+  const { address, isConnected, ready: walletReady } = useWallet();
 
   useEffect(() => {
     console.log({ user });
@@ -17,9 +17,9 @@ export const ConnectOrLogout = ({ openModal }: { openModal: () => void }) => {
 
   return (
     <>
-      {ready && !address && <CustomConnectButton />}
-      {ready && address && !user && <LoginAndRegisterButtons openModal={openModal} />}
-      {ready && address && user && <UserMenu />}
+      {walletReady && !address && <CustomConnectButton />}
+      {walletReady && ready && address && !user && <LoginAndRegisterButtons openModal={openModal} />}
+      {ready && user && <UserMenu />}
     </>
   );
 };

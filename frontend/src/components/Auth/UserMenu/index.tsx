@@ -19,9 +19,9 @@ import BoringAvatar from "boring-avatars";
 import { useCallback, useEffect, useState } from "react";
 import { USER } from "src/state/types";
 export const UserMenu = () => {
-  const { user } = usePrivy();
+  const { user, ready } = usePrivy();
   const [getUser, { isLoading }] = useLazyGetUserQuery();
-  const getFirstName = (name: string) => name.split(" ")[0];
+  const getFirstName = (name: string) => name?.split?.(" ")[0];
   const [savedUser, setSavedUser] = useState<USER | undefined>();
   const [isAdmin, setIsAdmin] = useState(false);
   const [isMember, setIsMember] = useState(false);
@@ -30,7 +30,7 @@ export const UserMenu = () => {
   const getUserCb = useCallback(getUser, [user, getUser]);
   useEffect(() => {
     const fetchUser = async () => {
-      if (!user) return;
+      if (ready && !user) return;
 
       await getUserCb({ usernameOrAuthId: user?.id as string }, true)
         .unwrap()
@@ -44,7 +44,7 @@ export const UserMenu = () => {
         });
     };
     fetchUser();
-  }, [user, getUserCb]);
+  }, [user, getUserCb, ready]);
 
   return (
     <>

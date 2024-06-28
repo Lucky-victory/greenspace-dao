@@ -97,7 +97,7 @@ export const nutritionists = mysqlTable("Nutritionists", {
   country: varchar("country", { length: 255 }),
   username: varchar("username", { length: 50 })
     .unique()
-    .$defaultFn(() => generateUsername("GN_")),
+    .$defaultFn(() => generateUsername("gn")),
   sex: mysqlEnum("sex", ["male", "female", "other"]),
   birthDate: datetime("birth_date"),
 
@@ -123,7 +123,10 @@ export const users = mysqlTable(
     authId: varchar("auth_id", { length: 255 }).$defaultFn(generateUrlSafeId),
     emailVerified: boolean("email_verified").default(false),
     fullName: varchar("full_name", { length: 120 }),
-    username: varchar("username", { length: 50 }).unique().notNull().$defaultFn(generateUsername),
+    username: varchar("username", { length: 50 })
+      .unique()
+      .notNull()
+      .$defaultFn(() => generateUsername("gh")),
     email: varchar("email", { length: 255 }).unique(),
     userCid: varchar("userCid", { length: 255 }),
     address: varchar("address", { length: 100 }).default(""),
@@ -210,11 +213,12 @@ export const communityEvents = mysqlTable("CommunityEvents", {
   id: int("id").autoincrement().primaryKey(),
   title: varchar("title", { length: 255 }).notNull(),
   details: mediumtext("details"),
-  slugId: varchar("slug_id", { length: 255 }).$defaultFn(() => generateUrlSafeId(14)),
+  slugId: varchar("slug_id", { length: 255 }).$defaultFn(() => generateUrlSafeId(18)),
   coverImage: mediumtext("cover_image"),
   communityId: int("community_id"),
   startDate: datetime("start_date"),
   endDate: datetime("end_date"),
+  status: mysqlEnum("status", ["ongoing", "upcoming", "ended", "cancelled"]).default("upcoming"),
   venue: varchar("venue", {
     enum: ["online", "in-person"],
     length: 255,
@@ -233,7 +237,7 @@ export const communityEventParticipants = mysqlTable("CommunityEventParticipants
 export const communityChallenges = mysqlTable("CommunityChallenges", {
   id: int("id").autoincrement().primaryKey(),
   title: varchar("title", { length: 255 }).notNull(),
-  slugId: varchar("slug_id", { length: 255 }).$defaultFn(() => generateUrlSafeId(14)),
+  slugId: varchar("slug_id", { length: 255 }).$defaultFn(() => generateUrlSafeId(18)),
   details: mediumtext("details"),
   coverImage: mediumtext("cover_image"),
   communityId: int("community_id"),
@@ -243,6 +247,7 @@ export const communityChallenges = mysqlTable("CommunityChallenges", {
     enum: ["online", "in-person"],
     length: 255,
   }).default("online"),
+  status: mysqlEnum("status", ["ongoing", "upcoming", "ended", "cancelled"]).default("upcoming"),
   location: varchar("location", { length: 255 }),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").onUpdateNow(),
@@ -284,7 +289,7 @@ export const appointments = mysqlTable("Appointments", {
   requestedBy: varchar("requested_by", { length: 155 }),
   nutritionistId: varchar("nutritionist_id", { length: 155 }),
   status: mysqlEnum("status", ["pending", "accepted", "rejected", "expired", "completed"]).default("pending"),
-  slugId: varchar("slug_id", { length: 255 }).$defaultFn(() => generateUrlSafeId(14)),
+  slugId: varchar("slug_id", { length: 255 }).$defaultFn(() => generateUrlSafeId(18)),
   startTime: datetime("start_time"),
   endTime: datetime("end_time"),
   duration: int("duration"),

@@ -10,18 +10,18 @@ import Footer from "src/components/Footer";
 import { useEffect, useState } from "react";
 
 export default function Home() {
-  const [showLoader, setShowLoader] = useState(true);
+  // const [showLoader, setShowLoader] = useState(true);
 
-  useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      setShowLoader(false);
-      if (timeoutId) clearTimeout(timeoutId);
-    }, 800);
+  // useEffect(() => {
+  //   const timeoutId = setTimeout(() => {
+  //     setShowLoader(false);
+  //     if (timeoutId) clearTimeout(timeoutId);
+  //   }, 800);
 
-    return () => {
-      if (timeoutId) clearTimeout(timeoutId);
-    };
-  }, []);
+  //   return () => {
+  //     if (timeoutId) clearTimeout(timeoutId);
+  //   };
+  // }, []);
   return (
     <>
       <Head>
@@ -39,7 +39,7 @@ We're building healthy communities focused on longevity all around the world, we
         <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16x16.png" />
         <link rel="manifest" href="/site.webmanifest"></link>
       </Head>
-      <PageLoader isLoading={showLoader}>
+      <PageLoader isLoading={false}>
         <Box
           maxW={"1350"}
           mx={"auto"}

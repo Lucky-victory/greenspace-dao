@@ -147,9 +147,7 @@ const NutritionistForm = ({
             value={formik.values.fullName}
             placeholder="Full Name"
           />
-          <FormErrorMessage className="text-red-200">
-            {formik.errors?.fullName}
-          </FormErrorMessage>
+          <FormErrorMessage className="text-red-200">{formik.errors?.fullName}</FormErrorMessage>
         </FormControl>
         <FormControl isRequired>
           <FormLabel>Email:</FormLabel>
@@ -161,9 +159,7 @@ const NutritionistForm = ({
             value={formik.values.email}
             placeholder="john@example.com"
           />
-          <FormErrorMessage className="text-red-200">
-            {formik.errors?.email}
-          </FormErrorMessage>
+          <FormErrorMessage className="text-red-200">{formik.errors?.email}</FormErrorMessage>
         </FormControl>
         <FormControl isRequired>
           <FormLabel>Country:</FormLabel>
@@ -185,9 +181,7 @@ const NutritionistForm = ({
               </option>
             ))}
           </Select>
-          <FormErrorMessage className="text-red-500">
-            {formik.errors?.country}
-          </FormErrorMessage>
+          <FormErrorMessage className="text-red-500">{formik.errors?.country}</FormErrorMessage>
         </FormControl>
         <FormControl isRequired>
           <FormLabel>Date of birth:</FormLabel>
@@ -202,9 +196,7 @@ const NutritionistForm = ({
             value={formik.values.birthDate}
             className=" w-full max-w-[100%]"
           />
-          <FormErrorMessage className="text-red-200">
-            {formik.errors?.birthDate}
-          </FormErrorMessage>
+          <FormErrorMessage className="text-red-200">{formik.errors?.birthDate}</FormErrorMessage>
         </FormControl>
         <FormControl isRequired>
           <FormLabel>Sex:</FormLabel>
@@ -223,9 +215,7 @@ const NutritionistForm = ({
             <option value="female">Female</option>
             <option value="other">Other</option>
           </Select>
-          <FormErrorMessage className="text-red-200">
-            {formik.errors?.sex}
-          </FormErrorMessage>
+          <FormErrorMessage className="text-red-200">{formik.errors?.sex}</FormErrorMessage>
         </FormControl>
         <FormControl isRequired>
           <FormLabel>Upload your credentials:</FormLabel>
@@ -248,7 +238,7 @@ const NutritionistForm = ({
             colorScheme={"gs-yellow"}
             rounded={"full"}
           >
-            Register as a Nutritionist
+            Complete registration
           </Button>
         </Box>
       </Stack>
@@ -260,8 +250,7 @@ const NutritionistForm = ({
           <ModalCloseButton />
           <ModalBody>
             <Text fontWeight={"semibold"} mb={4}>
-              Your application has been successfully submitted. We will contact
-              you shortly.
+              Your application has been successfully submitted. We will contact you shortly.
             </Text>
             <Text fontSize={"15px"}>
               You can also visit the{" "}
@@ -273,12 +262,7 @@ const NutritionistForm = ({
           </ModalBody>
 
           <ModalFooter>
-            <Button
-              colorScheme="blue"
-              mr={3}
-              onClick={onClose}
-              rounded={"full"}
-            >
+            <Button colorScheme="blue" mr={3} onClick={onClose} rounded={"full"}>
               Close
             </Button>
           </ModalFooter>

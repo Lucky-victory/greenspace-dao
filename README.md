@@ -1,4 +1,4 @@
-# GreenspaceDAO x Backdrop
+# GreenspaceDAO 
 
 Video Demo - [Demo video](https://www.youtube.com/watch?v=Vb9vx9OCf6k) <br />
 Live Link - [GreenspaceDAO dapp](https://greenspace-backdrop.vercel.app/) <br />

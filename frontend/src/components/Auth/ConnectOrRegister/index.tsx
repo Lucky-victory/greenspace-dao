@@ -17,8 +17,8 @@ export const ConnectOrLogout = ({ openModal }: { openModal: () => void }) => {
 
   return (
     <>
-      {walletReady && !address && <CustomConnectButton />}
-      {walletReady && ready && address && !user && <LoginAndRegisterButtons openModal={openModal} />}
+      {/* {walletReady && !address && <CustomConnectButton />} */}
+      {!user && <LoginAndRegisterButtons openModal={openModal} />}
       {ready && user && <UserMenu />}
     </>
   );

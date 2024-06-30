@@ -3,11 +3,7 @@ import { LoginButton } from "../LoginButton";
 import { RegisterButton } from "../RegisterButton";
 import { LoginModal } from "src/components/Auth/LoginModal";
 
-export const LoginAndRegisterButtons = ({
-  openModal,
-}: {
-  openModal: () => void;
-}) => {
+export const LoginAndRegisterButtons = ({ openModal }: { openModal: () => void }) => {
   const { onOpen, onClose, isOpen } = useDisclosure();
   function handleRegisterClick() {
     openModal?.();
@@ -16,13 +12,8 @@ export const LoginAndRegisterButtons = ({
     onOpen();
   }
   return (
-    <HStack>
-      <Button
-        rounded={"full"}
-        colorScheme="black"
-        variant={"outline"}
-        onClick={handleLoginClick}
-      >
+    <HStack gap={3}>
+      <Button rounded={"full"} colorScheme="gs-yellow" variant={"outline"} onClick={handleLoginClick}>
         Log-In
       </Button>
       <LoginModal onClose={onClose} isOpen={isOpen} />

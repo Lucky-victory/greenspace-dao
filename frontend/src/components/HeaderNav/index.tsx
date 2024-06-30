@@ -81,7 +81,13 @@ export function HeaderNav() {
   ];
   return (
     <>
-      <HStack minH={"60px"} pl={5} bg={"blackAlpha.300"} justify={"space-between"} backdropFilter={"blur(5px)"}>
+      <HStack
+        minH={{ base: "50px", md: "70px" }}
+        pl={5}
+        bg={"blackAlpha.300"}
+        justify={"space-between"}
+        backdropFilter={"blur(5px)"}
+      >
         <Heading>
           <Image
             src={"/logo-with-text.png"}

@@ -16,7 +16,7 @@ export const NewUserType = ({
   };
   return (
     <Box py={5}>
-      <RadioGroup onChange={handleRadioChange} value={value}>
+      <RadioGroup onChange={handleRadioChange} value={value} colorScheme="gs-yellow">
         <Stack spacing={"6"}>
           <Radio value="member">
             <Stack spacing={"1"}>
@@ -40,13 +40,7 @@ export const NewUserType = ({
           </Radio>
         </Stack>
       </RadioGroup>
-      <Button
-        px={"8"}
-        my={6}
-        onClick={() => onClick?.()}
-        rounded={"full"}
-        colorScheme="gs-green"
-      >
+      <Button px={"8"} my={6} onClick={() => onClick?.()} rounded={"full"} colorScheme="gs-yellow">
         Continue
       </Button>
     </Box>

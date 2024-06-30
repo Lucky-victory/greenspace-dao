@@ -5,7 +5,7 @@ import { usePrivy } from "@privy-io/react-auth";
 import { useStorage } from "@thirdweb-dev/react";
 import { useCallback, useEffect, useState } from "react";
 import { useGetUserQuery } from "src/state/services";
-import { RegisterFormFields } from "src/components/RegisterForm";
+import { MemberRegisterFormFields } from "src/components/RegisterForm";
 import DashboardEmptyArea from "src/components/DashboardEmptyArea";
 
 export default function MemberDashboardPage() {
@@ -13,7 +13,7 @@ export default function MemberDashboardPage() {
   const { data: userDataResponse, isLoading, isFetching } = useGetUserQuery({ usernameOrAuthId: user?.id! });
   const userData = userDataResponse?.data;
   const storage = useStorage();
-  const [registerData, setRegisterData] = useState<RegisterFormFields | null>(null);
+  const [registerData, setRegisterData] = useState<MemberRegisterFormFields | null>(null);
 
   const fetchDataFromIPFSStorage = useCallback(() => {
     if (userData?.userCid) {

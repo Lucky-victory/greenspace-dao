@@ -131,7 +131,7 @@ export const users = mysqlTable(
     userCid: varchar("userCid", { length: 255 }),
     address: varchar("address", { length: 100 }).default(""),
     avatar: varchar("avatar", { length: 255 }),
-    userType: mysqlEnum("user_type", ["member", "nutritionist"]).default("member").notNull(),
+    userType: mysqlEnum("user_type", ["member", "nutritionist"]).default("member"),
     role: mysqlEnum("role", ["admin", "user"]).default("user"),
     createdAt: timestamp("created_at").defaultNow(),
     updatedAt: timestamp("updated_at").onUpdateNow(),

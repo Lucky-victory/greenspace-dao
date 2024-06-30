@@ -1,6 +1,5 @@
 import React, { ChangeEvent, useRef, useState } from "react";
 import { useRouter } from "next/router";
-
 import { resolveIPFSURI } from "src/helpers";
 import axios from "axios";
 import {
@@ -30,13 +29,18 @@ import { useStorageUpload } from "@thirdweb-dev/react";
 import { useAddNutritionistMutation } from "src/state/services";
 import { Sex } from "src/state/types";
 import { useWallet } from "src/context/WalletProvider";
+import { BsUpload } from "react-icons/bs";
 
+export interface NutritionistFormFields { fullName: string; birthDate: string; sex: string; email: string; country: string }
 const NutritionistForm = ({
-  showModal = true,
+  onSubmit = () => {},
   closeFormModal,
 }: {
-  showModal?: boolean;
-  closeFormModal: () => void;
+  onSubmit: (
+    formData:NutritionistFormFields,
+    credentialUri: string
+  ) => void;
+  closeFormModal?: () => void;
 }) => {
   const toast = useToast({
     position: "top",
@@ -73,16 +77,11 @@ const NutritionistForm = ({
         const dataToUpload = { ...values, credentials: credentialUri };
         const [uploadUri] = await uploadToThirdWeb({ data: [dataToUpload] });
         setIsUploading(false);
-        await addNutritionists({
-          credentialsCid: credentialUri,
-          address: address!,
-          fullName: values.fullName,
-          email: values.email,
-          sex: values.sex as Sex,
-          country: values.country,
-          birthDate: values.birthDate,
-        }).unwrap();
+
         setCid(uploadUri);
+        await new Promise<void>((resolve, reject) => {
+          resolve(onSubmit?.(values, credentialUri as string));
+        });
         await axios.post("/api/email/nutritionist/apply", {
           email: values.email,
           name: values.fullName,
@@ -111,35 +110,42 @@ const NutritionistForm = ({
       }
     },
   });
+
   function loadingText() {
     if (isUploading) return "Uploading credentials...";
-    if (isLoading) return "Creating account...";
+    // if (isLoading) return "Creating account...";
     return "Submitting...";
   }
+
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files![0];
     setFileToUpload(file);
   };
+
   const handleFileUpload = async () => {
     try {
       const [fileUri] = await uploadToThirdWeb({ data: [fileToUpload] });
-
       return resolveIPFSURI(fileUri, false);
     } catch (error) {}
   };
 
+  const handleCustomUploadClick = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
+
   return (
     <>
-      {/* <h2 className="text-[45px]">Register as a Nutritionist</h2> */}
       <Stack
         as={"form"}
-        // className="w-full flex flex-col gap-7"
-        //@ts-ignore
+        // @ts-ignore
         onSubmit={formik.handleSubmit}
       >
         <FormControl isRequired>
           <FormLabel>Full Name:</FormLabel>
           <Input
+            rounded={"full"}
             isRequired
             className="w-full max-w-[100%]"
             name="fullName"
@@ -152,6 +158,7 @@ const NutritionistForm = ({
         <FormControl isRequired>
           <FormLabel>Email:</FormLabel>
           <Input
+            rounded={"full"}
             isRequired
             className="w-full max-w-[100%]"
             name="email"
@@ -164,17 +171,16 @@ const NutritionistForm = ({
         <FormControl isRequired>
           <FormLabel>Country:</FormLabel>
           <Select
+            rounded={"full"}
             className="Select w-full max-w-[100%]"
             onChange={formik.handleChange}
             value={formik.values.country}
             isRequired
             name="country"
-            // placeholder="What's your biological sex?"
           >
             <option value="" disabled>
               Select your country
             </option>
-
             {countries.map((country, i) => (
               <option key={"country" + i} value={country.name}>
                 {country.name}
@@ -186,6 +192,7 @@ const NutritionistForm = ({
         <FormControl isRequired>
           <FormLabel>Date of birth:</FormLabel>
           <Input
+            rounded={"full"}
             type="date"
             id="start"
             min={"1930"}
@@ -201,6 +208,7 @@ const NutritionistForm = ({
         <FormControl isRequired>
           <FormLabel>Sex:</FormLabel>
           <Select
+            rounded={"full"}
             className="select w-full max-w-[100%]"
             name="sex"
             isRequired
@@ -220,17 +228,27 @@ const NutritionistForm = ({
         <FormControl isRequired>
           <FormLabel>Upload your credentials:</FormLabel>
           <Input
+            rounded={"full"}
             type="file"
-            ref={fileInputRef!}
+            ref={fileInputRef}
             isRequired
             name="credentials"
-            className="Input w-full max-w-[100%]"
+            className="Input w-full max-w-[100%] hidden"
             placeholder="Upload your credentials"
             onChange={handleFileChange}
           />
-          {/* <FormErrorMessage className="text-red-200">{errors.credentials?.message}</FormErrorMessage> */}
+          <Button onClick={handleCustomUploadClick} colorScheme="gs-green" size={"sm"} rounded={"full"} gap={3}>
+            <BsUpload /> <Text as={"span"}>Upload (.pdf,.docx)</Text>{" "}
+          </Button>
+          {fileToUpload && (
+            <Box bg={"gray.800"} color={"gray.600"}>
+              <Text as="span" fontSize={"14px"}>
+                {fileToUpload?.name}
+              </Text>
+            </Box>
+          )}
         </FormControl>
-        <Box mt={4} className="flex">
+        <Box mt={8} className="flex">
           <Button
             type="submit"
             isLoading={isSubmitting}
@@ -273,67 +291,3 @@ const NutritionistForm = ({
 };
 
 export default NutritionistForm;
-//  <div className="modal">
-//    <label className="modal-overlay" htmlFor="modal-3"></label>
-//    <div className="modal-content flex flex-col gap-5 max-w-[90%] lg:max-w-[60%] w-full">
-//      <label
-//        htmlFor="modal-3"
-//        className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
-//      >
-//        ✕
-//      </label>
-//      {[elem]}
-//    </div>
-//  </div>;
-//  <form
-//           className="w-full flex flex-col gap-7"
-//           onSubmit={handleSubmit(onSubmit)}
-//         >
-//           <div>
-//             <Input
-//               className="w-full max-w-[100%]"
-//               {...register("fullName")}
-//               placeholder="Full name"
-//             />
-//             <div className="text-red-200">{errors.fullName?.message}</div>
-//           </div>
-//           <div>
-//             <Input
-//               type="date"
-//               id="start"
-//               {...register("birthDate")}
-//               className=" w-full max-w-[100%]"
-//             />
-//             <div className="text-red-200">{errors.birthDate?.message}</div>
-//           </div>
-//           <div>
-//             <Select
-//               className="select w-full max-w-[100%]"
-//               {...register("sex")}
-//               placeholder="What's your biological sex?"
-//               defaultValue=""
-//             >
-//               <option value="" disabled>
-//                 What&apos;s your biological sex?
-//               </option>
-//               <option value="name">Male</option>
-//               <option value="female">Female</option>
-//             </Select>
-//             <div className="text-red-200">{errors.sex?.message}</div>
-//           </div>
-//           <div>
-//             <Input
-//               type="file"
-//               {...register("credentials")}
-//               className="Input w-full max-w-[100%]"
-//               placeholder="Upload your credentials"
-//               onChange={handleFileChange}
-//             ></Input>
-//             <div className="text-red-200">{errors.credentials?.message}</div>
-//           </div>
-//           <div className="flex">
-//             <Button type="submit" isLoading={isSubmitting}>
-//               Register as a Nutritionist
-//             </Button>
-//           </div>
-//         </form>

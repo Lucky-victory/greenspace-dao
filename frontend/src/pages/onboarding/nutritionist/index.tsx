@@ -1,15 +1,25 @@
 import NutritionistForm, { NutritionistFormFields } from "src/components/NutritionistForm";
 import { Box } from "@chakra-ui/react";
 import Head from "next/head";
-import { useLocalStorage } from "src/hooks/common";
+import { useDebounce, useLocalStorage } from "src/hooks/common";
 import { useAddNutritionistMutation } from "src/state/services";
 import { useWallet } from "src/context/WalletProvider";
 import { Sex } from "src/state/types";
+import { useState } from "react";
+import { useAppContext } from "src/context/state";
+import { communityAddr } from "src/utils/constants";
+import { communityAbi } from "../../../../abis";
+import { writeContract } from "@wagmi/core";
+import { config } from "src/config/wagmi";
+
 export default function OnboardNutritionistPage() {
+  const { allTokensData } = useAppContext();
   const [newNutritionist] = useLocalStorage("new-nutritionist", {});
   const { address } = useWallet();
+  const [amount, setAmount] = useState("0.01");
+  const debouncedAmount = useDebounce<string>(amount, 500);
   const [addNutritionists, { isLoading }] = useAddNutritionistMutation();
-  async function handleFormSubmit(data: NutritionistFormFields, credentialUri: string) {
+  async function handleFormSubmit(data: NutritionistFormFields, credentialUri: string, uploadUri: string) {
     try {
       await addNutritionists({
         credentialsCid: credentialUri,
@@ -20,6 +30,14 @@ export default function OnboardNutritionistPage() {
         country: data.country,
         birthDate: data.birthDate
       }).unwrap();
+      const hash = await writeContract(config, {
+        address: communityAddr,
+        abi: communityAbi as readonly unknown[],
+        functionName: "registerNutritionist",
+        args: [uploadUri, allTokensData.nutritionistNftUri],
+        //@ts-ignore
+        value: parseEther(debouncedAmount || "0")
+      });
     } catch (error) {}
   }
   return (

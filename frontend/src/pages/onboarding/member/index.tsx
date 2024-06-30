@@ -3,17 +3,28 @@ import { Box } from "@chakra-ui/react";
 import Head from "next/head";
 import MemberRegisterForm from "src/components/MemberRegisterForm";
 import { MemberRegisterFormFields } from "src/components/RegisterForm";
-import { useLocalStorage } from "src/hooks/common";
+import { useDebounce, useLocalStorage } from "src/hooks/common";
 import { useWallet } from "src/context/WalletProvider";
 import { useAddUserMutation } from "src/state/services";
+import { useRouter } from "next/router";
+import { communityAbi } from "../../../../abis";
+import { config } from "src/config/wagmi";
+import { communityAddr } from "src/utils/constants";
+import { useAppContext } from "src/context/state";
+import { writeContract } from "@wagmi/core";
+import { useState } from "react";
 export default function OnboardMemberPage() {
   const [addUser, { isLoading: addUserLoading }] = useAddUserMutation();
   const [newMember] = useLocalStorage<{ loginMethod?: "google"; fullName?: string; email?: string; authId?: string }>(
     "new-member",
     {}
   );
+  const router = useRouter();
+    const [amount, setAmount] = useState("0.01");
+    const debouncedAmount = useDebounce<string>(amount, 500);
   const { address } = useWallet();
   const { loginMethod, authId } = newMember;
+  const { allTokensData } = useAppContext();
   async function handleFormSubmit(data: MemberRegisterFormFields, userCid?: string) {
     try {
       switch (loginMethod) {
@@ -37,6 +48,15 @@ export default function OnboardMemberPage() {
             userCid
           }).unwrap();
       }
+      const hash = await writeContract(config, {
+        address: communityAddr,
+        abi: communityAbi as readonly unknown[],
+        functionName: "registerUser",
+        args: [userCid, allTokensData.nutritionistNftUri],
+        //@ts-ignore
+        value: parseEther(debouncedAmount || "0")
+      });
+      router.push("/member/dashboard");
     } catch (error) {}
   }
   return (

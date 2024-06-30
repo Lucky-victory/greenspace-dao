@@ -1,14 +1,14 @@
 import { createConfig, http } from "wagmi";
 
-import { mainnet, scrollSepolia } from "wagmi/chains";
+import { mainnet, base } from "wagmi/chains";
 
 export const config = createConfig({
-  chains: [mainnet, scrollSepolia],
+  chains: [mainnet, base],
 
   ssr: true,
   // multiInjectedProviderDiscovery: false,
   transports: {
     [mainnet.id]: http(),
-    [scrollSepolia.id]: http(),
-  },
+    [base.id]: http()
+  }
 });

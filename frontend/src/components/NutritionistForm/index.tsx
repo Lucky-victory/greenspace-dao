@@ -45,7 +45,7 @@ const NutritionistForm = ({
   closeFormModal,
   initialValues = {}
 }: {
-  onSubmit: (formData: NutritionistFormFields, credentialUri: string) => void;
+  onSubmit: (formData: NutritionistFormFields, credentialUri: string,uploadUri:string) => void;
   closeFormModal?: () => void;
   initialValues?: Partial<NutritionistFormFields>;
 }) => {
@@ -89,7 +89,7 @@ const NutritionistForm = ({
 
         setCid(uploadUri);
         await new Promise<void>((resolve, reject) => {
-          resolve(onSubmit?.(values, credentialUri as string));
+          resolve(onSubmit?.(values, credentialUri as string,uploadUri));
         });
         await axios.post("/api/email/nutritionist/apply", {
           email: values.email,

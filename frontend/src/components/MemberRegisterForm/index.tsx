@@ -9,7 +9,7 @@ import {
   useToast,
   FormControl,
   FormLabel,
-  FormErrorMessage,
+  FormErrorMessage
 } from "@chakra-ui/react";
 import { Swiper, SwiperRef, SwiperSlide } from "swiper/react";
 import SwiperMain from "swiper";
@@ -20,7 +20,7 @@ import {
   dietOptions,
   overallHealthOptions,
   smokingOptions,
-  validationSchema,
+  validationSchema
 } from "../RegisterForm";
 import OnboardingProgress from "../OnboardingProgress";
 
@@ -34,7 +34,7 @@ interface RegisterComponentProps {
 export const MemberRegisterForm: React.FC<RegisterComponentProps> = ({
   onClose,
   onSubmit = () => {},
-  initialValues = {}, // Default to empty object if not provided
+  initialValues = {} // Default to empty object if not provided
 }) => {
   const toast = useToast();
 
@@ -67,7 +67,7 @@ export const MemberRegisterForm: React.FC<RegisterComponentProps> = ({
       toast({
         status: "error",
         title: "An error occurred, please try again...",
-        description: "An error occurred",
+        description: "An error occurred"
       });
     }
   };
@@ -96,7 +96,7 @@ export const MemberRegisterForm: React.FC<RegisterComponentProps> = ({
                 smokingLength: "",
                 sleepLength: "",
                 overallHealth: "",
-                ...initialValues, // Merge with provided initialValues
+                ...initialValues // Merge with provided initialValues
               } as MemberRegisterFormFields
             }
             validationSchema={validationSchema}

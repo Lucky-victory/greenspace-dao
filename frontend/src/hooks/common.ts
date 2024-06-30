@@ -13,32 +13,53 @@ import TurndownService from "turndown";
 
 export const useLocalStorage = <T>(key: string, initialValue: T) => {
   // State to store our value
-  const [storedValue, setStoredValue] = useState<T>(initialValue);
-
-  useEffect(() => {
-    // Get from local storage by key
-    const item = window.localStorage.getItem(key);
-    // Parse stored json or if none return initialValue
-    setStoredValue(item ? JSON.parse(item) : initialValue);
-  }, [key, initialValue]);
+  const [storedValue, setStoredValue] = useState<T>(() => {
+    if (typeof window === "undefined") {
+      return initialValue;
+    }
+    try {
+      const item = window.localStorage.getItem(key);
+      return item ? JSON.parse(item) : initialValue;
+    } catch (error) {
+      console.log(error);
+      return initialValue;
+    }
+  });
 
   // Return a wrapped version of useState's setter function that ...
   // ... persists the new value to localStorage.
-  const setValue = (value: T | ((val: T) => T)) => {
-    try {
-      // Allow value to be a function so we have same API as useState
-      const valueToStore = value instanceof Function ? value(storedValue) : value;
-      // Save state
-      setStoredValue(valueToStore);
-      // Save to local storage
-      if (typeof window !== "undefined") {
-        window.localStorage.setItem(key, JSON.stringify(valueToStore));
+  const setValue = useCallback(
+    (value: T | ((val: T) => T)) => {
+      try {
+        // Allow value to be a function so we have same API as useState
+        const valueToStore = value instanceof Function ? value(storedValue) : value;
+        // Save state
+        setStoredValue(valueToStore);
+        // Save to local storage
+        if (typeof window !== "undefined") {
+          window.localStorage.setItem(key, JSON.stringify(valueToStore));
+        }
+      } catch (error) {
+        // A more advanced implementation would handle the error case
+        console.log(error);
       }
-    } catch (error) {
-      // A more advanced implementation would handle the error case
-      console.log(error);
+    },
+    [key, storedValue]
+  );
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const handleStorageChange = (event: StorageEvent) => {
+        if (event.key === key && event.newValue) {
+          setStoredValue(JSON.parse(event.newValue));
+        }
+      };
+      window.addEventListener("storage", handleStorageChange);
+      return () => {
+        window.removeEventListener("storage", handleStorageChange);
+      };
     }
-  };
+  }, [key]);
 
   return [storedValue, setValue] as const;
 };
@@ -55,14 +76,14 @@ export function useHTMLToMarkdownConverter() {
       const hLevel = +node.nodeName.charAt(1);
       const hPrefix = "#".repeat(hLevel);
       return `\n\n${hPrefix} ${content}\n\n`;
-    },
+    }
   });
 
   turndownService.addRule("paragraph", {
     filter: "p",
     replacement: function (content) {
       return `\n\n${content}\n\n`;
-    },
+    }
   });
 
   useEffect(() => {
@@ -99,7 +120,7 @@ export const useScrollToBottom = (triggerOnLoad = false) => {
 
   return {
     containerRef: chatContainerRef,
-    scrollToBottom: scrollToBottomOnNewMessage,
+    scrollToBottom: scrollToBottomOnNewMessage
   };
 };
 /**
@@ -118,7 +139,7 @@ export const useInAppAuth = () => {
   return {
     user,
     connect,
-    isLoggedIn: !!user,
+    isLoggedIn: !!user
   };
 };
 
@@ -128,8 +149,8 @@ export function useCustomSign() {
   const { data, error, signMessageAsync } = useSignMessage({
     mutation: {
       onError(error, variables, context) {},
-      onSuccess(data, variables, context) {},
-    },
+      onSuccess(data, variables, context) {}
+    }
   });
 
   const { isConnected, address } = useAccount();
@@ -148,7 +169,7 @@ export function useCustomSign() {
     const account = {
       address: address,
       chainId: chain?.id,
-      network: chain?.name,
+      network: chain?.name
     };
     // const message = "Sign to provide access to app";
     const { message } = await apiPost("api/auth/request-message", account);
@@ -156,7 +177,7 @@ export function useCustomSign() {
     // const signedMessage = signMessage?.(encodedMessage) as unknown;
 
     const signedMessage = (await signMessageAsync?.({
-      message: message,
+      message: message
     })) as unknown as any;
 
     setSigned(true);
@@ -209,7 +230,7 @@ export const useActiveTab = (paramName: string = "tab"): [string, (tabName: stri
     router.push(
       {
         pathname: router.pathname,
-        query: { ...router.query, [paramName]: tabName },
+        query: { ...router.query, [paramName]: tabName }
       },
       undefined,
       { shallow: true }
@@ -228,7 +249,7 @@ export const useResize = () => {
     //@ts-ignore
     width: undefined,
     //@ts-ignore
-    height: undefined,
+    height: undefined
   });
   const isMobileSize = windowSize?.width < 560;
   const isTabletSize = windowSize?.width > 560 && windowSize?.width <= 960;
@@ -238,7 +259,7 @@ export const useResize = () => {
     const updateWindowSize = () => {
       setWindowSize({
         width: window.innerWidth,
-        height: window.innerHeight,
+        height: window.innerHeight
       });
     };
 

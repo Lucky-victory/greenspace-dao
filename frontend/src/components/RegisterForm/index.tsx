@@ -23,6 +23,14 @@ import { Sex } from "src/state/types";
 import { useRouter } from "next/router";
 import { useWallet } from "src/context/WalletProvider";
 import { BsChevronLeft } from "react-icons/bs";
+import { communityAddr } from "src/utils/constants";
+import { communityAbi } from "../../../abis";
+import { parseEther, parseGwei } from "viem";
+import { readContract, writeContract } from "@wagmi/core";
+
+import { useAppContext } from "../../context/state";
+import { config } from "src/config/wagmi";
+import { useDebounce } from "src/hooks/common";
 
 export interface MemberRegisterFormFields {
   fullName: string;
@@ -90,10 +98,13 @@ interface RegisterFormProps {
 }
 
 const RegisterForm: React.FC<RegisterFormProps> = ({ isOpen, onClose }) => {
+  const { allTokensData } = useAppContext();
   const [addNutritionists, { isLoading }] = useAddNutritionistMutation();
   const [addUser, { isLoading: addUserLoading }] = useAddUserMutation();
   const [sendUserInfoToAI, { isLoading: sendUserInfoToAILoading }] = useSendUserInfoToAIMutation();
   const { address } = useWallet();
+  const [amount, setAmount] = useState("0.01");
+  const debouncedAmount = useDebounce<string>(amount, 500);
   const [memberInitialValues, setMemberInitialValues] = useState<MemberRegisterFormFields>();
   const { user, ready } = usePrivy();
   const swiperRef = useRef<SwiperRef>();
@@ -146,7 +157,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ isOpen, onClose }) => {
             }).unwrap();
         }
         // sendUserInfoToAI(memberFormData);
-        router.push("/member/dashboard");
+        // router.push("/member/dashboard");
       }
     }
   });
@@ -155,11 +166,32 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ isOpen, onClose }) => {
     try {
       setMemberFormData(formData);
       setCid(userCid as string);
+
+      const hash = await writeContract(config, {
+        address: communityAddr,
+        abi: communityAbi as readonly unknown[],
+        functionName: "registerUser",
+        args: [cid, allTokensData.userNftUri],
+        //@ts-ignore
+        value: parseEther(debouncedAmount || "0")
+      });
+
       login();
-    } catch (error) {}
+    } catch (error) {
+      console.log({ error });
+    }
   }
-  async function handleNutritionistFormSubmit(data: NutritionistFormFields, credentialUri: string) {
+  async function handleNutritionistFormSubmit(data: NutritionistFormFields, credentialUri: string,uploadUri: string) {
     try {
+   
+      const hash = await writeContract(config, {
+        address: communityAddr,
+        abi: communityAbi as readonly unknown[],
+        functionName: "registerNutritionist",
+        args: [uploadUri, allTokensData.nutritionistNftUri],
+        //@ts-ignore
+        value: parseEther(debouncedAmount || "0")
+      });
       await addNutritionists({
         credentialsCid: credentialUri,
         address: address as string,
@@ -169,7 +201,10 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ isOpen, onClose }) => {
         country: data.country,
         birthDate: data.birthDate
       }).unwrap();
-    } catch (error) {}
+      router.push("/nutritionist/check-status");
+    } catch (error) {
+      console.log({ error });
+    }
   }
   return (
     <Modal scrollBehavior="inside" blockScrollOnMount={false} isOpen={isOpen} onClose={onClose} size="lg">
@@ -222,7 +257,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ isOpen, onClose }) => {
                   {selectedUserType === "nutritionist" && (
                     <NutritionistForm
                       closeFormModal={onClose}
-                      onSubmit={(data, credentialUri) => handleNutritionistFormSubmit(data, credentialUri)}
+                      onSubmit={(data, credentialUri,uploadUri) => handleNutritionistFormSubmit(data, credentialUri,uploadUri)}
                     />
                   )}
                 </>

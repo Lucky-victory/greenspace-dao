@@ -6,7 +6,7 @@ export const RegisterButton = ({ onClick }: { onClick: () => void }) => {
   }
   return (
     <Button onClick={handleClick} rounded={"full"} colorScheme="gs-yellow">
-      Register
+      Sign Up
     </Button>
   );
 };

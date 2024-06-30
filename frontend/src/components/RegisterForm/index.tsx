@@ -9,6 +9,8 @@ import {
   ModalBody,
   ModalCloseButton,
   Box,
+  IconButton,
+  HStack
 } from "@chakra-ui/react";
 import { NewUserType, RegisterType } from "src/components/NewUserType";
 import { Swiper, SwiperRef, SwiperSlide } from "swiper/react";
@@ -16,8 +18,11 @@ import SwiperMain from "swiper";
 import NutritionistForm, { NutritionistFormFields } from "src/components/NutritionistForm";
 import { useAddNutritionistMutation, useAddUserMutation, useSendUserInfoToAIMutation } from "src/state/services";
 import MemberRegisterForm from "../MemberRegisterForm";
-import { usePrivy } from "@privy-io/react-auth";
+import { useLogin, usePrivy } from "@privy-io/react-auth";
 import { Sex } from "src/state/types";
+import { useRouter } from "next/router";
+import { useWallet } from "src/context/WalletProvider";
+import { BsChevronLeft } from "react-icons/bs";
 
 export interface MemberRegisterFormFields {
   fullName: string;
@@ -54,7 +59,7 @@ export const validationSchema = Yup.object().shape({
   overallHealth: Yup.string().required("Overall health rating is required"),
   birthDate: Yup.string().required("Birth date is required"),
   smokingStopped: Yup.string(),
-  smokingLength: Yup.string(),
+  smokingLength: Yup.string()
 });
 
 export const dietOptions = [
@@ -67,7 +72,7 @@ export const dietOptions = [
   "I eat pastries or cakes once a week or less",
   "I have less than 1 teaspoon of salt per day",
   "I have 2 or less alcoholic drinks on any day",
-  "I drink at least 2 litres of water per day",
+  "I drink at least 2 litres of water per day"
 ];
 
 export const overallHealthOptions = ["Excellent", "Very good", "Good", "Fair", "Poor"];
@@ -75,7 +80,7 @@ export const smokingOptions = [
   "less than 5 cigarettes",
   "5 to 10 cigarettes",
   "11 to 20 cigarettes",
-  "above 20 cigarettes",
+  "above 20 cigarettes"
 ];
 
 interface RegisterFormProps {
@@ -84,28 +89,85 @@ interface RegisterFormProps {
   initialValues?: Partial<MemberRegisterFormFields>;
 }
 
-const RegisterForm: React.FC<RegisterFormProps> = ({ isOpen, onClose, initialValues }) => {
+const RegisterForm: React.FC<RegisterFormProps> = ({ isOpen, onClose }) => {
   const [addNutritionists, { isLoading }] = useAddNutritionistMutation();
   const [addUser, { isLoading: addUserLoading }] = useAddUserMutation();
   const [sendUserInfoToAI, { isLoading: sendUserInfoToAILoading }] = useSendUserInfoToAIMutation();
+  const { address } = useWallet();
+  const [memberInitialValues, setMemberInitialValues] = useState<MemberRegisterFormFields>();
   const { user, ready } = usePrivy();
   const swiperRef = useRef<SwiperRef>();
   const [activeSlideIndex, setActiveSlideIndex] = useState(0);
   const [selectedUserType, setSelectedUserType] = useState<RegisterType>("member");
+
+  const [cid, setCid] = useState<string>("");
+  const [memberFormData, setMemberFormData] = useState<MemberRegisterFormFields>({
+    fullName: "",
+    email: "",
+    sex: "",
+    country: "",
+    weight: "",
+    height: "",
+    diet: "",
+    active: "",
+    sitting: "",
+    alcohol: "",
+    smoke: "",
+    sleepLength: "",
+    overallHealth: "",
+    birthDate: "",
+    smokingStopped: "",
+    smokingLength: ""
+  });
+  const router = useRouter();
+  const { login } = useLogin({
+    onComplete: async (user, isNewUser, wasAlreadyAuthenticated, loginMethod) => {
+      if (isNewUser) {
+        switch (loginMethod) {
+          case "google":
+            await addUser({
+              fullName: user?.google?.name,
+              authId: user?.id,
+              email: user?.google?.email,
+              address: user?.wallet?.address!,
+              emailVerified: true,
+              userCid: cid,
+              userType: selectedUserType
+            }).unwrap();
+            break;
+
+          default:
+            await addUser({
+              fullName: memberFormData.fullName,
+              authId: user?.id,
+              address: address!,
+              userType: selectedUserType,
+              userCid: cid
+            }).unwrap();
+        }
+        // sendUserInfoToAI(memberFormData);
+        router.push("/member/dashboard");
+      }
+    }
+  });
+
   async function handleMemberFormSubmit(formData: MemberRegisterFormFields, userCid?: string) {
     try {
+      setMemberFormData(formData);
+      setCid(userCid as string);
+      login();
     } catch (error) {}
   }
   async function handleNutritionistFormSubmit(data: NutritionistFormFields, credentialUri: string) {
     try {
       await addNutritionists({
         credentialsCid: credentialUri,
-        address: user?.wallet?.address as string,
+        address: address as string,
         fullName: data.fullName,
         email: data.email,
         sex: data.sex as Sex,
         country: data.country,
-        birthDate: data.birthDate,
+        birthDate: data.birthDate
       }).unwrap();
     } catch (error) {}
   }
@@ -113,13 +175,28 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ isOpen, onClose, initialVal
     <Modal scrollBehavior="inside" blockScrollOnMount={false} isOpen={isOpen} onClose={onClose} size="lg">
       <ModalOverlay />
       <ModalContent rounded="30px" alignSelf="center">
-        <ModalHeader fontSize={{ lg: "3xl", base: "xl" }}></ModalHeader>
+        <ModalHeader fontSize={{ lg: "3xl", base: "xl" }}>
+          <HStack spacing={4} align="center" mb={0}>
+            {activeSlideIndex === 1 && (
+              <IconButton
+                aria-label="Back"
+                colorScheme="gs-yellow"
+                variant="ghost"
+                rounded="full"
+                size="sm"
+                onClick={() => swiperRef.current?.swiper.slidePrev()}
+              >
+                <BsChevronLeft size={20} />
+              </IconButton>
+            )}
+          </HStack>
+        </ModalHeader>
         <ModalCloseButton />
         <ModalBody>
           <Box
             as={Swiper}
             onActiveIndexChange={(swiper: SwiperMain) => {
-              // setActiveSlideIndex(swiper.activeIndex);
+              setActiveSlideIndex(swiper.activeIndex);
             }}
             ref={swiperRef as React.RefObject<SwiperRef>}
             allowTouchMove={false}
@@ -139,7 +216,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ isOpen, onClose, initialVal
                     <MemberRegisterForm
                       onSubmit={handleMemberFormSubmit}
                       onClose={onClose}
-                      initialValues={initialValues}
+                      initialValues={memberInitialValues}
                     />
                   )}
                   {selectedUserType === "nutritionist" && (

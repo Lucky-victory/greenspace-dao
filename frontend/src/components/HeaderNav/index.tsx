@@ -11,7 +11,7 @@ import {
   Image,
   List,
   ListItem,
-  useDisclosure,
+  useDisclosure
 } from "@chakra-ui/react";
 import { Link } from "@chakra-ui/next-js";
 
@@ -38,13 +38,13 @@ export function HeaderNav() {
       w: 0,
       h: "3px",
       bg: "gs-yellow.400",
-      transition: "0.4s ease-in-out",
+      transition: "0.4s ease-in-out"
     },
     _hover: {
       textDecoration: "none",
       color: "gs-yellow.400",
-      _before: { w: "full" },
-    },
+      _before: { w: "full" }
+    }
   };
 
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -52,7 +52,7 @@ export function HeaderNav() {
     isOpen: isMobileNavbarOpen,
     onToggle: onMobileNavbarToggle,
     // onOpen: onMobileNavbarOpen,
-    onClose: onMobileNavbarClose,
+    onClose: onMobileNavbarClose
   } = useDisclosure();
 
   const links = [
@@ -77,7 +77,7 @@ export function HeaderNav() {
           Shop
         </Link>
       </ListItem>
-    </>,
+    </>
   ];
   return (
     <>

@@ -8,6 +8,7 @@ import {
   FormControl,
   FormErrorMessage,
   FormLabel,
+  HStack,
   Input,
   Modal,
   ModalBody,
@@ -20,7 +21,7 @@ import {
   Stack,
   Text,
   useDisclosure,
-  useToast,
+  useToast
 } from "@chakra-ui/react";
 import { countries } from "src/utils/countries";
 import { Link } from "@chakra-ui/next-js";
@@ -30,28 +31,35 @@ import { useAddNutritionistMutation } from "src/state/services";
 import { Sex } from "src/state/types";
 import { useWallet } from "src/context/WalletProvider";
 import { BsUpload } from "react-icons/bs";
+import { usePrivy } from "@privy-io/react-auth";
 
-export interface NutritionistFormFields { fullName: string; birthDate: string; sex: string; email: string; country: string }
+export interface NutritionistFormFields {
+  fullName: string;
+  birthDate: string;
+  sex: string;
+  email: string;
+  country: string;
+}
 const NutritionistForm = ({
   onSubmit = () => {},
   closeFormModal,
+  initialValues = {}
 }: {
-  onSubmit: (
-    formData:NutritionistFormFields,
-    credentialUri: string
-  ) => void;
+  onSubmit: (formData: NutritionistFormFields, credentialUri: string) => void;
   closeFormModal?: () => void;
+  initialValues?: Partial<NutritionistFormFields>;
 }) => {
   const toast = useToast({
     position: "top",
     duration: 3000,
     status: "success",
     title: "Application was successful",
-    isClosable: true,
+    isClosable: true
   });
   const { mutateAsync: uploadToThirdWeb } = useStorageUpload();
   const router = useRouter();
-  const { address } = useWallet();
+  const { address, isConnected } = useWallet();
+  const { connectWallet } = usePrivy();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [cid, setCid] = useState("");
   const [fileToUpload, setFileToUpload] = useState<File | null>(null);
@@ -67,6 +75,7 @@ const NutritionistForm = ({
       country: "",
       birthDate: "",
       credentials: "",
+      ...initialValues
     },
     onSubmit: async (values, formikHelpers) => {
       formikHelpers.setSubmitting(true);
@@ -84,13 +93,13 @@ const NutritionistForm = ({
         });
         await axios.post("/api/email/nutritionist/apply", {
           email: values.email,
-          name: values.fullName,
+          name: values.fullName
         });
         closeFormModal?.();
         onOpen();
         toast({
           status: "success",
-          title: "Application was successful",
+          title: "Application was successful"
         });
         setTimeout(() => {
           if (fileInputRef.current) fileInputRef.current.value = "";
@@ -105,10 +114,10 @@ const NutritionistForm = ({
         toast({
           status: "error",
           title: "An error occured, please try again...",
-          description: "An error occured",
+          description: "An error occured"
         });
       }
-    },
+    }
   });
 
   function loadingText() {
@@ -142,6 +151,13 @@ const NutritionistForm = ({
         // @ts-ignore
         onSubmit={formik.handleSubmit}
       >
+        {!isConnected && (
+          <HStack mb={2}>
+            <Button size={"lg"} rounded={"full"} colorScheme="gs-yellow" onClick={() => connectWallet()}>
+              Connect wallet
+            </Button>
+          </HStack>
+        )}
         <FormControl isRequired>
           <FormLabel>Full Name:</FormLabel>
           <Input
@@ -241,14 +257,14 @@ const NutritionistForm = ({
             <BsUpload /> <Text as={"span"}>Upload (.pdf,.docx)</Text>{" "}
           </Button>
           {fileToUpload && (
-            <Box bg={"gray.800"} color={"gray.600"}>
+            <Box bg={"gray.800"} mt={2} color={"gray.300"} px={2} rounded={"sm"}>
               <Text as="span" fontSize={"14px"}>
                 {fileToUpload?.name}
               </Text>
             </Box>
           )}
         </FormControl>
-        <Box mt={8} className="flex">
+        <Box mt={5} className="flex">
           <Button
             type="submit"
             isLoading={isSubmitting}

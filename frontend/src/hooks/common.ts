@@ -13,26 +13,15 @@ import TurndownService from "turndown";
 
 export const useLocalStorage = <T>(key: string, initialValue: T) => {
   // State to store our value
-  const [storedValue, setStoredValue] = useState<T>(() => {
-    if (typeof window === "undefined") {
-      return initialValue;
-    }
-    try {
-      const item = window.localStorage.getItem(key);
-      return item ? JSON.parse(item) : initialValue;
-    } catch (error) {
-      console.log(error);
-      return initialValue;
-    }
-  });
+  const [storedValue, setStoredValue] = useState<T>(initialValue);
+  console.log("use Storage " + key);
 
-  // Return a wrapped version of useState's setter function that ...
-  // ... persists the new value to localStorage.
   const setValue = useCallback(
-    (value: T | ((val: T) => T)) => {
+    (value: T) => {
       try {
+        console.log("use Storage Callback");
         // Allow value to be a function so we have same API as useState
-        const valueToStore = value instanceof Function ? value(storedValue) : value;
+        const valueToStore = value;
         // Save state
         setStoredValue(valueToStore);
         // Save to local storage
@@ -44,7 +33,7 @@ export const useLocalStorage = <T>(key: string, initialValue: T) => {
         console.log(error);
       }
     },
-    [key, storedValue]
+    [key]
   );
 
   useEffect(() => {

@@ -8,20 +8,25 @@ import CommunityArea from "src/components/CommunityArea";
 import CoachArea from "src/components/CoachArea";
 import Footer from "src/components/Footer";
 import { useEffect, useState } from "react";
+import { useLocalStorage } from "src/hooks/common";
 
 export default function Home() {
+  // const [val, setVal] = useLocalStorage("test", {});
+  // console.log({ val });
+
   // const [showLoader, setShowLoader] = useState(true);
 
-  // useEffect(() => {
-  //   const timeoutId = setTimeout(() => {
-  //     setShowLoader(false);
-  //     if (timeoutId) clearTimeout(timeoutId);
-  //   }, 800);
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      // setVal({ home: 1 });
+      // setShowLoader(false);
+      if (timeoutId) clearTimeout(timeoutId);
+    }, 800);
 
-  //   return () => {
-  //     if (timeoutId) clearTimeout(timeoutId);
-  //   };
-  // }, []);
+    return () => {
+      if (timeoutId) clearTimeout(timeoutId);
+    };
+  }, []);
   return (
     <>
       <Head>

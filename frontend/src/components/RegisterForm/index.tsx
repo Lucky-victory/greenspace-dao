@@ -30,7 +30,7 @@ import { readContract, writeContract } from "@wagmi/core";
 
 import { useAppContext } from "../../context/state";
 import { config } from "src/config/wagmi";
-import { useDebounce } from "src/hooks/common";
+import { useDebounce, useLocalStorage } from "src/hooks/common";
 
 export interface MemberRegisterFormFields {
   fullName: string;
@@ -99,6 +99,7 @@ interface RegisterFormProps {
 
 const RegisterForm: React.FC<RegisterFormProps> = ({ isOpen, onClose }) => {
   const { allTokensData } = useAppContext();
+  const [storedInfo] = useLocalStorage<{ fromLogin?: boolean }>("stored-info", {});
   const [addNutritionists, { isLoading }] = useAddNutritionistMutation();
   const [addUser, { isLoading: addUserLoading }] = useAddUserMutation();
   const [sendUserInfoToAI, { isLoading: sendUserInfoToAILoading }] = useSendUserInfoToAIMutation();
@@ -133,7 +134,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ isOpen, onClose }) => {
   const router = useRouter();
   const { login } = useLogin({
     onComplete: async (user, isNewUser, wasAlreadyAuthenticated, loginMethod) => {
-      if (isNewUser) {
+      if (isNewUser && !storedInfo?.fromLogin) {
         switch (loginMethod) {
           case "google":
             await addUser({
@@ -157,7 +158,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ isOpen, onClose }) => {
             }).unwrap();
         }
         // sendUserInfoToAI(memberFormData);
-        // router.push("/member/dashboard");
+        router.push("/member/dashboard");
       }
     }
   });
@@ -167,31 +168,30 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ isOpen, onClose }) => {
       setMemberFormData(formData);
       setCid(userCid as string);
 
-      const hash = await writeContract(config, {
-        address: communityAddr,
-        abi: communityAbi as readonly unknown[],
-        functionName: "registerUser",
-        args: [cid, allTokensData.userNftUri],
-        //@ts-ignore
-        value: parseEther(debouncedAmount || "0")
-      });
+      // const hash = await writeContract(config, {
+      //   address: communityAddr,
+      //   abi: communityAbi as readonly unknown[],
+      //   functionName: "registerUser",
+      //   args: [userCid, allTokensData.userNftUri],
+      //   //@ts-ignore
+      //   value: parseEther(debouncedAmount || "0")
+      // });
 
       login();
     } catch (error) {
       console.log({ error });
     }
   }
-  async function handleNutritionistFormSubmit(data: NutritionistFormFields, credentialUri: string,uploadUri: string) {
+  async function handleNutritionistFormSubmit(data: NutritionistFormFields, credentialUri: string, uploadUri: string) {
     try {
-   
-      const hash = await writeContract(config, {
-        address: communityAddr,
-        abi: communityAbi as readonly unknown[],
-        functionName: "registerNutritionist",
-        args: [uploadUri, allTokensData.nutritionistNftUri],
-        //@ts-ignore
-        value: parseEther(debouncedAmount || "0")
-      });
+      // const hash = await writeContract(config, {
+      //   address: communityAddr,
+      //   abi: communityAbi as readonly unknown[],
+      //   functionName: "registerNutritionist",
+      //   args: [uploadUri, allTokensData.nutritionistNftUri],
+      //   //@ts-ignore
+      //   value: parseEther(debouncedAmount || "0")
+      // });
       await addNutritionists({
         credentialsCid: credentialUri,
         address: address as string,
@@ -257,7 +257,9 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ isOpen, onClose }) => {
                   {selectedUserType === "nutritionist" && (
                     <NutritionistForm
                       closeFormModal={onClose}
-                      onSubmit={(data, credentialUri,uploadUri) => handleNutritionistFormSubmit(data, credentialUri,uploadUri)}
+                      onSubmit={(data, credentialUri, uploadUri) =>
+                        handleNutritionistFormSubmit(data, credentialUri, uploadUri)
+                      }
                     />
                   )}
                 </>

@@ -9,11 +9,14 @@ export const LoginButton: React.FC<{
   type: "member" | "nutritionist";
   text: string;
   styleProps: Record<string, any>;
-}> = ({ type, text, styleProps }) => {
+}> = ({ type = "member", text, styleProps }) => {
+  console.log({ type });
+
   const { user } = usePrivy();
   const router = useRouter();
   const [getUser] = useLazyGetUserQuery();
   const [_, setNewMember] = useLocalStorage("new-member", {});
+  const [_s, setStoredInfo] = useLocalStorage("stored-info", {});
   const [__, setNewNutritionist] = useLocalStorage("new-nutritionist", {});
   type LoginMethod =
     | "email"
@@ -26,48 +29,49 @@ export const LoginButton: React.FC<{
     | `privy:${string}`;
   const handleLoginComplete = useCallback(
     (user: any, isNewUser: boolean, _: any, loginMethod: LoginMethod | null) => {
-      console.log({ type, isNewUser, loginMethod,user });
-      if (type === "member") {
-        if (isNewUser) {
-          switch (loginMethod) {
-            case "google":
-              setNewMember({
-                email: user?.google?.email,
-                authId: user?.id,
-                fullName: user?.google?.name,
-                loginMethod: loginMethod,
-                emailVerified: true
-              });
-              break;
-            default:
-              setNewMember({ email: user?.email, authId: user?.id, loginMethod: loginMethod });
-          }
-          router.push("/onboarding/member");
-          return;
+      console.log({ type, isNewUser, loginMethod, user });
+      // if (type === "member") {
+      if (isNewUser) {
+        switch (loginMethod) {
+          case "google":
+            setNewMember({
+              email: user?.google?.email,
+              authId: user?.id,
+              fullName: user?.google?.name,
+              loginMethod: loginMethod,
+              emailVerified: true
+            });
+            break;
+          default:
+            setNewMember({ email: user?.email, authId: user?.id, loginMethod: loginMethod });
         }
-        router.push("/member/dashboard");
+        router.push("/onboarding/member");
+        return;
       }
-      if (type === "nutritionist") {
-        if (isNewUser) {
-          switch (loginMethod) {
-            case "google":
-              setNewNutritionist({ email: user?.google?.email, authId: user?.id, fullName: user?.google?.name });
-              break;
-            default:
-              setNewNutritionist({ email: user?.email, authId: user?.id });
-          }
-          router.push("/onboarding/nutritionist");
-          return;
-        }
-        router.push("/nutritionist/dashboard");
-      }
+      router.push("/member/dashboard");
+      // }
+      // if (type === "nutritionist") {
+      //   if (isNewUser) {
+      //     switch (loginMethod) {
+      //       case "google":
+      //         setNewNutritionist({ email: user?.google?.email, authId: user?.id, fullName: user?.google?.name });
+      //         break;
+      //       default:
+      //         setNewNutritionist({ email: user?.email, authId: user?.id });
+      //     }
+      //     router.push("/onboarding/nutritionist");
+      //     return;
+      //   }
+      //   router.push("/nutritionist/dashboard");
+      // }
     },
-    [type, router, setNewMember, setNewNutritionist]
+    [type, router, setNewMember]
   );
 
   const { login } = useLogin({ onComplete: handleLoginComplete });
 
   const handleClick = () => {
+    setStoredInfo({ fromLogin: true });
     login();
   };
 

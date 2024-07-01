@@ -11,11 +11,13 @@ import { communityAddr } from "src/utils/constants";
 import { communityAbi } from "../../../../abis";
 import { writeContract } from "@wagmi/core";
 import { config } from "src/config/wagmi";
+import { useRouter } from "next/router";
 
 export default function OnboardNutritionistPage() {
   const { allTokensData } = useAppContext();
   const [newNutritionist] = useLocalStorage("new-nutritionist", {});
   const { address } = useWallet();
+  const router = useRouter();
   const [amount, setAmount] = useState("0.01");
   const debouncedAmount = useDebounce<string>(amount, 500);
   const [addNutritionists, { isLoading }] = useAddNutritionistMutation();
@@ -30,14 +32,15 @@ export default function OnboardNutritionistPage() {
         country: data.country,
         birthDate: data.birthDate
       }).unwrap();
-      const hash = await writeContract(config, {
-        address: communityAddr,
-        abi: communityAbi as readonly unknown[],
-        functionName: "registerNutritionist",
-        args: [uploadUri, allTokensData.nutritionistNftUri],
-        //@ts-ignore
-        value: parseEther(debouncedAmount || "0")
-      });
+      // const hash = await writeContract(config, {
+      //   address: communityAddr,
+      //   abi: communityAbi as readonly unknown[],
+      //   functionName: "registerNutritionist",
+      //   args: [uploadUri, allTokensData.nutritionistNftUri],
+      //   //@ts-ignore
+      //   value: parseEther(debouncedAmount || "0")
+      // });
+      router.push("/nutritionist/check-status");
     } catch (error) {}
   }
   return (

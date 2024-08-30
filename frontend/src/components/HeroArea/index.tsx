@@ -1,56 +1,80 @@
-import { Box, Flex, Heading, Stack, Text } from "@chakra-ui/react";
+import { Box, Button, Flex, Heading, Stack, Text, VStack, useColorModeValue } from "@chakra-ui/react";
+import { motion } from "framer-motion";
 
 export default function HeroArea() {
+  const highlightColor = useColorModeValue("gs-green.500", "gs-yellow.400");
+
   return (
     <Flex
-      borderBottom={"1px"}
-      borderBottomColor={"gs-gray.700"}
-      wrap={{ base: "wrap-reverse", md: "nowrap" }}
+      as={motion.div}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.8, ease: "easeOut" }}
+      direction={{ base: "column", md: "row" }}
+      align="center"
+      justify="space-between"
+      minHeight="90vh"
       px={{ base: 4, md: 12 }}
-      align={"center"}
-      mt={12}
-      mb={4}
-      gap={5}
-      pb={8}
+      py={12}
+      bg={useColorModeValue("gray.50", "gray.900")}
     >
-      <Stack maxW={{ md: 600, base: "auto" }}>
-        <Heading mb={6} size={"3xl"}>
-          Want to Live{" "}
-          <Text as={"span"} color={"gs-green.500"}>
-            Healthier
-          </Text>{" "}
-          and
-          <Text as={"span"} color={"gs-yellow.400"}>
-            {" "}
-            Longer?
+      <VStack align="flex-start" spacing={8} maxW={{ base: "100%", md: "50%" }}>
+        <Heading as="h1" size="3xl" fontWeight="bold" lineHeight="shorter">
+          Unlock Your Longevity Potential with{" "}
+          <Text as="span" color={highlightColor}>
+            GreenSpace
           </Text>
         </Heading>
-        <Text lineHeight={"taller"} maxW={{ md: 550, base: "auto" }}>
-          {/* We&apos;re building healthy communities focused on longevity all
-          around the world, we want to help people live longer, better through
-          community inclusive programs that improve productivity, make people
-          live happier lives with a sense of purpose and belonging in their
-          community */}
-          We&apos;re building a network of decentralized communities, called <b>Green spaces</b>, focused on longevity
-          to help people live longer, better through community inclusive programs like challenges, events, weekly and
-          one-on-one sessions with longevity focused nutritionists and incentivizing these nutritionists as a focal
-          point, to improve health, productivity and make our members live happier lives with a sense of purpose and
-          belonging in their community.
+        <Text fontSize="xl" lineHeight="tall">
+          Join a thriving community of health-conscious individuals and expert nutritionists. Embrace personalized
+          challenges, one-on-one coaching, and evidence-based strategies to live longer, healthier, and happier.
         </Text>
-      </Stack>
+        <Stack direction={{ base: "column", sm: "row" }} spacing={4}>
+          <Button
+            as="a"
+            href="#join-community"
+            size="lg"
+            colorScheme="gs-green"
+            fontWeight="bold"
+            _hover={{ transform: "translateY(-2px)", boxShadow: "lg" }}
+          >
+            Join Our Community
+          </Button>
+          <Button
+            as="a"
+            href="#learn-more"
+            size="lg"
+            variant="outline"
+            colorScheme="gs-yellow"
+            fontWeight="bold"
+            _hover={{ bg: "gs-yellow.50" }}
+          >
+            Learn More
+          </Button>
+        </Stack>
+      </VStack>
 
-      <Box>
+      <Box
+        as={motion.div}
+        whileHover={{ scale: 1.05 }}
+        transition={{ duration: 0.3, ease: "easeInOut" }}
+        w={{ base: "100%", md: "45%" }}
+        mt={{ base: 8, md: 0 }}
+      >
         <Box
           as="video"
           muted
           loop
           autoPlay
           src="/assets/group-video.mp4"
-          minH={{ base: 350, sm: 450 }}
-          rounded={"20px"}
-          objectFit={"cover"}
+          w="100%"
+          h="auto"
+          minH={{ base: 300, sm: 400 }}
+          rounded="2xl"
+          objectFit="cover"
+          boxShadow="2xl"
         >
-          <span>Video not supported</span>
+          <Text>Your browser does not support the video tag.</Text>
         </Box>
       </Box>
     </Flex>

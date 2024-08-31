@@ -37,9 +37,9 @@ export default function CoachArea() {
           </Text>
         </Heading>
         <Text mb={5} maxW={{ lg: 500, base: "auto" }} lineHeight={"taller"} color={textColor}>
-          Ready to supercharge your health journey? Our rockstar nutritionists are here to give you one-on-one
-          attention. Whether you&apos;re looking to shed a few pounds, boost your energy, or just eat better, we&apos;ve
-          got your back. It&apos;s like having a best friend who happens to be a nutrition wizard!
+          Looking to level up your health? Our awesome nutritionists are here to give you personal support. Whether
+          you&apos;re aiming to lose a few pounds, increase your energy, or just eat healthier, we’re here for you. It’s
+          like having a best friend who&apos;s also a nutrition expert!{" "}
         </Text>
         <Text color={textColor}>
           Hey, nutrition pros! Want to join our dream team? Drop us a line at{" "}

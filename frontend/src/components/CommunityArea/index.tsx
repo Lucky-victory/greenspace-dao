@@ -25,7 +25,7 @@ export default function CommunityArea() {
       animate="visible"
       variants={fadeIn}
       gap={5}
-      wrap={{ base: "wrap", md: "nowrap" }}
+      wrap={{ base: "wrap", lg: "nowrap" }}
       mt={12}
       py={{ base: 8, md: 12 }}
       px={{ base: 4, md: 12 }}
@@ -49,7 +49,7 @@ export default function CommunityArea() {
           boxShadow="lg"
         />
       </Box>
-      <Stack as={motion.div} variants={fadeIn} maxW={{ md: 550, base: "auto" }}>
+      <Stack as={motion.div} variants={fadeIn} maxW={{ lg: 550, base: "auto" }}>
         <Heading mb={5} size={"2xl"} color={highlightColor}>
           Join the Longevity Revolution
         </Heading>

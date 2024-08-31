@@ -18,13 +18,13 @@ import {
   Stack,
   Switch,
   Text,
-  useToast,
+  useToast
 } from "@chakra-ui/react";
 import DashboardLayout from "src/components/AdminDashboardLayout";
 import TextEditor from "src/components/TextEditor";
 
 import { useEffect, useRef, useState } from "react";
-import CoverImageUploader from "src/components/CoverImageUploader";
+import CoverImageUploader from "src/components/CommunityPage/TabPanels/CoverImageUploader";
 import { useStorageUpload } from "@thirdweb-dev/react";
 import { useFormik } from "formik";
 import { resolveIPFSURI } from "src/helpers";
@@ -38,7 +38,7 @@ import { useRouter } from "next/router";
 import DatePicker from "react-datepicker";
 
 const NewChallengePage = ({
-  cid: communityIdFromServerSideProps,
+  cid: communityIdFromServerSideProps
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const router = useRouter();
   const communityId = communityIdFromServerSideProps || router.query.communityId;
@@ -61,7 +61,7 @@ const NewChallengePage = ({
     duration: 3000,
     position: "top",
     status: "success",
-    title: "Community challenge created successfully",
+    title: "Community challenge created successfully"
   });
   const handleEditorReset = () => {
     if (editorRef.current) {
@@ -93,7 +93,7 @@ const NewChallengePage = ({
       venue: "",
       location: "",
       startDate: challengeStartDate,
-      endDate: challengeEndDate,
+      endDate: challengeEndDate
     },
     onSubmit: async (values, actions) => {
       if (!isLoggedIn) {
@@ -103,7 +103,7 @@ const NewChallengePage = ({
       if (isEmpty(communityId)) {
         toast({
           title: "No communityID provided",
-          status: "error",
+          status: "error"
         });
       }
       actions.setSubmitting(true);
@@ -116,7 +116,7 @@ const NewChallengePage = ({
           venue: values.venue,
           communityId: communityId,
           startDate: values.startDate,
-          endDate: values.endDate,
+          endDate: values.endDate
         };
 
         if (coverFile) {
@@ -129,7 +129,7 @@ const NewChallengePage = ({
 
         toast({
           title: "Community Challenge created successfully",
-          status: "success",
+          status: "success"
         });
         setTimeout(() => {
           handleFieldReset();
@@ -138,11 +138,11 @@ const NewChallengePage = ({
         console.log(err);
         toast({
           title: "An error occurred, please try again",
-          status: "error",
+          status: "error"
         });
         actions.setSubmitting(false);
       }
-    },
+    }
   });
   function handleFieldReset() {
     formik.resetForm();
@@ -203,7 +203,7 @@ const NewChallengePage = ({
               fontWeight={500}
               _focus={{
                 boxShadow: "0 0 0 1px transparent",
-                borderColor: "gs-yellow.400",
+                borderColor: "gs-yellow.400"
               }}
               autoComplete="off"
               name="title"
@@ -262,7 +262,7 @@ const NewChallengePage = ({
                 name="location"
                 _focus={{
                   boxShadow: "0 0 0 1px transparent",
-                  borderColor: "gs-yellow.400",
+                  borderColor: "gs-yellow.400"
                 }}
                 value={formik.values.location}
                 onChange={formik.handleChange}
@@ -337,7 +337,7 @@ export async function getServerSideProps({ query }: GetServerSidePropsContext) {
   // Pass the pathname as props
   return {
     props: {
-      cid: cid as string,
-    },
+      cid: cid as string
+    }
   };
 }

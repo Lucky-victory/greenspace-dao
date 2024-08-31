@@ -11,13 +11,13 @@ import {
   Stack,
   Switch,
   Text,
-  useToast,
+  useToast
 } from "@chakra-ui/react";
 import DashboardLayout from "src/components/AdminDashboardLayout";
 import TextEditor from "src/components/TextEditor";
 
 import { useState } from "react";
-import CoverImageUploader from "src/components/CoverImageUploader";
+import CoverImageUploader from "src/components/CommunityPage/TabPanels/CoverImageUploader";
 import { useStorageUpload } from "@thirdweb-dev/react";
 import { useFormik } from "formik";
 import { resolveIPFSURI } from "src/helpers";
@@ -37,13 +37,13 @@ const NewCommunityPage = () => {
     duration: 3000,
     position: "top",
     status: "success",
-    title: "Community created successfully",
+    title: "Community created successfully"
   });
   const formik = useFormik({
     initialValues: {
       name: "",
       description: "",
-      visibility: true,
+      visibility: true
     },
     onSubmit: async (values, actions) => {
       if (isEmpty(user)) {
@@ -58,7 +58,7 @@ const NewCommunityPage = () => {
           visibility: values.visibility ? "public" : "private",
           coverImage: "",
           displayImage: "",
-          userId: user?.id,
+          userId: user?.id
         };
         if (coverFile) {
           const coverImageRes = await uploadToThirdweb({ data: [coverFile] });
@@ -66,17 +66,17 @@ const NewCommunityPage = () => {
         }
         if (displayImageFile) {
           const displayImageRes = await uploadToThirdweb({
-            data: [displayImageFile],
+            data: [displayImageFile]
           });
           dataToSave.displayImage = resolveIPFSURI(displayImageRes[0]);
         }
-     
+
         await createCommunity(dataToSave);
         actions.setSubmitting(false);
 
         toast({
           title: "Community created successfully",
-          status: "success",
+          status: "success"
         });
         setTimeout(() => {
           actions.resetForm();
@@ -88,11 +88,11 @@ const NewCommunityPage = () => {
         console.log(err);
         toast({
           title: "An error occurred, please try again",
-          status: "error",
+          status: "error"
         });
         actions.setSubmitting(false);
       }
-    },
+    }
   });
   function handleGetCoverFile(file: File | null) {
     setCoverFile(file as File);
@@ -140,7 +140,7 @@ const NewCommunityPage = () => {
               fontWeight={500}
               _focus={{
                 boxShadow: "0 0 0 1px transparent",
-                borderColor: "gs-yellow.400",
+                borderColor: "gs-yellow.400"
               }}
               autoComplete="off"
               name="name"

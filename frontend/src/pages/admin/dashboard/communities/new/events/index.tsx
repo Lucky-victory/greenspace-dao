@@ -15,13 +15,13 @@ import {
   MenuOptionGroup,
   Stack,
   Text,
-  useToast,
+  useToast
 } from "@chakra-ui/react";
 import DashboardLayout from "src/components/AdminDashboardLayout";
 import TextEditor from "src/components/TextEditor";
 
 import { useEffect, useRef, useState } from "react";
-import CoverImageUploader from "src/components/CoverImageUploader";
+import CoverImageUploader from "src/components/CommunityPage/TabPanels/CoverImageUploader";
 import { useStorageUpload } from "@thirdweb-dev/react";
 import { useFormik } from "formik";
 import { resolveIPFSURI } from "src/helpers";
@@ -30,19 +30,15 @@ import isEmpty from "just-is-empty";
 import { useCreateCommunityEventMutation } from "src/state/services";
 import { BsChevronDown, BsChevronLeft } from "react-icons/bs";
 import { Link } from "@chakra-ui/next-js";
-import {
-  InferGetServerSidePropsType,
-  GetServerSidePropsContext,
-} from "next/types";
+import { InferGetServerSidePropsType, GetServerSidePropsContext } from "next/types";
 import { useRouter } from "next/router";
 import DatePicker from "react-datepicker";
 
 const NewEventPage = ({
-  cid: communityIdFromServerSideProps,
+  cid: communityIdFromServerSideProps
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const router = useRouter();
-  const communityId =
-    communityIdFromServerSideProps || router.query.communityId;
+  const communityId = communityIdFromServerSideProps || router.query.communityId;
   const { mutateAsync: uploadToThirdweb } = useStorageUpload();
   const [coverFile, setCoverFile] = useState<File>();
   const [detailsContent, setDetailsContent] = useState<string>("");
@@ -55,7 +51,7 @@ const NewEventPage = ({
     duration: 3000,
     position: "top",
     status: "success",
-    title: "Community event created successfully",
+    title: "Community event created successfully"
   });
   const uploaderRef = useRef<{ resetImages: () => void }>(null);
 
@@ -94,7 +90,7 @@ const NewEventPage = ({
       venue: "",
       location: "",
       startDate: eventStartDate,
-      endDate: eventEndDate,
+      endDate: eventEndDate
     },
     onSubmit: async (values, actions) => {
       if (!isLoggedIn) {
@@ -104,7 +100,7 @@ const NewEventPage = ({
       if (isEmpty(communityId)) {
         toast({
           title: "No communityID provided",
-          status: "error",
+          status: "error"
         });
       }
       actions.setSubmitting(true);
@@ -117,7 +113,7 @@ const NewEventPage = ({
           venue: values.venue,
           communityId: communityId,
           startDate: values.startDate,
-          endDate: values.endDate,
+          endDate: values.endDate
         };
         console.log({ dataToSave });
 
@@ -131,7 +127,7 @@ const NewEventPage = ({
 
         toast({
           title: "Community Event created successfully",
-          status: "success",
+          status: "success"
         });
         setTimeout(() => {
           handleFieldReset();
@@ -140,11 +136,11 @@ const NewEventPage = ({
         console.log(err);
         toast({
           title: "An error occurred, please try again",
-          status: "error",
+          status: "error"
         });
         actions.setSubmitting(false);
       }
-    },
+    }
   });
   function handleFieldReset() {
     formik.resetForm();
@@ -154,7 +150,7 @@ const NewEventPage = ({
     setCoverFile(undefined);
     setDetailsContent("");
     handleEditorReset();
-     handleUploaderReset();
+    handleUploaderReset();
   }
   function handleGetCoverFile(file: File | null) {
     setCoverFile(file as File);
@@ -205,7 +201,7 @@ const NewEventPage = ({
               fontWeight={500}
               _focus={{
                 boxShadow: "0 0 0 1px transparent",
-                borderColor: "gs-yellow.400",
+                borderColor: "gs-yellow.400"
               }}
               autoComplete="off"
               name="title"
@@ -222,29 +218,17 @@ const NewEventPage = ({
             <FormLabel size={"md"} mt={2} mb={4} htmlFor="cover-image">
               Cover image:
             </FormLabel>
-            <CoverImageUploader ref={uploaderRef}
-              inputId="cover-image"
-              getCoverImageFile={handleGetCoverFile}
-            />
+            <CoverImageUploader ref={uploaderRef} inputId="cover-image" getCoverImageFile={handleGetCoverFile} />
           </Box>
           <HStack wrap={{ base: "wrap", md: "nowrap" }} gap={3}>
             <FormControl isRequired maxW={250}>
               <FormLabel htmlFor="venue">Venue:</FormLabel>
               <Menu>
-                <MenuButton
-                  name="venue"
-                  as={Button}
-                  colorScheme="gs-yellow"
-                  rightIcon={<BsChevronDown />}
-                >
+                <MenuButton name="venue" as={Button} colorScheme="gs-yellow" rightIcon={<BsChevronDown />}>
                   {formik.values.venue || "Choose Venue"}
                 </MenuButton>
                 <MenuList zIndex={3}>
-                  <MenuOptionGroup
-                    defaultValue="online"
-                    title="Venue"
-                    type="radio"
-                  >
+                  <MenuOptionGroup defaultValue="online" title="Venue" type="radio">
                     <MenuItemOption
                       name="venue"
                       value="online"
@@ -276,7 +260,7 @@ const NewEventPage = ({
                 name="location"
                 _focus={{
                   boxShadow: "0 0 0 1px transparent",
-                  borderColor: "gs-yellow.400",
+                  borderColor: "gs-yellow.400"
                 }}
                 value={formik.values.location}
                 onChange={formik.handleChange}
@@ -328,15 +312,7 @@ const NewEventPage = ({
               initialValue={detailsContent}
             />
           </Box>
-          <HStack
-            gap={4}
-            pos={"sticky"}
-            bottom={0}
-            bg={"black"}
-            zIndex={50}
-            pt={1}
-            pb={3}
-          >
+          <HStack gap={4} pos={"sticky"} bottom={0} bg={"black"} zIndex={50} pt={1} pb={3}>
             <Button
               type="submit"
               rounded={"full"}
@@ -359,7 +335,7 @@ export async function getServerSideProps({ query }: GetServerSidePropsContext) {
   // Pass the pathname as props
   return {
     props: {
-      cid: cid as string,
-    },
+      cid: cid as string
+    }
   };
 }

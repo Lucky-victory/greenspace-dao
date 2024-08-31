@@ -1,4 +1,4 @@
-import { Box, Button, Flex, Text } from "@chakra-ui/react";
+import { Box, Button, Flex, Text, useColorModeValue } from "@chakra-ui/react";
 import { ReactNode, useCallback, useEffect } from "react";
 import { useInAppAuth } from "src/hooks/common";
 import { useCheckHasJoinCommunityMutation, useGetCommunityQuery, useJoinCommunityMutation } from "src/state/services";
@@ -18,11 +18,11 @@ export const NotAMemberMiddlewareComp = ({
   title = "Join this community",
   description,
   styleProps,
-  children,
+  children
 }: Props) => {
   const { connect, isLoggedIn, user } = useInAppAuth();
   const { data: communityResponse } = useGetCommunityQuery({
-    spaceIdOrId,
+    spaceIdOrId
   });
   const community = communityResponse?.data!;
   const [joinCommunity, { isLoading: isLoadingJoin }] = useJoinCommunityMutation();
@@ -35,13 +35,13 @@ export const NotAMemberMiddlewareComp = ({
     await joinCommunity({
       communityId: community?.id,
       userId: user?.id as string,
-      spaceIdOrId: community?.spaceId,
+      spaceIdOrId: community?.spaceId
     }).unwrap();
     await checkCommunityJoin({
       communityId: community?.id,
       userId: user?.id as string,
 
-      spaceIdOrId: community?.spaceId,
+      spaceIdOrId: community?.spaceId
     }).unwrap();
   }
   const [checkCommunityJoin, { isLoading: isLoadingHasJoin, data: hasJoinResponse }] =
@@ -55,7 +55,7 @@ export const NotAMemberMiddlewareComp = ({
         communityId: community?.id,
         userId: user?.id as string,
 
-        spaceIdOrId: community?.spaceId,
+        spaceIdOrId: community?.spaceId
       });
     }
   }, [isLoggedIn, user?.id, community?.spaceId, community?.id, checkCommunityJoinCb]);

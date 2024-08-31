@@ -13,7 +13,6 @@ import {
   Image,
   useColorModeValue,
   Input,
-  Select,
   Tag
 } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
@@ -82,7 +81,9 @@ export default function CommunitiesPage() {
       });
   }
 
-  const allTags = Array.from(new Set(communities?.flatMap((community) => community.tags || []) || []));
+  const allTags = Array.from(
+    new Set(communities?.flatMap((community) => community.tags || ["Health", "Fitness", "Nutrition", "Diet"]) || [])
+  );
 
   return (
     <>
@@ -103,21 +104,25 @@ export default function CommunitiesPage() {
                 placeholder="Search communities..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                maxW="md"
+                w="full"
+                size={"lg"}
                 mb={4}
+                rounded="full"
+                maxW={1100}
               />
-              <Select
-                placeholder="Filter by tag"
-                value={selectedTag}
-                onChange={(e) => setSelectedTag(e.target.value)}
-                maxW="md"
-              >
+              <Flex wrap="wrap" justify="center" gap={2}>
                 {allTags.map((tag) => (
-                  <option key={tag} value={tag}>
+                  <Tag
+                    key={tag}
+                    onClick={() => setSelectedTag(tag === selectedTag ? "" : tag)}
+                    cursor="pointer"
+                    size={"lg"}
+                    colorScheme={tag === selectedTag ? "blue" : "gray"}
+                  >
                     {tag}
-                  </option>
+                  </Tag>
                 ))}
-              </Select>
+              </Flex>
             </Flex>
             <Flex gap={6} wrap="wrap" justify={"center"}>
               {(isLoading || isFetching) && [0, 0, 0, 0].map((_, i) => <CardLoading key={"comm-loading" + i} />)}

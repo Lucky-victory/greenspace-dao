@@ -1,4 +1,17 @@
-import { Box, Button, Flex, Heading, HStack, Image, List, ListItem, Text, useBreakpoint } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Flex,
+  Heading,
+  HStack,
+  Image,
+  List,
+  ListItem,
+  Text,
+  useBreakpoint,
+  useColorMode,
+  useColorModeValue
+} from "@chakra-ui/react";
 import PageWrapper from "src/components/PageWrapper";
 import { useActiveTab, useInAppAuth } from "src/hooks/common";
 import { FiGlobe, FiLock } from "react-icons/fi";
@@ -35,8 +48,20 @@ const tabsObj = [
 export default function CommunityViewPage({
   slugId: slugIdFromServer
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
-  // TODO: Add a 404 redirect when no community is found.
   const router = useRouter();
+  const { colorMode } = useColorMode();
+  const bgColor = useColorModeValue("white", "gray.800");
+  const borderColor = useColorModeValue("gray.200", "gray.600");
+  const textColor = useColorModeValue("gray.800", "white");
+  const hoverBgColor = useColorModeValue("gray.100", "gray.700");
+  const activeBgColor = useColorModeValue("gs-gray.100", "gs-gray.800");
+  const bannerBgColor = useColorModeValue("gs-gray.100", "gs-gray.600");
+  const buttonBgColor = useColorModeValue("whiteAlpha.600", "blackAlpha.600");
+  const buttonHoverBgColor = useColorModeValue("whiteAlpha.700", "blackAlpha.700");
+  const visibilityBgColor = useColorModeValue("rgba(255,255,255,0.45)", "rgba(0,0,0,0.45)");
+  const borderTopColor = useColorModeValue("gray.200", "gray.900");
+  const navBgColor = useColorModeValue("gray.50", "gray.900");
+  const imageBgColor = useColorModeValue("gray.100", "gray.700");
 
   const slugId = slugIdFromServer || (router.query.slugId as string);
   const { connect, user, isLoggedIn } = useInAppAuth();
@@ -66,7 +91,7 @@ export default function CommunityViewPage({
     rounded: "full",
     fontWeight: "normal",
     _hover: {
-      bg: "gray.700"
+      bg: hoverBgColor
     }
   };
 
@@ -80,9 +105,8 @@ export default function CommunityViewPage({
           {...tabBtnStyles}
           {...(isActive && {
             fontWeight: 500,
-
             color: "gs-yellow.300",
-            bg: "gs-gray.800"
+            bg: activeBgColor
           })}
         >
           {tab.name}
@@ -109,27 +133,24 @@ export default function CommunityViewPage({
 
       {community && (
         <PageWrapper
-          bg="gray.800"
           props={{
             h: "var(--chakra-vh,100vh)",
             py: 5
-            // maxH: { base: "auto", lg: "800px" },
           }}
         >
           {/* BANNER AREA */}
           <Box>
-            <Box h={{ lg: 200, base: 150 }} pos={"relative"} bg={"gs-gray.600"} overflow={"hidden"} rounded={"lg"}>
+            <Box h={{ lg: 200, base: 150 }} pos={"relative"} bg={bannerBgColor} overflow={"hidden"} rounded={"lg"}>
               <Button
                 gap={2}
-                bg={"blackAlpha.600"}
+                bg={buttonBgColor}
                 variant={"ghost"}
                 pos={"absolute"}
                 top={3}
                 left={3}
-                colorScheme="gray"
+                colorScheme={colorMode === "light" ? "gray" : "white"}
                 zIndex={5}
-                // as={Link}
-                _hover={{ bg: "blackAlpha.700" }}
+                _hover={{ bg: buttonHoverBgColor }}
                 onClick={() => router.back()}
               >
                 <BsChevronLeft /> <Text> Back</Text>
@@ -141,10 +162,9 @@ export default function CommunityViewPage({
                 w={"full"}
                 objectFit={"cover"}
                 objectPosition={"top"}
-                opacity={0.75}
               />
               <Box pos={"absolute"} right={0} bottom={0} p={3}>
-                <HStack rounded={"full"} bg={"rgba(0,0,0,0.45)"} px={3} py={1}>
+                <HStack rounded={"full"} bg={visibilityBgColor} px={3} py={1}>
                   <>{community?.visibility === "private" ? <FiLock /> : <FiGlobe />}</>
                   <Text fontSize={"10px"} textTransform={"uppercase"} as={"span"}>
                     {community?.visibility}
@@ -166,8 +186,8 @@ export default function CommunityViewPage({
                 rounded={"full"}
                 w={{ lg: 130, base: 100 }}
                 h={{ lg: 130, base: 100 }}
-                boxShadow={"0 0 0 6px var(--chakra-colors-gray-800)"}
-                bg={"gray.700 m,"}
+                boxShadow={`0 0 0 6px ${bgColor}`}
+                bg={imageBgColor}
                 overflow={"hidden"}
               >
                 <Image
@@ -178,23 +198,22 @@ export default function CommunityViewPage({
                   objectFit={"cover"}
                 />
               </Box>
-              <Heading as={"h1"} size={"lg"} textAlign={"center"} mt={{ lg: 14, base: 0 }}>
+              <Heading as={"h1"} size={"lg"} textAlign={"center"} mt={{ lg: 14, base: 0 }} color={textColor}>
                 {community?.name}
               </Heading>
             </Flex>
           </Box>
           <Flex
             borderTop={"4px"}
-            borderTopColor={"gray.900"}
+            borderTopColor={borderTopColor}
             direction={{ lg: "row", base: "column" }}
-            // gap={3}
             flex={1}
             maxH={"full"}
             h={"full"}
           >
             <Flex
               borderBottom={{ base: "2px", lg: "none" }}
-              borderBottomColor={"gray.600"}
+              borderBottomColor={borderColor}
               pb={2}
               pt={{ base: 2 }}
               minW={200}
@@ -205,19 +224,18 @@ export default function CommunityViewPage({
               gap={{ base: 3, lg: 4 }}
               flexShrink={0}
               zIndex={5}
-              // h={"full"}
               pos={"sticky"}
-              bg={"gray.900"}
+              bg={navBgColor}
               top={0}
               className="is-nav"
             >
-              {[tabButtons]}
+              {tabButtons}
             </Flex>
 
-            <Box flex={1} px={4} borderX={{ lg: "1px" }} borderColor={{ lg: "gray.600" }}>
+            <Box flex={1} px={4} borderX={{ lg: "1px" }} borderColor={{ lg: borderColor }}>
               <TabPanels activeTab={activeTab} spaceIdOrId={slugId} description={community?.description!} />
             </Box>
-            <Box px={4} hideBelow={"lg"} pos={"sticky"} top={0} bg={"gray.900"}>
+            <Box px={4} hideBelow={"lg"} pos={"sticky"} top={0} bg={bgColor}>
               <Box borderRadius={"10px"} minW={250}>
                 <TabHeading title="Members" size="md" />
                 <Members showHeading={false} spaceIdOrId={slugId} />
@@ -229,7 +247,6 @@ export default function CommunityViewPage({
     </PageLoader>
   );
 }
-
 export async function getServerSideProps({ query }: GetServerSidePropsContext) {
   const { slugId } = query;
 

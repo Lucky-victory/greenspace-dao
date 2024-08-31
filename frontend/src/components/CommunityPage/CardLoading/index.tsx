@@ -1,9 +1,7 @@
-import { Box, Heading, Stack, Skeleton, HStack, useColorModeValue, Image, Text, Button } from "@chakra-ui/react";
+import { Box, Stack, Skeleton, HStack, useColorModeValue } from "@chakra-ui/react";
 
-export const CardLoading = ({ isLoaded = false }: { isLoaded?: boolean }) => {
+export const CardLoading = () => {
   const cardBgColor = useColorModeValue("white", "gray.800");
-  const headingColor = useColorModeValue("gray.800", "white");
-  const textColor = useColorModeValue("gray.600", "gray.300");
   const skeletonStartColor = useColorModeValue("gray.200", "gray.700");
   const skeletonEndColor = useColorModeValue("gray.400", "gray.500");
 

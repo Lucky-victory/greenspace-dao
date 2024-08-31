@@ -27,6 +27,10 @@ export const NotAMemberMiddlewareComp = ({
   const community = communityResponse?.data!;
   const [joinCommunity, { isLoading: isLoadingJoin }] = useJoinCommunityMutation();
 
+  const bgColor = useColorModeValue("white", "gray.800");
+  const textColor = useColorModeValue("gray.800", "white");
+  const buttonColorScheme = useColorModeValue("yellow", "blue");
+
   async function handleCommunityJoin() {
     if (!isLoggedIn) {
       connect();
@@ -69,13 +73,15 @@ export const NotAMemberMiddlewareComp = ({
           flexDir={buttonSize !== "sm" ? "column" : "row"}
           align={"center"}
           justify={buttonSize !== "sm" ? "center" : ""}
+          bg={bgColor}
+          color={textColor}
           {...styleProps}
         >
           {title && <Text>{title}</Text>}
           {description && <Text>{description}</Text>}
           <Button
             size={buttonSize}
-            colorScheme="gs-yellow"
+            colorScheme={buttonColorScheme}
             rounded={"full"}
             loadingText={"Joining..."}
             onClick={handleCommunityJoin}

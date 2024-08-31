@@ -8,6 +8,7 @@ import {
   SkeletonCircle,
   Stack,
   Text,
+  useColorModeValue
 } from "@chakra-ui/react";
 import { pusherClient } from "src/lib/pusher/client";
 import { useEffect, useRef } from "react";
@@ -27,26 +28,17 @@ import { useScrollToBottom } from "src/hooks/common";
 export default function Chats({ spaceIdOrId }: { spaceIdOrId: string }) {
   const { user } = usePrivy();
   const { containerRef } = useScrollToBottom(true);
-  const {
-    data: messagesRes,
-    isFetching,
-    isLoading,
-  } = useGetCommunityMessagesQuery({ spaceIdOrId });
+  const { data: messagesRes, isFetching, isLoading } = useGetCommunityMessagesQuery({ spaceIdOrId });
 
   const dispatch = useAppDispatch();
-  const messages = useSelector(
-    (state: RootState) => state.communityMessagesState.data
-  );
+  const messages = useSelector((state: RootState) => state.communityMessagesState.data);
 
   const channelRef = useRef<Channel>();
 
   useEffect(() => {
-    channelRef.current = pusherClient
-      .subscribe(spaceIdOrId)
-      .bind("evt::message", (data: any) => {
-      
-        dispatch(addMessage(data));
-      });
+    channelRef.current = pusherClient.subscribe(spaceIdOrId).bind("evt::message", (data: any) => {
+      dispatch(addMessage(data));
+    });
 
     return () => {
       if (channelRef.current) channelRef.current.unbind();
@@ -54,24 +46,19 @@ export default function Chats({ spaceIdOrId }: { spaceIdOrId: string }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [messages, spaceIdOrId]);
 
+  const bgColor = useColorModeValue("white", "gray.800");
+  const textColor = useColorModeValue("gray.800", "white");
+  const secondaryTextColor = useColorModeValue("gray.600", "gray.400");
+
   return (
     <Stack flex={1} maxH={"full"}>
       <TabHeading title="Chats" />
 
-      <Stack
-        minH={"400"}
-        divider={<Divider />}
-        h={"full"}
-        overflowY={"auto"}
-        ref={containerRef}
-      >
-        {(isFetching || isLoading) &&
-          [0, 0, 0, 0, 0, 0].map((_, i) => (
-            <ChatLoading key={"loading-skeleton" + i} />
-          ))}
+      <Stack minH={"400"} divider={<Divider />} h={"full"} overflowY={"auto"} ref={containerRef} bg={bgColor}>
+        {(isFetching || isLoading) && [0, 0, 0, 0, 0, 0].map((_, i) => <ChatLoading key={"loading-skeleton" + i} />)}
         {!isFetching && !isLoading && messages?.length === 0 && (
           <Box py={8} textAlign={"center"}>
-            <Text> No messages yet.</Text>
+            <Text color={textColor}> No messages yet.</Text>
           </Box>
         )}
         {!isFetching &&
@@ -82,25 +69,21 @@ export default function Chats({ spaceIdOrId }: { spaceIdOrId: string }) {
               py={3}
               px={{ base: 1, md: 3 }}
               rounded={"md"}
-              // bg={"gs-gray.900"}
               gap={3}
               key={message?.id + "" + index}
               align={"flex-start"}
             >
-              <Avatar
-                mt={1}
-                size={"sm"}
-                name={message?.author?.fullName}
-                src={message?.author?.avatar}
-              />
+              <Avatar mt={1} size={"sm"} name={message?.author?.fullName} src={message?.author?.avatar} />
               <Stack>
                 <HStack>
-                  <Text fontWeight={600}>{message?.author?.fullName}</Text>
-                  <Text fontSize={"12px"} color={"gray.500"}>
+                  <Text fontWeight={600} color={textColor}>
+                    {message?.author?.fullName}
+                  </Text>
+                  <Text fontSize={"12px"} color={secondaryTextColor}>
                     {formatChatTimestamp(message?.createdAt)}
                   </Text>
                 </HStack>
-                <Text fontSize={"15px"} fontWeight={300}>
+                <Text fontSize={"15px"} fontWeight={300} color={textColor}>
                   {message?.message}
                 </Text>
               </Stack>
@@ -114,10 +97,10 @@ export default function Chats({ spaceIdOrId }: { spaceIdOrId: string }) {
         styleProps={{
           pos: "sticky",
           bottom: 0,
-          bg: "gray.800",
+          bg: bgColor,
           w: "full",
           py: 3,
-          textAlign: "center",
+          textAlign: "center"
         }}
         title="Join this community to send a message"
       >

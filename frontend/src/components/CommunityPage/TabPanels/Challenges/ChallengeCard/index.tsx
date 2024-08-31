@@ -1,52 +1,40 @@
-import {
-  Box,
-  Heading,
-  HStack,
-  Stack,
-  Text,
-  Button,
-  Image,
-  Flex,
-} from "@chakra-ui/react";
+import { Box, Heading, HStack, Stack, Text, Button, Image, Flex, useColorModeValue } from "@chakra-ui/react";
 import { Link } from "@chakra-ui/next-js";
 import MarkdownRenderer from "src/components/MarkdownRenderer";
 import { shortenText } from "src/utils";
 import isEmpty from "just-is-empty";
-export default function ChallengeCard({
-  spaceIdOrId,challenge
-}: {
-  spaceIdOrId: string;challenge:any
-}) {
+
+export default function ChallengeCard({ spaceIdOrId, challenge }: { spaceIdOrId: string; challenge: any }) {
+  const bgColor = useColorModeValue("gray.100", "gray.900");
+  const textColor = useColorModeValue("gray.800", "white");
+  const tagBgColor = useColorModeValue("gray.200", "gray.700");
+  const tagTextColor = useColorModeValue("gray.800", "gray.100");
+
   const tagStyles = {
     px: 2,
     rounded: "sm",
     py: 1,
     fontSize: "13px",
-    bg: "gray.500",
+    bg: tagBgColor,
     fontWeight: 500,
-    color: "black",
+    color: tagTextColor
   };
+
   return (
-    <Flex
-      gap={3}
-      wrap={{ base: "wrap", md: "nowrap" }}
-      bg={"gray.900"}
-      py={3}
-      px={3}
-    >
+    <Flex gap={3} wrap={{ base: "wrap", md: "nowrap" }} bg={bgColor} py={3} px={3} color={textColor}>
       <Box
         flexShrink={0}
         w={{ md: 200, base: "full" }}
         minH={{ md: "100%", base: 200 }}
         maxH={{ base: 250 }}
-        bg={"gay.900"}
+        bg={bgColor}
       >
         <Image
           w={"full"}
           h={"full"}
           objectFit={"cover"}
           alt=""
-          src={challenge?.coverImage||"/assets/community-dp.png"}
+          src={challenge?.coverImage || "/assets/community-dp.png"}
         />
       </Box>
       <Stack flex={1}>
@@ -56,14 +44,13 @@ export default function ChallengeCard({
         </Box>
         <Box>
           {!isEmpty(challenge?.tags) && (
-
             <HStack>
-              {challenge?.tags.map((tag:{name:string},i:number) => (
-                <Text as={"span"} {...tagStyles} key={tag?.name+i}>
+              {challenge?.tags.map((tag: { name: string }, i: number) => (
+                <Text as={"span"} {...tagStyles} key={tag?.name + i}>
                   {tag?.name}
                 </Text>
-             ) )}
-          </HStack>
+              ))}
+            </HStack>
           )}
           <Button
             rounded={"full"}

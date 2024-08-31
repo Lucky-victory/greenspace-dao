@@ -1,55 +1,34 @@
-import {
-  Box,
-  Heading,
-  HStack,
-  Stack,
-  Text,
-  Button,
-  Image,
-  Flex,
-} from "@chakra-ui/react";
+import { Box, Heading, HStack, Stack, Text, Button, Image, Flex, useColorModeValue } from "@chakra-ui/react";
 import { Link } from "@chakra-ui/next-js";
 import MarkdownRenderer from "src/components/MarkdownRenderer";
 import { shortenText } from "src/utils";
 import isEmpty from "just-is-empty";
-export default function EventCards({
-  spaceIdOrId,
-  event,
-}: {
-  spaceIdOrId: string;
-  event: any;
-}) {
+
+export default function EventCards({ spaceIdOrId, event }: { spaceIdOrId: string; event: any }) {
+  const bgColor = useColorModeValue("gray.100", "gray.900");
+  const textColor = useColorModeValue("black", "white");
+  const tagBgColor = useColorModeValue("gray.300", "gray.600");
+
   const tagStyles = {
     px: 2,
     rounded: "sm",
     py: 1,
     fontSize: "13px",
-    bg: "gray.500",
+    bg: tagBgColor,
     fontWeight: 500,
-    color: "black",
+    color: textColor
   };
+
   return (
-    <Flex
-      gap={3}
-      wrap={{ base: "wrap", md: "nowrap" }}
-      bg={"gray.900"}
-      py={3}
-      px={3}
-    >
+    <Flex gap={3} wrap={{ base: "wrap", md: "nowrap" }} bg={bgColor} py={3} px={3} color={textColor}>
       <Box
         flexShrink={0}
         w={{ md: 200, base: "full" }}
         minH={{ md: "100%", base: 200 }}
         maxH={{ base: 250 }}
-        bg={"gay.900"}
+        bg={bgColor}
       >
-        <Image
-          w={"full"}
-          h={"full"}
-          objectFit={"cover"}
-          alt=""
-          src={event?.coverImage || "/assets/community-dp.png"}
-        />
+        <Image w={"full"} h={"full"} objectFit={"cover"} alt="" src={event?.coverImage || "/assets/community-dp.png"} />
       </Box>
       <Stack flex={1}>
         <Heading size={"md"}>{event?.title}</Heading>
@@ -59,8 +38,8 @@ export default function EventCards({
         <Box>
           {!isEmpty(event?.tags) && (
             <HStack>
-              {event?.tags.map((tag: { name: string },i:number) => (
-                <Text as={"span"} {...tagStyles} key={tag?.name+i}>
+              {event?.tags.map((tag: { name: string }, i: number) => (
+                <Text as={"span"} {...tagStyles} key={tag?.name + i}>
                   {tag?.name}
                 </Text>
               ))}

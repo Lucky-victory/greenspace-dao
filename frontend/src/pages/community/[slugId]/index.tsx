@@ -1,15 +1,4 @@
-import {
-  Box,
-  Button,
-  Flex,
-  Heading,
-  HStack,
-  Image,
-  List,
-  ListItem,
-  Text,
-  useBreakpoint,
-} from "@chakra-ui/react";
+import { Box, Button, Flex, Heading, HStack, Image, List, ListItem, Text, useBreakpoint } from "@chakra-ui/react";
 import PageWrapper from "src/components/PageWrapper";
 import { useActiveTab, useInAppAuth } from "src/hooks/common";
 import { FiGlobe, FiLock } from "react-icons/fi";
@@ -28,23 +17,23 @@ import { Link } from "@chakra-ui/next-js";
 const tabsObj = [
   {
     name: "About",
-    url: "",
+    url: ""
   },
   {
     name: "Challenges",
-    url: "challenges",
+    url: "challenges"
   },
   {
     name: "Events",
-    url: "events",
+    url: "events"
   },
   {
     name: "Chats",
-    url: "chats",
-  },
+    url: "chats"
+  }
 ];
 export default function CommunityViewPage({
-  slugId: slugIdFromServer,
+  slugId: slugIdFromServer
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   // TODO: Add a 404 redirect when no community is found.
   const router = useRouter();
@@ -56,11 +45,7 @@ export default function CommunityViewPage({
   const [tabs, setTabs] = useState(tabsObj);
   const smallerBreakPoints = ["md", "base", "sm"];
 
-  const {
-    data: communityData,
-    isLoading,
-    isFetching,
-  } = useGetCommunityQuery({ spaceIdOrId: slugId });
+  const { data: communityData, isLoading, isFetching } = useGetCommunityQuery({ spaceIdOrId: slugId });
   const community = communityData?.data;
   useEffect(() => {
     if (smallerBreakPoints.includes(breakpoint)) {
@@ -81,8 +66,8 @@ export default function CommunityViewPage({
     rounded: "full",
     fontWeight: "normal",
     _hover: {
-      bg: "gray.700",
-    },
+      bg: "gray.700"
+    }
   };
 
   const tabButtons = tabs.map((tab) => {
@@ -97,7 +82,7 @@ export default function CommunityViewPage({
             fontWeight: 500,
 
             color: "gs-yellow.300",
-            bg: "gs-gray.800",
+            bg: "gs-gray.800"
           })}
         >
           {tab.name}
@@ -127,12 +112,13 @@ export default function CommunityViewPage({
           bg="gray.800"
           props={{
             h: "var(--chakra-vh,100vh)",
+            py: 5
             // maxH: { base: "auto", lg: "800px" },
           }}
         >
           {/* BANNER AREA */}
           <Box>
-            <Box h={{ lg: 250, base: 180 }} pos={"relative"} bg={"gs-gray.600"}>
+            <Box h={{ lg: 200, base: 150 }} pos={"relative"} bg={"gs-gray.600"} overflow={"hidden"} rounded={"lg"}>
               <Button
                 gap={2}
                 bg={"blackAlpha.600"}
@@ -150,9 +136,7 @@ export default function CommunityViewPage({
               </Button>
               <Image
                 alt="banner"
-                src={
-                  community?.coverImage || "/assets/community-default-bg.png"
-                }
+                src={community?.coverImage || "/assets/community-default-bg.png"}
                 h={"full"}
                 w={"full"}
                 objectFit={"cover"}
@@ -161,18 +145,8 @@ export default function CommunityViewPage({
               />
               <Box pos={"absolute"} right={0} bottom={0} p={3}>
                 <HStack rounded={"full"} bg={"rgba(0,0,0,0.45)"} px={3} py={1}>
-                  <>
-                    {community?.visibility === "private" ? (
-                      <FiLock />
-                    ) : (
-                      <FiGlobe />
-                    )}
-                  </>
-                  <Text
-                    fontSize={"10px"}
-                    textTransform={"uppercase"}
-                    as={"span"}
-                  >
+                  <>{community?.visibility === "private" ? <FiLock /> : <FiGlobe />}</>
+                  <Text fontSize={"10px"} textTransform={"uppercase"} as={"span"}>
                     {community?.visibility}
                   </Text>
                 </HStack>
@@ -185,14 +159,14 @@ export default function CommunityViewPage({
               justify={{ lg: "flex-start", base: "center" }}
               align={"center"}
               pl={5}
-              mt={{ lg: -20, base: "-75px" }}
+              mt={{ lg: -14, base: "-50px" }}
               pos={"relative"}
             >
               <Box
                 rounded={"full"}
-                w={{ lg: 150, base: 130 }}
-                h={{ lg: 150, base: 130 }}
-                boxShadow={"0 0 0 4px #8a8f91"}
+                w={{ lg: 130, base: 100 }}
+                h={{ lg: 130, base: 100 }}
+                boxShadow={"0 0 0 6px var(--chakra-colors-gray-800)"}
                 bg={"gray.700 m,"}
                 overflow={"hidden"}
               >
@@ -204,7 +178,7 @@ export default function CommunityViewPage({
                   objectFit={"cover"}
                 />
               </Box>
-              <Heading as={"h1"} textAlign={"center"} mt={{ lg: 14, base: 0 }}>
+              <Heading as={"h1"} size={"lg"} textAlign={"center"} mt={{ lg: 14, base: 0 }}>
                 {community?.name}
               </Heading>
             </Flex>
@@ -234,22 +208,14 @@ export default function CommunityViewPage({
               // h={"full"}
               pos={"sticky"}
               bg={"gray.900"}
-              top={0} className="is-nav"
+              top={0}
+              className="is-nav"
             >
               {[tabButtons]}
             </Flex>
 
-            <Box
-              flex={1}
-              px={4}
-              borderX={{ lg: "1px" }}
-              borderColor={{ lg: "gray.600" }}
-            >
-              <TabPanels
-                activeTab={activeTab}
-                spaceIdOrId={slugId}
-                description={community?.description!}
-              />
+            <Box flex={1} px={4} borderX={{ lg: "1px" }} borderColor={{ lg: "gray.600" }}>
+              <TabPanels activeTab={activeTab} spaceIdOrId={slugId} description={community?.description!} />
             </Box>
             <Box px={4} hideBelow={"lg"} pos={"sticky"} top={0} bg={"gray.900"}>
               <Box borderRadius={"10px"} minW={250}>
@@ -270,7 +236,7 @@ export async function getServerSideProps({ query }: GetServerSidePropsContext) {
   // Pass the pathname as props
   return {
     props: {
-      slugId: slugId as string,
-    },
+      slugId: slugId as string
+    }
   };
 }

@@ -52,9 +52,9 @@ export default function Home() {
           minH={"100vh"}
           pos={"relative"}
         >
+          <HeaderNav />
           <Box h={"full"} bg={overlayBg} backdropFilter={"blur(30px)"}>
             <Box maxW={"1350px"} mx={"auto"}>
-              <HeaderNav />
               <HeroArea />
               <CommunityArea />
               <CoachArea />

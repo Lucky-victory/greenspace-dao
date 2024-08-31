@@ -38,15 +38,15 @@ export default function CoachArea() {
         </Heading>
         <Text mb={5} maxW={{ lg: 500, base: "auto" }} lineHeight={"taller"} color={textColor}>
           Ready to supercharge your health journey? Our rockstar nutritionists are here to give you one-on-one
-          attention. Whether you're looking to shed a few pounds, boost your energy, or just eat better, we've got your
-          back. It's like having a best friend who happens to be a nutrition wizard!
+          attention. Whether you&apos;re looking to shed a few pounds, boost your energy, or just eat better, we&apos;ve
+          got your back. It&apos;s like having a best friend who happens to be a nutrition wizard!
         </Text>
         <Text color={textColor}>
           Hey, nutrition pros! Want to join our dream team? Drop us a line at{" "}
           <Link color={accentColor} href={"mailto:apply@greenspacedao.xyz"} isExternal>
             apply@greenspacedao.xyz
           </Link>
-          . We'd love to have you on board!
+          . We&apos;d love to have you on board!
         </Text>
       </Stack>
       <Box as={motion.div} variants={fadeInUp}>

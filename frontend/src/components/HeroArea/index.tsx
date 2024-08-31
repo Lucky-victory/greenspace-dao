@@ -33,11 +33,12 @@ export default function HeroArea() {
       minHeight="90vh"
       px={{ base: 4, md: 12 }}
       py={12}
+      pt={24}
       color={textColor}
       position="relative"
       zIndex={1}
     >
-      <VStack as={motion.div} variants={itemVariants} align="flex-start" spacing={8} maxW={{ base: "100%", md: "50%" }}>
+      <VStack as={motion.div} variants={itemVariants} align="flex-start" spacing={6} maxW={{ base: "100%", md: "50%" }}>
         <Heading as={motion.h1} variants={itemVariants} size="3xl" fontWeight="bold" lineHeight="shorter">
           Live Longer and Healthier with{" "}
           <Text as="span" color={highlightColor}>
@@ -48,8 +49,8 @@ export default function HeroArea() {
           Add up to 10 quality years to your life through personalized nutrition and lifestyle coaching
         </Text>
         <Text as={motion.p} variants={itemVariants} fontSize="lg" lineHeight="tall">
-          Join thousands who've already improved their health markers and energy levels. Get expert guidance, custom
-          meal plans, and a supportive community to help you thrive.
+          Join thousands who&apos;ve already improved their health markers and energy levels. Get expert guidance,
+          custom meal plans, and a supportive community to help you thrive.
         </Text>
         <Stack as={motion.div} variants={itemVariants} direction={{ base: "column", sm: "row" }} spacing={4}>
           <Button
@@ -79,9 +80,11 @@ export default function HeroArea() {
       <Box
         as={motion.div}
         whileHover={{ scale: 1.05 }}
+        //@ts-ignore
         transition={{ duration: 0.3, ease: "easeInOut" }}
         w={{ base: "100%", md: "45%" }}
         mt={{ base: 8, md: 0 }}
+        h={"full"}
       >
         <Box
           as="video"
@@ -90,7 +93,7 @@ export default function HeroArea() {
           autoPlay
           src="/assets/group-video.mp4"
           w="100%"
-          h="auto"
+          h="full"
           minH={{ base: 300, sm: 400 }}
           rounded="2xl"
           objectFit="cover"

@@ -16,7 +16,7 @@ const listItemHover = {
 export default function CommunityArea() {
   const bgColor = useColorModeValue("rgba(255, 255, 255, 0.7)", "rgba(0, 0, 0, 0.7)");
   const borderColor = useColorModeValue("gs-gray.200", "gs-gray.700");
-  const highlightColor = useColorModeValue("gs-green.500", "gs-yellow.400");
+  const highlightColor = useColorModeValue("gs-green.600", "gs-yellow.500");
 
   return (
     <Flex
@@ -41,8 +41,9 @@ export default function CommunityArea() {
           flexShrink={0}
           src="/assets/community.jpg"
           alt=""
-          maxH={{ base: 350, sm: 450 }}
+          // maxH={{ base: 350, sm: "auto" }}
           maxW={{ base: "auto" }}
+          w={"full"}
           rounded={"20px"}
           objectFit={"cover"}
           boxShadow="lg"

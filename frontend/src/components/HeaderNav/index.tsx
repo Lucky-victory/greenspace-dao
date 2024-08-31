@@ -14,7 +14,8 @@ import {
   ListItem,
   useDisclosure,
   Box,
-  ResponsiveValue
+  ResponsiveValue,
+  Button
 } from "@chakra-ui/react";
 import { Link } from "@chakra-ui/next-js";
 import { LuMenu } from "react-icons/lu";
@@ -87,6 +88,11 @@ export function HeaderNav() {
         </Link>
       </ListItem>
       <ListItem>
+        <Link {...linkStyles} href={"/communities"}>
+          Communities
+        </Link>
+      </ListItem>
+      <ListItem>
         <Link {...linkStyles} href={"/shop/supplements"}>
           Shop
         </Link>
@@ -94,16 +100,26 @@ export function HeaderNav() {
     </>
   ];
 
+  const joinNowButtonStyle = {
+    ...linkStyles,
+    bg: "gs-yellow.500",
+    color: "white",
+    fontWeight: "bold",
+    _hover: {
+      bg: "gs-yellow.600"
+    }
+  };
+
   return (
     <Box position="fixed" top={0} left={0} right={0} zIndex={1000}>
       <motion.div style={{ opacity: headerOpacity, y: headerY }}>
         <HStack
-          minH={{ base: "50px", md: "70px" }}
+          minH={{ base: "50px", md: "60px" }}
           pl={5}
           bg={bgColor}
           justify={"space-between"}
           backdropFilter={"blur(5px)"}
-          borderRadius="lg"
+          borderRadius="xl"
           mx={2}
           mt={2}
         >
@@ -116,7 +132,11 @@ export function HeaderNav() {
           </List>
 
           <HStack minW={{ base: 250, lg: 350 }} px={4} pr={8} py={2} h={"full"} justify={"flex-end"}>
-            {!(isMobileSize || isTabletSize) && <ConnectOrLogout openModal={onOpen} />}
+            {!(isMobileSize || isTabletSize) && (
+              <>
+                <ConnectOrLogout openModal={onOpen} />
+              </>
+            )}
 
             {(isMobileSize || isTabletSize) && (
               <IconButton ml={3} onClick={onMobileNavbarToggle} fontSize={24} aria-label="toggle mobile menu">

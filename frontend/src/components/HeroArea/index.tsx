@@ -36,7 +36,7 @@ export default function HeroArea() {
 
   return (
     <>
-      <Container maxW="container.xl" pb={6} pt={5} px={0} mt={0}>
+      <Container maxW="container.xl" pb={6} pt={"calc(32px + var(--navbar-height))"} px={0}>
         <Flex
           as={motion.div}
           variants={containerVariants}

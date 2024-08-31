@@ -100,31 +100,21 @@ export function HeaderNav() {
     </>
   ];
 
-  const joinNowButtonStyle = {
-    ...linkStyles,
-    bg: "gs-yellow.500",
-    color: "white",
-    fontWeight: "bold",
-    _hover: {
-      bg: "gs-yellow.600"
-    }
-  };
-
   return (
-    <Box position="fixed" top={0} left={0} right={0} zIndex={1000}>
-      <motion.div style={{ opacity: headerOpacity, y: headerY }}>
-        <HStack
-          minH={{ base: "50px", md: "60px" }}
-          pl={5}
-          bg={bgColor}
-          justify={"space-between"}
-          backdropFilter={"blur(5px)"}
-          borderRadius="xl"
-          mx={2}
-          mt={2}
-        >
+    <Box position="fixed" top={0} left={0} right={0} zIndex={1000} px={{ base: 2, md: 3 }} py={2}>
+      <Box
+        bg={bgColor}
+        backdropFilter={"auto"}
+        borderRadius="xl"
+        backdropBlur={"25px"}
+        as={motion.div}
+        style={{ opacity: headerOpacity, y: headerY }}
+      >
+        <HStack minH={{ base: "50px", md: "60px" }} pl={3} justify={"space-between"}>
           <Heading>
-            <Image src={"/logo-with-text.png"} alt={"Greenspace Logo"} width={"200px"} />
+            <Link href={"/"} textDecor={"none"}>
+              <Image src={"/logo-with-text.png"} alt={"Greenspace Logo"} width={"200px"} />
+            </Link>
           </Heading>
 
           <List className="is-nav" display={"flex"} gap={4} fontWeight={500} hidden={isMobileSize || isTabletSize}>
@@ -139,13 +129,13 @@ export function HeaderNav() {
             )}
 
             {(isMobileSize || isTabletSize) && (
-              <IconButton ml={3} onClick={onMobileNavbarToggle} fontSize={24} aria-label="toggle mobile menu">
+              <IconButton ml={1} onClick={onMobileNavbarToggle} fontSize={24} aria-label="toggle mobile menu">
                 <LuMenu />
               </IconButton>
             )}
           </HStack>
         </HStack>
-      </motion.div>
+      </Box>
       {/* Mobile drawer */}
       {(isMobileSize || isTabletSize) && (
         <Drawer isOpen={isMobileNavbarOpen} onClose={onMobileNavbarClose}>
@@ -164,7 +154,6 @@ export function HeaderNav() {
           </DrawerContent>
         </Drawer>
       )}
-
       <RegisterForm isOpen={isOpen} onClose={onClose} />
     </Box>
   );

@@ -14,6 +14,9 @@ export const theme = extendTheme(
     },
     styles: {
       global: (props) => ({
+        html: {
+          "--navbar-height": "60px"
+        },
         body: {
           bg: props.colorMode === "dark" ? "gs-gray.900" : "gs-light.100",
           color: props.colorMode === "dark" ? "white" : "gray.800"

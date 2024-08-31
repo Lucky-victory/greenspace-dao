@@ -1,4 +1,4 @@
-import { Box, Flex } from "@chakra-ui/react";
+import { Box, Flex, useColorMode, useColorModeValue } from "@chakra-ui/react";
 import PageLoader from "../PageLoader";
 import DashboardSideNav from "../DashboardSidebar";
 import DashboardHeader from "../DashboardHeader";
@@ -9,46 +9,48 @@ import {
   HiOutlineSquares2X2,
   HiOutlineCog6Tooth,
   HiOutlinePresentationChartLine,
-  HiOutlineLightBulb,
+  HiOutlineLightBulb
 } from "react-icons/hi2";
-export default function NutritionistDashboardLayout({
-  children,
-}: {
-  children: ReactNode;
-}) {
+
+export default function NutritionistDashboardLayout({ children }: { children: ReactNode }) {
+  const { colorMode } = useColorMode();
+  const bgColor = useColorModeValue("white", "gray.800");
+  const textColor = useColorModeValue("gray.800", "white");
+
   const navLinks = [
     {
       url: "overview",
       title: "Overview",
       icon: HiOutlineSquares2X2,
-      child: [],
+      child: []
     },
     {
       url: "meal-plans",
       title: "Meal Plans",
       icon: HiOutlinePresentationChartLine,
-      child: ["new"],
+      child: ["new"]
     },
     {
       url: "appointments",
       title: "Appointments",
       icon: HiOutlineCalendarDays,
-      child: [],
+      child: []
     },
     {
       url: "fitness-plans",
       title: "Fitness Plans",
       icon: HiOutlineLightBulb,
-      child: ["new"],
+      child: ["new"]
     },
     {
       url: "articles",
       title: "Articles",
       icon: HiOutlineDocumentText,
-      child: ["new"],
+      child: ["new"]
     },
-    { url: "settings", title: "Settings", icon: HiOutlineCog6Tooth, child: [] },
+    { url: "settings", title: "Settings", icon: HiOutlineCog6Tooth, child: [] }
   ];
+
   return (
     <PageLoader>
       <Flex
@@ -56,14 +58,12 @@ export default function NutritionistDashboardLayout({
         maxW={"1350"}
         h={"var(--chakra-vh,100vh)"}
         minH={600}
-        bg={"black"}
+        bg={bgColor}
+        color={textColor}
         // overflowY={"auto"}
         maxH={700}
       >
-        <DashboardSideNav
-          links={navLinks}
-          entryPath="/nutritionist/dashboard/"
-        />
+        <DashboardSideNav links={navLinks} entryPath="/nutritionist/dashboard/" />
         <Flex direction={"column"} flex={1} overflowY={"auto"}>
           <DashboardHeader />
           {children}

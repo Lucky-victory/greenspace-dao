@@ -8,7 +8,10 @@ import {
   SkeletonCircle,
   Stack,
   Text,
-  useColorModeValue
+  useColorModeValue,
+  VStack,
+  Fade,
+  Flex
 } from "@chakra-ui/react";
 import { pusherClient } from "src/lib/pusher/client";
 import { useEffect, useRef } from "react";
@@ -46,79 +49,82 @@ export default function Chats({ spaceIdOrId }: { spaceIdOrId: string }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [messages, spaceIdOrId]);
 
-  const bgColor = useColorModeValue("white", "gray.800");
-  const textColor = useColorModeValue("gray.800", "white");
+  const bgColor = useColorModeValue("gray.50", "gray.900");
+  const textColor = useColorModeValue("gray.800", "gray.100");
   const secondaryTextColor = useColorModeValue("gray.600", "gray.400");
+  const messageBgColor = useColorModeValue("white", "gray.800");
 
   return (
-    <Stack flex={1} maxH={"full"}>
+    <Flex direction="column" h="full" bg={bgColor}>
       <TabHeading title="Chats" />
 
-      <Stack minH={"400"} divider={<Divider />} h={"full"} overflowY={"auto"} ref={containerRef} bg={bgColor}>
-        {(isFetching || isLoading) && [0, 0, 0, 0, 0, 0].map((_, i) => <ChatLoading key={"loading-skeleton" + i} />)}
-        {!isFetching && !isLoading && messages?.length === 0 && (
-          <Box py={8} textAlign={"center"}>
-            <Text color={textColor}> No messages yet.</Text>
-          </Box>
+      <VStack flex={1} spacing={4} overflowY="auto" p={4} ref={containerRef}>
+        {(isFetching || isLoading) && (
+          <VStack spacing={4} w="full">
+            {[0, 1, 2, 3, 4].map((_, i) => (
+              <ChatLoading key={`loading-skeleton-${i}`} />
+            ))}
+          </VStack>
         )}
-        {!isFetching &&
-          !isLoading &&
-          messages?.length > 0 &&
-          messages.map((message: any, index: number) => (
-            <HStack
-              py={3}
-              px={{ base: 1, md: 3 }}
-              rounded={"md"}
-              gap={3}
-              key={message?.id + "" + index}
-              align={"flex-start"}
-            >
-              <Avatar mt={1} size={"sm"} name={message?.author?.fullName} src={message?.author?.avatar} />
-              <Stack>
-                <HStack>
-                  <Text fontWeight={600} color={textColor}>
-                    {message?.author?.fullName}
-                  </Text>
-                  <Text fontSize={"12px"} color={secondaryTextColor}>
-                    {formatChatTimestamp(message?.createdAt)}
-                  </Text>
-                </HStack>
-                <Text fontSize={"15px"} fontWeight={300} color={textColor}>
-                  {message?.message}
-                </Text>
-              </Stack>
-            </HStack>
-          ))}
-      </Stack>
+        {!isFetching && !isLoading && messages?.length === 0 && (
+          <Flex justify="center" align="center" h="full">
+            <Text color={secondaryTextColor} fontSize="lg">
+              No messages yet.
+            </Text>
+          </Flex>
+        )}
+        {!isFetching && !isLoading && messages?.length > 0 && (
+          <VStack spacing={4} w="full" align="stretch">
+            {messages.map((message: any, index: number) => (
+              <Fade in={true} key={`${message?.id}-${index}`}>
+                <Box bg={messageBgColor} p={4} borderRadius="lg" boxShadow="sm">
+                  <HStack spacing={3} align="flex-start">
+                    <Avatar size="md" name={message?.author?.fullName} src={message?.author?.avatar} />
+                    <VStack align="start" spacing={1} flex={1}>
+                      <HStack justify="space-between" w="full">
+                        <Text fontWeight={600} color={textColor}>
+                          {message?.author?.fullName}
+                        </Text>
+                        <Text fontSize="xs" color={secondaryTextColor}>
+                          {formatChatTimestamp(message?.createdAt)}
+                        </Text>
+                      </HStack>
+                      <Text color={textColor}>{message?.message}</Text>
+                    </VStack>
+                  </HStack>
+                </Box>
+              </Fade>
+            ))}
+          </VStack>
+        )}
+      </VStack>
 
-      <NotAMemberMiddlewareComp
-        spaceIdOrId={spaceIdOrId}
-        buttonSize={"md"}
-        styleProps={{
-          pos: "sticky",
-          bottom: 0,
-          bg: bgColor,
-          w: "full",
-          py: 3,
-          textAlign: "center"
-        }}
-        title="Join this community to send a message"
-      >
-        <CommunityChatInput user={user} spaceIdOrId={spaceIdOrId} />
-      </NotAMemberMiddlewareComp>
-    </Stack>
+      <Box bg={bgColor} borderTop="1px" borderColor={useColorModeValue("gray.200", "gray.700")} p={4}>
+        <NotAMemberMiddlewareComp
+          spaceIdOrId={spaceIdOrId}
+          buttonSize="md"
+          styleProps={{
+            w: "full",
+            textAlign: "center"
+          }}
+          title="Join this community to send a message"
+        >
+          <CommunityChatInput user={user} spaceIdOrId={spaceIdOrId} />
+        </NotAMemberMiddlewareComp>
+      </Box>
+    </Flex>
   );
 }
 
-export const ChatLoading = ({ isLoaded = false }: { isLoaded?: boolean }) => {
+export const ChatLoading = () => {
   return (
-    <HStack>
-      <SkeletonCircle w={10} h={10} />
-      <Stack flex={1}>
-        <Skeleton h={4} w={"full"} rounded={"full"}></Skeleton>
-        <Skeleton h={4} w={"40"} rounded={"full"}></Skeleton>
-        <Skeleton h={4} w={"full"} rounded={"full"}></Skeleton>
-      </Stack>
+    <HStack w="full" spacing={3} p={4} bg={useColorModeValue("white", "gray.800")} borderRadius="lg" boxShadow="sm">
+      <SkeletonCircle size="12" />
+      <VStack align="start" spacing={2} flex={1}>
+        <Skeleton height="20px" width="40%" />
+        <Skeleton height="16px" width="100%" />
+        <Skeleton height="16px" width="80%" />
+      </VStack>
     </HStack>
   );
 };

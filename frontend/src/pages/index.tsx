@@ -43,6 +43,7 @@ export default function Home() {
         <link rel="manifest" href="/site.webmanifest"></link>
       </Head>
       <PageLoader isLoading={false}>
+        <HeaderNav />
         <Box
           maxW={"100%"}
           mx={"auto"}
@@ -52,16 +53,15 @@ export default function Home() {
           minH={"100vh"}
           pos={"relative"}
         >
-          <HeaderNav />
-          <Box h={"full"} bg={overlayBg} backdropFilter={"blur(30px)"} pt={10} pb={10}>
-            <Box maxW={"1440px"} mx={"auto"}>
-              <HeroArea />
-              <CommunityArea />
-              <CoachArea />
-            </Box>
+          {/* <Box h={"full"} bg={overlayBg} backdropFilter={"blur(30px)"} pt={10} pb={10}> */}
+          <Box maxW={"1440px"} mx={"auto"}>
+            <HeroArea />
+            <CommunityArea />
+            <CoachArea />
+            {/* </Box> */}
           </Box>
-          <Footer />
         </Box>
+        <Footer />
       </PageLoader>
     </>
   );

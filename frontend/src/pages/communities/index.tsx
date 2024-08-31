@@ -2,19 +2,7 @@ import PageLoader from "src/components/PageLoader";
 import PageWrapper from "src/components/PageWrapper";
 import { HeaderNav } from "src/components/HeaderNav";
 
-import {
-  Box,
-  Button,
-  Flex,
-  Heading,
-  Text,
-  HStack,
-  Stack,
-  Image,
-  useColorModeValue,
-  Input,
-  Tag
-} from "@chakra-ui/react";
+import { Box, Button, Flex, Heading, Text, HStack, Stack, Image, useColorModeValue, Input } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 import { Community } from "src/types/shared";
 import { useRouter } from "next/router";
@@ -36,7 +24,6 @@ export default function CommunitiesPage() {
   const router = useRouter();
 
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedTag, setSelectedTag] = useState("");
   const [filteredCommunities, setFilteredCommunities] = useState<Community[]>([]);
 
   const bgColor = useColorModeValue("gray.50", "gray.900");
@@ -48,14 +35,10 @@ export default function CommunitiesPage() {
   useEffect(() => {
     if (communities) {
       setFilteredCommunities(
-        communities.filter(
-          (community) =>
-            community.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
-            (selectedTag === "" || community.tags?.includes(selectedTag))
-        )
+        communities.filter((community) => community.name.toLowerCase().includes(searchTerm.toLowerCase()))
       );
     }
-  }, [communities, searchTerm, selectedTag]);
+  }, [communities, searchTerm]);
 
   async function handleJoinCommunity(community: Community) {
     if (!isLoggedIn) {
@@ -81,131 +64,107 @@ export default function CommunitiesPage() {
       });
   }
 
-  const allTags = Array.from(
-    new Set(communities?.flatMap((community) => community.tags || ["Health", "Fitness", "Nutrition", "Diet"]) || [])
-  );
-
   return (
     <>
-      <PageWrapper>
-        <Head>
-          <title>GreenspaceDAO | Communities</title>
-        </Head>
+      {/* <PageWrapper> */}
+      <Head>
+        <title>GreenspaceDAO | Communities</title>
+      </Head>
 
-        <HeaderNav />
+      <HeaderNav />
 
-        <Box px={{ base: 3, sm: 4, lg: 6 }} pb={12}>
-          <Box mx="auto">
-            <Heading size="xl" my={8} color={headingColor} textAlign="center">
-              Discover Communities with Similar Interests
-            </Heading>
-            <Flex direction="column" align="center" mb={8}>
-              <Input
-                placeholder="Search communities..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                w="full"
-                size={"lg"}
-                mb={4}
-                rounded="full"
-                maxW={1100}
-              />
-              <Flex wrap="wrap" justify="center" gap={2}>
-                {allTags.map((tag) => (
-                  <Tag
-                    key={tag}
-                    onClick={() => setSelectedTag(tag === selectedTag ? "" : tag)}
-                    cursor="pointer"
-                    size={"lg"}
-                    colorScheme={tag === selectedTag ? "blue" : "gray"}
+      <Box px={{ base: 3, sm: 4, lg: 6 }} pb={12} pt={"var(--navbar-height)"}>
+        <Box mx="auto">
+          <Heading size="xl" my={8} color={headingColor} textAlign="center">
+            Discover Communities with Similar Interests
+          </Heading>
+          <Flex direction="column" align="center" mb={8}>
+            <Input
+              placeholder="Search communities..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              w="full"
+              size={"lg"}
+              mb={4}
+              rounded="full"
+              maxW={1100}
+            />
+          </Flex>
+          <Flex gap={6} wrap="wrap" justify={"center"}>
+            {(isLoading || isFetching) && [0, 0, 0, 0].map((_, i) => <CardLoading key={"comm-loading" + i} />)}
+            {!isLoading && !isFetching && (
+              <Flex gap={6} wrap={"wrap"} align="stretch" justify="center" maxW={"full"}>
+                {filteredCommunities.map((community) => (
+                  <Stack
+                    key={community.spaceId}
+                    bg={cardBgColor}
+                    rounded="xl"
+                    shadow="lg"
+                    overflow="hidden"
+                    minW={280}
+                    maxW={350}
+                    w="full"
+                    transition="all 0.3s"
                   >
-                    {tag}
-                  </Tag>
-                ))}
-              </Flex>
-            </Flex>
-            <Flex gap={6} wrap="wrap" justify={"center"}>
-              {(isLoading || isFetching) && [0, 0, 0, 0].map((_, i) => <CardLoading key={"comm-loading" + i} />)}
-              {!isLoading && !isFetching && (
-                <Flex gap={6} wrap={"wrap"} align="stretch" justify="center" maxW={"full"}>
-                  {filteredCommunities.map((community) => (
-                    <Stack
-                      key={community.spaceId}
-                      bg={cardBgColor}
-                      rounded="xl"
-                      shadow="lg"
-                      overflow="hidden"
-                      minW={280}
-                      maxW={350}
-                      w="full"
-                      transition="all 0.3s"
-                    >
-                      <Box h={200} pos="relative">
+                    <Box h={200} pos="relative">
+                      <Image
+                        alt=""
+                        src={community?.coverImage || "/assets/community-default-bg.png"}
+                        h="full"
+                        objectFit="cover"
+                        w="full"
+                      />
+                      <Box pos="absolute" bottom={-10} left={4} bg={cardBgColor} rounded="full" p={1} shadow="md">
                         <Image
                           alt=""
-                          src={community?.coverImage || "/assets/community-default-bg.png"}
-                          h="full"
-                          objectFit="cover"
-                          w="full"
+                          w={20}
+                          h={20}
+                          rounded="full"
+                          src={community?.displayImage || "/assets/community-dp.png"}
                         />
-                        <Box pos="absolute" bottom={-10} left={4} bg={cardBgColor} rounded="full" p={1} shadow="md">
-                          <Image
-                            alt=""
-                            w={20}
-                            h={20}
-                            rounded="full"
-                            src={community?.displayImage || "/assets/community-dp.png"}
-                          />
-                        </Box>
                       </Box>
-                      <Box p={6} pt={12}>
-                        <Heading size="md" mb={3} color={headingColor}>
-                          {community.name}
-                        </Heading>
-                        {community.description && (
-                          <Text fontSize="sm" color={textColor} mb={4} noOfLines={3}>
-                            {community.description}
-                          </Text>
-                        )}
-                        <HStack spacing={2} mb={4} wrap="wrap">
-                          {community.tags?.map((tag) => (
-                            <Tag key={tag} size="sm" colorScheme="blue">
-                              {tag}
-                            </Tag>
-                          ))}
-                        </HStack>
-                        <Stack spacing={3}>
-                          <Button
-                            as={Link}
-                            href={"/community/" + community.spaceId}
-                            colorScheme="blue"
-                            variant="outline"
-                            w="full"
-                            rounded={"full"}
-                          >
-                            Visit Community
-                          </Button>
-                          <Button
-                            rounded={"full"}
-                            onClick={() => handleJoinCommunity(community)}
-                            isLoading={isJoiningComm || isCheckingJoin}
-                            loadingText={`${isCheckingJoin ? "Checking..." : isJoiningComm ? "Joining..." : ""}`}
-                            colorScheme="green"
-                            w="full"
-                            isDisabled={hasJoined}
-                          >
-                            {hasJoined ? "Already a Member" : "Become a Member"}
-                          </Button>
-                        </Stack>
-                      </Box>
-                    </Stack>
-                  ))}
-                </Flex>
-              )}
-            </Flex>
-          </Box>
+                    </Box>
+                    <Box p={6} pt={12}>
+                      <Heading size="md" mb={3} color={headingColor}>
+                        {community.name}
+                      </Heading>
+                      {community.description && (
+                        <Text fontSize="sm" color={textColor} mb={4} noOfLines={3}>
+                          {community.description}
+                        </Text>
+                      )}
+                      <Stack spacing={3}>
+                        <Button
+                          as={Link}
+                          href={"/community/" + community.spaceId}
+                          colorScheme="blue"
+                          variant="outline"
+                          w="full"
+                          rounded={"full"}
+                        >
+                          Visit Community
+                        </Button>
+                        <Button
+                          rounded={"full"}
+                          onClick={() => handleJoinCommunity(community)}
+                          isLoading={isJoiningComm || isCheckingJoin}
+                          loadingText={`${isCheckingJoin ? "Checking..." : isJoiningComm ? "Joining..." : ""}`}
+                          colorScheme="green"
+                          w="full"
+                          isDisabled={hasJoined}
+                        >
+                          {hasJoined ? "Already a Member" : "Become a Member"}
+                        </Button>
+                      </Stack>
+                    </Box>
+                  </Stack>
+                ))}
+              </Flex>
+            )}
+          </Flex>
         </Box>
-      </PageWrapper>
+      </Box>
+      {/* </PageWrapper> */}
       <Footer />
     </>
   );

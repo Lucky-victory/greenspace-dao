@@ -21,7 +21,8 @@ import {
   Stack,
   Text,
   useDisclosure,
-  useToast
+  useToast,
+  useColorModeValue
 } from "@chakra-ui/react";
 import { countries } from "src/utils/countries";
 import { Link } from "@chakra-ui/next-js";
@@ -45,7 +46,7 @@ const NutritionistForm = ({
   closeFormModal,
   initialValues = {}
 }: {
-  onSubmit: (formData: NutritionistFormFields, credentialUri: string,uploadUri:string) => void;
+  onSubmit: (formData: NutritionistFormFields, credentialUri: string, uploadUri: string) => void;
   closeFormModal?: () => void;
   initialValues?: Partial<NutritionistFormFields>;
 }) => {
@@ -67,6 +68,15 @@ const NutritionistForm = ({
   const [isUploading, setIsUploading] = useState(false);
   const [addNutritionists, { isLoading }] = useAddNutritionistMutation();
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Color mode values
+  const bgColor = useColorModeValue("white", "gray.800");
+  const textColor = useColorModeValue("gray.800", "white");
+  const inputBgColor = useColorModeValue("white", "gray.700");
+  const inputBorderColor = useColorModeValue("gray.300", "gray.600");
+  const fileUploadBgColor = useColorModeValue("gray.100", "gray.700");
+  const fileUploadTextColor = useColorModeValue("gray.600", "gray.300");
+
   const formik = useFormik({
     initialValues: {
       fullName: "",
@@ -89,7 +99,7 @@ const NutritionistForm = ({
 
         setCid(uploadUri);
         await new Promise<void>((resolve, reject) => {
-          resolve(onSubmit?.(values, credentialUri as string,uploadUri));
+          resolve(onSubmit?.(values, credentialUri as string, uploadUri));
         });
         await axios.post("/api/email/nutritionist/apply", {
           email: values.email,
@@ -122,7 +132,6 @@ const NutritionistForm = ({
 
   function loadingText() {
     if (isUploading) return "Uploading credentials...";
-    // if (isLoading) return "Creating account...";
     return "Submitting...";
   }
 
@@ -148,8 +157,10 @@ const NutritionistForm = ({
     <>
       <Stack
         as={"form"}
-        // @ts-ignore
+        //@ts-ignore
         onSubmit={formik.handleSubmit}
+        // bg={bgColor}
+        color={textColor}
       >
         {!isConnected && (
           <HStack mb={2}>
@@ -168,6 +179,8 @@ const NutritionistForm = ({
             onChange={formik.handleChange}
             value={formik.values.fullName}
             placeholder="Full Name"
+            bg={inputBgColor}
+            borderColor={inputBorderColor}
           />
           <FormErrorMessage className="text-red-200">{formik.errors?.fullName}</FormErrorMessage>
         </FormControl>
@@ -181,6 +194,8 @@ const NutritionistForm = ({
             onChange={formik.handleChange}
             value={formik.values.email}
             placeholder="john@example.com"
+            bg={inputBgColor}
+            borderColor={inputBorderColor}
           />
           <FormErrorMessage className="text-red-200">{formik.errors?.email}</FormErrorMessage>
         </FormControl>
@@ -193,6 +208,8 @@ const NutritionistForm = ({
             value={formik.values.country}
             isRequired
             name="country"
+            bg={inputBgColor}
+            borderColor={inputBorderColor}
           >
             <option value="" disabled>
               Select your country
@@ -218,6 +235,8 @@ const NutritionistForm = ({
             name="birthDate"
             value={formik.values.birthDate}
             className=" w-full max-w-[100%]"
+            bg={inputBgColor}
+            borderColor={inputBorderColor}
           />
           <FormErrorMessage className="text-red-200">{formik.errors?.birthDate}</FormErrorMessage>
         </FormControl>
@@ -231,6 +250,8 @@ const NutritionistForm = ({
             onChange={formik.handleChange}
             value={formik.values.sex}
             placeholder="What's your biological sex?"
+            bg={inputBgColor}
+            borderColor={inputBorderColor}
           >
             <option value="" disabled>
               What&apos;s your biological sex?
@@ -257,7 +278,7 @@ const NutritionistForm = ({
             <BsUpload /> <Text as={"span"}>Upload (.pdf,.docx)</Text>{" "}
           </Button>
           {fileToUpload && (
-            <Box bg={"gray.800"} mt={2} color={"gray.300"} px={2} rounded={"sm"}>
+            <Box bg={fileUploadBgColor} mt={2} color={fileUploadTextColor} px={2} rounded={"sm"}>
               <Text as="span" fontSize={"14px"}>
                 {fileToUpload?.name}
               </Text>
@@ -279,7 +300,7 @@ const NutritionistForm = ({
 
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
-        <ModalContent>
+        <ModalContent bg={bgColor} color={textColor}>
           <ModalHeader>Application success</ModalHeader>
           <ModalCloseButton />
           <ModalBody>

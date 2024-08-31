@@ -1,10 +1,10 @@
-import { Box, Button, Radio, RadioGroup, Stack, Text } from "@chakra-ui/react";
+import { Box, Button, Radio, RadioGroup, Stack, Text, useColorModeValue } from "@chakra-ui/react";
 import { useState } from "react";
 
 export type RegisterType = "member" | "nutritionist";
 export const NewUserType = ({
   onClick,
-  getValue,
+  getValue
 }: {
   onClick?: () => void;
   getValue?: (val: RegisterType) => void;
@@ -14,8 +14,13 @@ export const NewUserType = ({
     setValue(val);
     getValue?.(val);
   };
+
+  const bgColor = useColorModeValue("white", "gray.800");
+  const textColor = useColorModeValue("gray.800", "white");
+  const secondaryTextColor = useColorModeValue("gray.600", "gray.400");
+
   return (
-    <Box py={5}>
+    <Box py={5} color={textColor}>
       <RadioGroup onChange={handleRadioChange} value={value} colorScheme="gs-yellow">
         <Stack spacing={"6"}>
           <Radio value="member">
@@ -23,7 +28,7 @@ export const NewUserType = ({
               <Text as={"span"} fontWeight={"medium"}>
                 Individual
               </Text>
-              <Text as={"span"} fontSize={"sm"} color={"gray.400"}>
+              <Text as={"span"} fontSize={"sm"} color={secondaryTextColor}>
                 I want to join a community
               </Text>
             </Stack>
@@ -33,7 +38,7 @@ export const NewUserType = ({
               <Text as={"span"} fontWeight={"medium"}>
                 Nutritionist
               </Text>
-              <Text as={"span"} fontSize={"sm"} color={"gray.400"}>
+              <Text as={"span"} fontSize={"sm"} color={secondaryTextColor}>
                 I want to contribute as a nutritionist
               </Text>
             </Stack>

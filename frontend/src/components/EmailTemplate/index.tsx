@@ -7,12 +7,7 @@ interface EmailTemplateProps {
   link: string;
 }
 
-export const EmailTemplate: React.FC<Readonly<EmailTemplateProps>> = ({
-  name,
-  email,
-  message,
-  link,
-}) => (
+export const EmailTemplate: React.FC<Readonly<EmailTemplateProps>> = ({ name, email, message, link }) => (
   <div style={{ maxWidth: "500px", margin: "1rem auto", padding: "0.5rem" }}>
     <h2 style={{ marginBottom: "0.5rem" }}>Meeting Invite</h2>
     <p>You were invited to join a meeting</p>
@@ -30,7 +25,7 @@ export const EmailTemplate: React.FC<Readonly<EmailTemplateProps>> = ({
           borderRadius: "12px",
           padding: "16px 8px",
           fontWeight: 500,
-          fontSize: "18px",
+          fontSize: "18px"
         }}
       >
         Join meeting

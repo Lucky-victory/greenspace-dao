@@ -1,19 +1,41 @@
 import { Link } from "@chakra-ui/next-js";
-import { Box, Button, Flex, Heading, Image, Stack, Text } from "@chakra-ui/react";
+import { Box, Button, Flex, Heading, Icon, Image, Stack, Text, useColorModeValue } from "@chakra-ui/react";
+import { LuCheck } from "react-icons/lu";
+import { motion } from "framer-motion";
+
+const fadeIn = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1, transition: { duration: 0.6 } }
+};
+
+const listItemHover = {
+  scale: 1.05,
+  transition: { duration: 0.2 }
+};
 
 export default function CommunityArea() {
+  const bgColor = useColorModeValue("rgba(255, 255, 255, 0.7)", "rgba(0, 0, 0, 0.7)");
+  const borderColor = useColorModeValue("gs-gray.200", "gs-gray.700");
+  const highlightColor = useColorModeValue("gs-green.500", "gs-yellow.400");
+
   return (
     <Flex
+      as={motion.div}
+      initial="hidden"
+      animate="visible"
+      variants={fadeIn}
       gap={5}
-      borderBottom={"1px"}
-      borderBottomColor={"gs-gray.700"}
       wrap={{ base: "wrap", md: "nowrap" }}
       mt={12}
       py={{ base: 8, md: 12 }}
       px={{ base: 4, md: 12 }}
       justify={"space-between"}
+      // bg={bgColor}
+      // backdropFilter={"blur(10px)"}
+      // borderRadius="xl"
+      // boxShadow="xl"
     >
-      <Box>
+      <Box as={motion.div} variants={fadeIn}>
         <Image
           minW={300}
           flexShrink={0}
@@ -23,34 +45,85 @@ export default function CommunityArea() {
           maxW={{ base: "auto" }}
           rounded={"20px"}
           objectFit={"cover"}
+          boxShadow="lg"
         />
       </Box>
-      <Stack maxW={{ md: 550, base: "auto" }}>
-        <Heading mb={5} size={"2xl"}>
-          Community For Everyone
+      <Stack as={motion.div} variants={fadeIn} maxW={{ md: 550, base: "auto" }}>
+        <Heading mb={5} size={"2xl"} color={highlightColor}>
+          Join the Longevity Revolution
         </Heading>
-        <Text mb={5} maxW={{ lg: 500, base: "auto" }} lineHeight={"taller"}>
-          {/* We&apos;re building a nurturing space centered on healthy eating and
-          longevity—a haven where everyone&apos;s well-being shines. Here, join
-          others passionate about nourishing their bodies for vibrant, enduring
-          health. Whether you&apos;re into plant-based eats, mindful dining, or
-          nutritional science, find a supportive community to share insights and
-          discoveries. */}
-          Our members are called <b>Green heads</b>, think of what we&apos;re building as AA for longevity. It&apos;s
-          not just about wanting to live longer, but having a roadmap, mission and a group to journey with. We&apos;re
-          bringing people together to focus on longevity by incorporating healthy habits into their lifestyle with
-          weekly health challenges with a group that is accountable to each other as regular peer accountability
-          sessions are key and are proven. The health challenges become a way of life.
+        <Text mb={4} maxW={{ lg: 500, base: "auto" }} lineHeight={"taller"}>
+          Welcome to the <b>Green Heads</b> community – your go-to place for living longer and healthier! We&apos;re
+          here to make your health journey fun and doable. Here&apos;s what you&apos;ll get:
         </Text>
-        {/* <Button
-          textDecor={"none!important"}
-          as={"a"}
-          href={"#waitlist-form"}
-          alignSelf={"flex-start"}
-          size={"lg"}
-        >
-          Join the waitlist
-        </Button> */}
+        <Stack spacing={3}>
+          <Flex as={motion.div} whileHover={listItemHover} align="center">
+            <Stack
+              flexShrink={0}
+              w={6}
+              h={6}
+              // justifyContent={"center"}
+              bg={highlightColor}
+              borderRadius="full"
+              p={1}
+              mr={2}
+            >
+              <Icon as={LuCheck} color="white" />
+            </Stack>
+            Weekly challenges to build lasting health habits
+          </Flex>
+          <Flex as={motion.div} whileHover={listItemHover} align="center">
+            <Stack
+              flexShrink={0}
+              w={6}
+              h={6}
+              // justifyContent={"center"}
+              bg={highlightColor}
+              borderRadius="full"
+              p={1}
+              mr={2}
+            >
+              <Icon as={LuCheck} color="white" />
+            </Stack>
+            Group check-ins to keep you motivated
+          </Flex>
+          <Flex as={motion.div} whileHover={listItemHover} align="center">
+            <Stack
+              flexShrink={0}
+              w={6}
+              h={6}
+              // justifyContent={"center"}
+              bg={highlightColor}
+              borderRadius="full"
+              p={1}
+              mr={2}
+            >
+              <Icon as={LuCheck} color="white" />
+            </Stack>
+            Science-backed tips for a longer life
+          </Flex>
+          <Flex as={motion.div} whileHover={listItemHover} align="center">
+            <Stack
+              flexShrink={0}
+              w={6}
+              h={6}
+              // justifyContent={"center"}
+              bg={highlightColor}
+              borderRadius="full"
+              p={1}
+              mr={2}
+            >
+              <Icon as={LuCheck} color="white" />
+            </Stack>
+            A friendly community that makes health enjoyable
+          </Flex>{" "}
+        </Stack>
+        <Text mt={5} fontWeight="bold">
+          Ready to live longer? Join Green Heads today and start your journey to a brighter future!
+        </Text>
+        <Button as={Link} href="/join" colorScheme="green" size="lg" width="fit-content" mt={5}>
+          Start Your Longevity Journey
+        </Button>
       </Stack>
     </Flex>
   );

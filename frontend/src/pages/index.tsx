@@ -1,25 +1,23 @@
 import Head from "next/head";
-
-import { Box } from "@chakra-ui/react";
+import { Box, useColorMode, useColorModeValue } from "@chakra-ui/react";
 import PageLoader from "src/components/PageLoader";
 import { HeaderNav } from "src/components/HeaderNav";
 import HeroArea from "src/components/HeroArea";
 import CommunityArea from "src/components/CommunityArea";
 import CoachArea from "src/components/CoachArea";
 import Footer from "src/components/Footer";
-import { useEffect, useState } from "react";
-import { useLocalStorage } from "src/hooks/common";
+import { useEffect } from "react";
 
 export default function Home() {
-  // const [val, setVal] = useLocalStorage("test", {});
-  // console.log({ val });
-
-  // const [showLoader, setShowLoader] = useState(true);
+  const { colorMode } = useColorMode();
+  const bgGradient = useColorModeValue(
+    "linear(236deg, #DCDDDB 0%, #329648 0%, #FFFFFF 100%)",
+    "linear(236deg, #DCDDDB 0%, #329648 0%, #000000 100%)"
+  );
+  const overlayBg = useColorModeValue("rgba(255, 255, 255, 0.44)", "rgba(41, 41, 41, 0.44)");
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      // setVal({ home: 1 });
-      // setShowLoader(false);
       if (timeoutId) clearTimeout(timeoutId);
     }, 800);
 
@@ -27,14 +25,14 @@ export default function Home() {
       if (timeoutId) clearTimeout(timeoutId);
     };
   }, []);
+
   return (
     <>
       <Head>
-        <title>GreenspaceDAO | Live Longer and Healthier</title>
+        <title>GreenspaceDAO | Your Path to a Longer, Healthier Life</title>
         <meta
           name="description"
-          content="Want to Live Healthier and Longer?
-We're building healthy communities focused on longevity all around the world, we want to help people live longer, better through community inclusive programs that improve productivity,"
+          content="Ready to supercharge your life? Join GreenspaceDAO and unlock the secrets to living longer and feeling amazing. We're building a global tribe of health enthusiasts who are redefining what it means to thrive. Come for the longevity tips, stay for the awesome community!"
         />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="og:image" content={"https://greenspacedao.xyz/opengraph.png"} />
@@ -46,21 +44,21 @@ We're building healthy communities focused on longevity all around the world, we
       </Head>
       <PageLoader isLoading={false}>
         <Box
-          maxW={"1350"}
+          maxW={"100%"}
           mx={"auto"}
           as="main"
           bgRepeat={"no-repeat"}
-          bgGradient={"linear(236deg,#DCDDDB 0%,, #329648 0%, black 100%)"}
+          bgGradient={bgGradient}
           minH={"100vh"}
           pos={"relative"}
         >
-          <Box h={"full"} bg={"rgba(41, 41, 41,0.44)"} backdropFilter={"blur(30px)"}>
-            <HeaderNav />
-
-            <HeroArea />
-
-            <CommunityArea />
-            <CoachArea />
+          <Box h={"full"} bg={overlayBg} backdropFilter={"blur(30px)"}>
+            <Box maxW={"1350px"} mx={"auto"}>
+              <HeaderNav />
+              <HeroArea />
+              <CommunityArea />
+              <CoachArea />
+            </Box>
           </Box>
           <Footer />
         </Box>

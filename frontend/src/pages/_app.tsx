@@ -2,7 +2,7 @@ import { PrivyProvider } from "@privy-io/react-auth";
 import "src/styles/globals.css";
 import "src/styles/tiptap.css";
 import type { AppProps } from "next/app";
-import { ChakraProvider } from "@chakra-ui/react";
+import { Button, ChakraProvider, useColorMode } from "@chakra-ui/react";
 import { fonts } from "src/lib/fonts";
 import theme from "src/config/theme";
 import { WagmiProvider } from "wagmi";
@@ -21,9 +21,9 @@ const huddleClient = new HuddleClient({
   options: {
     // `activeSpeakers` will be most active `n` number of peers, by default it's 8
     activeSpeakers: {
-      size: 8,
-    },
-  },
+      size: 8
+    }
+  }
 });
 
 const queryClient = new QueryClient();
@@ -43,8 +43,8 @@ export default function App({ Component, pageProps }: AppProps) {
           appId={process.env.NEXT_PUBLIC_PRIVY_APP_ID!}
           config={{
             appearance: {
-              theme: "dark",
-            },
+              theme: "dark"
+            }
           }}
         >
           <ReduxProvider store={store}>
@@ -53,6 +53,8 @@ export default function App({ Component, pageProps }: AppProps) {
                 <HuddleProvider client={huddleClient}>
                   <ChakraProvider theme={theme}>
                     {/* <WalletProvider> */}
+
+                    <ColorModeToggle />
                     <Component {...pageProps} />
                     {/* </WalletProvider> */}
                   </ChakraProvider>
@@ -64,4 +66,8 @@ export default function App({ Component, pageProps }: AppProps) {
       </WagmiProvider>
     </>
   );
+}
+function ColorModeToggle() {
+  const { colorMode, toggleColorMode } = useColorMode();
+  return <Button onClick={toggleColorMode}>Toggle {colorMode === "light" ? "Dark" : "Light"}</Button>;
 }

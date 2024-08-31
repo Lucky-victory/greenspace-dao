@@ -1,35 +1,57 @@
 import { Box, Button, Flex, Heading, Stack, Text, VStack, useColorModeValue } from "@chakra-ui/react";
 import { motion } from "framer-motion";
 
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.3
+    }
+  }
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0 }
+};
+
 export default function HeroArea() {
-  const highlightColor = useColorModeValue("gs-green.500", "gs-yellow.400");
+  const textColor = useColorModeValue("gray.800", "gray.100");
+  const highlightColor = useColorModeValue("gs-green.600", "gs-yellow.400");
+  const buttonHoverBg = useColorModeValue("gs-yellow.50", "gs-yellow.800");
 
   return (
     <Flex
       as={motion.div}
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8, ease: "easeOut" }}
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
       direction={{ base: "column", md: "row" }}
       align="center"
       justify="space-between"
       minHeight="90vh"
       px={{ base: 4, md: 12 }}
       py={12}
-      bg={useColorModeValue("gray.50", "gray.900")}
+      color={textColor}
+      position="relative"
+      zIndex={1}
     >
-      <VStack align="flex-start" spacing={8} maxW={{ base: "100%", md: "50%" }}>
-        <Heading as="h1" size="3xl" fontWeight="bold" lineHeight="shorter">
-          Unlock Your Longevity Potential with{" "}
+      <VStack as={motion.div} variants={itemVariants} align="flex-start" spacing={8} maxW={{ base: "100%", md: "50%" }}>
+        <Heading as={motion.h1} variants={itemVariants} size="3xl" fontWeight="bold" lineHeight="shorter">
+          Live Longer and Healthier with{" "}
           <Text as="span" color={highlightColor}>
             GreenSpace
           </Text>
         </Heading>
-        <Text fontSize="xl" lineHeight="tall">
-          Join a thriving community of health-conscious individuals and expert nutritionists. Embrace personalized
-          challenges, one-on-one coaching, and evidence-based strategies to live longer, healthier, and happier.
+        <Text as={motion.p} variants={itemVariants} fontSize="xl" lineHeight="tall" fontWeight="semibold">
+          Add up to 10 quality years to your life through personalized nutrition and lifestyle coaching
         </Text>
-        <Stack direction={{ base: "column", sm: "row" }} spacing={4}>
+        <Text as={motion.p} variants={itemVariants} fontSize="lg" lineHeight="tall">
+          Join thousands who've already improved their health markers and energy levels. Get expert guidance, custom
+          meal plans, and a supportive community to help you thrive.
+        </Text>
+        <Stack as={motion.div} variants={itemVariants} direction={{ base: "column", sm: "row" }} spacing={4}>
           <Button
             as="a"
             href="#join-community"
@@ -47,7 +69,7 @@ export default function HeroArea() {
             variant="outline"
             colorScheme="gs-yellow"
             fontWeight="bold"
-            _hover={{ bg: "gs-yellow.50" }}
+            _hover={{ bg: buttonHoverBg }}
           >
             Learn More
           </Button>

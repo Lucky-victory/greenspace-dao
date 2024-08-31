@@ -1,58 +1,60 @@
 import { Link } from "@chakra-ui/next-js";
-import { Box, Flex, Heading, Image, Stack, Text } from "@chakra-ui/react";
+import { Box, Flex, Heading, Image, Stack, Text, useColorModeValue } from "@chakra-ui/react";
+import { motion } from "framer-motion";
+
+const fadeInUp = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6 } }
+};
 
 export default function CoachArea() {
+  const borderColor = useColorModeValue("gs-gray.200", "gs-gray.700");
+  const headingColor = useColorModeValue("gs-gray.800", "white");
+  const accentColor = useColorModeValue("gs-yellow.500", "gs-yellow.400");
+  const textColor = useColorModeValue("gs-gray.600", "gs-gray.300");
+
   return (
     <Flex
+      as={motion.div}
+      initial="hidden"
+      animate="visible"
+      variants={fadeInUp}
       gap={5}
       borderBottom={"1px"}
-      borderBottomColor={"gs-gray.700"}
+      borderBottomColor={borderColor}
       wrap={{ base: "wrap-reverse", md: "nowrap" }}
       mt={12}
       py={{ base: 8, md: 12 }}
       px={{ base: 4, md: 12 }}
       justify={"space-between"}
     >
-      <Stack maxW={{ md: 550, base: "auto" }}>
-        <Heading mb={5} size={"2xl"}>
-          One-on-One{" "}
-          <Text as={"span"} color={"gs-yellow.400"}>
+      <Stack as={motion.div} variants={fadeInUp} maxW={{ md: 550, base: "auto" }}>
+        <Heading mb={5} size={"2xl"} color={headingColor}>
+          Get Your Personal
+          <Text as={"span"} color={accentColor}>
             {" "}
-            <Text as={"span"} color={"gs-yellow.400"}>
-              {" "}
-              Coaching
-            </Text>
+            Health Coach
           </Text>
         </Heading>
-        <Text mb={5} maxW={{ lg: 500, base: "auto" }} lineHeight={"taller"}>
-          We also offer one-on-one sessions with our vetted nutritionists for personalized guidance tailored to your
-          needs. Whether you&apos;re seeking advice on dietary choices, meal planning, or specific health concerns, our
-          experts are here to support you every step of the way.
+        <Text mb={5} maxW={{ lg: 500, base: "auto" }} lineHeight={"taller"} color={textColor}>
+          Ready to supercharge your health journey? Our rockstar nutritionists are here to give you one-on-one
+          attention. Whether you're looking to shed a few pounds, boost your energy, or just eat better, we've got your
+          back. It's like having a best friend who happens to be a nutrition wizard!
         </Text>
-        <Text>
-          Also if you&apos;re a nutritonist looking to work with us, send us an email at{" "}
-          <Link color={"gs-yellow.400"} href={"mailto:apply@greenspacedao.xyz"} isExternal>
+        <Text color={textColor}>
+          Hey, nutrition pros! Want to join our dream team? Drop us a line at{" "}
+          <Link color={accentColor} href={"mailto:apply@greenspacedao.xyz"} isExternal>
             apply@greenspacedao.xyz
-          </Link>{" "}
-          and we would be happy to have you on board.
+          </Link>
+          . We'd love to have you on board!
         </Text>
-        {/* <Button
-                    textDecor={"none!important"}
-                    as={"a"}
-                    colorScheme="gs-yellow"
-                    href={"#waitlist-form"}
-                    alignSelf={"flex-start"}
-                    size={"lg"}
-                >
-                    Join the waitlist
-                </Button> */}
       </Stack>
-      <Box>
+      <Box as={motion.div} variants={fadeInUp}>
         <Image
           minW={300}
           flexShrink={0}
           src="/assets/coaching.jpg"
-          alt=""
+          alt="Happy person receiving nutrition coaching"
           maxH={{ base: 350, sm: 450 }}
           maxW={{ base: "auto" }}
           rounded={"20px"}

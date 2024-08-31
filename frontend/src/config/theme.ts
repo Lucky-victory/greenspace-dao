@@ -1,8 +1,8 @@
-import { StyleFunctionProps, extendTheme, withDefaultColorScheme } from "@chakra-ui/react";
+import { extendTheme, StyleFunctionProps, withDefaultColorScheme } from "@chakra-ui/react";
 
 const config = {
   initialColorMode: "dark",
-  useSystemColorMode: false
+  useSystemColorMode: true
 };
 
 export const theme = extendTheme(
@@ -13,15 +13,15 @@ export const theme = extendTheme(
       a: "var(--font-poppins)"
     },
     styles: {
-      global: {
-        "html, body": {
-          // color: "gray.600",
-          // lineHeight: "tall",
+      global: (props) => ({
+        body: {
+          bg: props.colorMode === "dark" ? "gs-gray.900" : "gs-light.100",
+          color: props.colorMode === "dark" ? "white" : "gray.800"
         },
         a: {
           color: "gs-yellow.400"
         }
-      }
+      })
     },
     colors: {
       "gs-green": {
@@ -83,6 +83,10 @@ export const theme = extendTheme(
         700: "#3d4243",
         800: "#222729",
         900: "#001010"
+      },
+      "gs-light": {
+        50: "#FFFFFF",
+        100: "#F7FAFC"
       }
     },
     layerStyles: {

@@ -1,3 +1,4 @@
+import React from "react";
 import {
   Box,
   Button,
@@ -12,7 +13,11 @@ import {
   Container,
   AvatarGroup,
   Avatar,
-  HStack
+  HStack,
+  Stat,
+  StatLabel,
+  StatNumber,
+  StatHelpText
 } from "@chakra-ui/react";
 import { motion } from "framer-motion";
 import HealthBrands from "../HealthBrands";
@@ -35,6 +40,7 @@ const itemVariants = {
 export default function HeroArea() {
   const textColor = useColorModeValue("gray.800", "gray.100");
   const highlightColor = useColorModeValue("gs-green.600", "gs-yellow.400");
+  const highlightColorBase = useColorModeValue("gs-green.200", "gs-yellow.400");
   const buttonHoverBg = useColorModeValue("gs-yellow.50", "gs-yellow.800");
 
   return (
@@ -55,11 +61,24 @@ export default function HeroArea() {
             as={motion.div}
             variants={itemVariants}
             align={{ base: "center", lg: "flex-start" }}
-            spacing={5}
+            spacing={4}
             px={4}
             maxW={{ base: "100%", lg: "50%" }}
             textAlign={{ base: "center", lg: "left" }}
           >
+            <HStack wrap={"wrap"} justify={"center"}>
+              <AvatarGroup size={"sm"}>
+                <Avatar src={"/images/man.jpg"} />
+                <Avatar src={"/images/girl-1.jpg"} />
+                <Avatar src={"/images/woman-1.jpg"} />
+                <Avatar src={"/images/guy-1.jpg"} />
+                <Avatar src={"/images/woman-2.jpg"} />
+              </AvatarGroup>{" "}
+              <Text as={"span"} fontSize={"md"} fontWeight={600}>
+                Over 10,000 happy members
+              </Text>
+            </HStack>
+
             <Heading
               as={motion.h1}
               variants={itemVariants}
@@ -67,8 +86,8 @@ export default function HeroArea() {
               fontWeight="bold"
               lineHeight="shorter"
             >
-              Live Longer and Healthier with{" "}
-              <Text as="span" color={highlightColor}>
+              Feel Great with{" "}
+              <Text as="span" color={{ base: highlightColorBase, lg: highlightColor }}>
                 GreenSpace
               </Text>
             </Heading>
@@ -80,7 +99,7 @@ export default function HeroArea() {
               fontWeight="semibold"
               maxW={{ base: "600px" }}
             >
-              Add up to 10 quality years to your life through personalized nutrition and lifestyle coaching
+              Get personalized help to eat better, move more, and live healthier
             </Text>
             <Text
               maxW={{ base: "600px" }}
@@ -89,9 +108,14 @@ export default function HeroArea() {
               fontSize={{ base: "md", md: "lg" }}
               lineHeight="tall"
             >
-              Join thousands who&apos;ve already improved their health markers and energy levels. Get expert guidance,
-              custom meal plans, and a supportive community to help you thrive.
+              Join thousands who are already feeling more energetic and healthier. We&apos;ll guide you step-by-step
+              with custom meal ideas, exercise tips, and a friendly community cheering you on.
             </Text>
+            <Stat>
+              <StatLabel>Members report feeling better by</StatLabel>
+              <StatNumber>42%</StatNumber>
+              <StatHelpText>Just 6 months after joining</StatHelpText>
+            </Stat>
             <Stack>
               <Stack
                 as={motion.div}
@@ -103,7 +127,7 @@ export default function HeroArea() {
               >
                 <Button
                   as="a"
-                  href="#join-community"
+                  href="#get-started"
                   size="lg"
                   colorScheme="gs-green"
                   fontWeight="bold"
@@ -111,7 +135,7 @@ export default function HeroArea() {
                   borderRadius="full"
                   width={{ base: "100%", sm: "auto" }}
                 >
-                  Join Our Community
+                  Get Started
                 </Button>
                 <Button
                   as="a"
@@ -124,21 +148,9 @@ export default function HeroArea() {
                   borderRadius="full"
                   width={{ base: "100%", sm: "auto" }}
                 >
-                  Learn More
+                  See How It Works
                 </Button>
               </Stack>
-              <HStack mt={2}>
-                <AvatarGroup size={"md"}>
-                  <Avatar src={"/images/man.jpg"} />
-                  <Avatar src={"/images/girl-1.jpg"} />
-                  <Avatar src={"/images/woman-1.jpg"} />
-                  <Avatar src={"/images/guy-1.jpg"} />
-                  <Avatar src={"/images/woman-2.jpg"} />
-                </AvatarGroup>{" "}
-                <Text as={"span"} fontSize={"large"} fontWeight={600}>
-                  1000+ Happy users
-                </Text>
-              </HStack>
             </Stack>
           </VStack>
 
@@ -149,7 +161,7 @@ export default function HeroArea() {
                 whileHover={{ scale: 1.05 }}
                 transition={{ duration: 0.3 } as any}
                 src="/assets/healthy-meal.jpg"
-                alt="Healthy meal"
+                alt="A colorful, healthy meal"
                 w="100%"
                 h={{ base: "200px", sm: "200px" }}
                 rounded="xl"
@@ -162,7 +174,7 @@ export default function HeroArea() {
                 whileHover={{ scale: 1.05 }}
                 transition={{ duration: 0.3 } as any}
                 src="/assets/exercise.jpg"
-                alt="People exercising"
+                alt="People enjoying outdoor exercise"
                 w="100%"
                 h={{ base: "200px", sm: "200px" }}
                 rounded="xl"
@@ -174,7 +186,7 @@ export default function HeroArea() {
                 whileHover={{ scale: 1.05 }}
                 transition={{ duration: 0.3 } as any}
                 src="/assets/community-support.jpg"
-                alt="Community support group"
+                alt="Friends supporting each other"
                 w="100%"
                 h={{ base: "200px", sm: "200px" }}
                 rounded="xl"
@@ -185,7 +197,7 @@ export default function HeroArea() {
                 as={motion.img}
                 whileHover={{ scale: 1.05 }}
                 transition={{ duration: 0.3 } as any}
-                alt="Person meditating"
+                alt="Person relaxing in nature"
                 src="/assets/meditation.jpg"
                 w="100%"
                 h={{ base: "200px", sm: "200px" }}

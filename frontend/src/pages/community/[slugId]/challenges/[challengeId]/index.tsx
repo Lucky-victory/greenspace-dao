@@ -8,7 +8,7 @@ import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 import {
   useCheckHasJoinCommunityChallengeMutation,
   useGetCommunityChallengeQuery,
-  useJoinCommunityChallengeMutation,
+  useJoinCommunityChallengeMutation
 } from "src/state/services";
 import { useRouter } from "next/router";
 import { format } from "date-fns";
@@ -21,7 +21,7 @@ import { useEffect } from "react";
 import { BsChevronLeft } from "react-icons/bs";
 
 export default function EventPage({
-  challengeId: challengeIdFromServer,
+  challengeId: challengeIdFromServer
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const { connect, isLoggedIn, user } = useInAppAuth();
   const router = useRouter();
@@ -29,9 +29,9 @@ export default function EventPage({
   const {
     data: challengeResponse,
     isLoading,
-    isFetching,
+    isFetching
   } = useGetCommunityChallengeQuery({
-    slugId: challengeSlug,
+    slugId: challengeSlug
   });
   const challenge = challengeResponse?.data;
   const [joinChallenge, { isLoading: isLoadingJoin }] = useJoinCommunityChallengeMutation();
@@ -55,7 +55,7 @@ export default function EventPage({
     await joinChallenge({
       challengeId: challenge?.id,
       userId: user?.id as string,
-      slugId: challengeSlug,
+      slugId: challengeSlug
     }).unwrap();
   }
 
@@ -64,7 +64,7 @@ export default function EventPage({
       checkChallengeJoin({
         challengeId: challenge?.id,
         userId: user?.id as string,
-        slugId: challengeSlug,
+        slugId: challengeSlug
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -87,7 +87,7 @@ export default function EventPage({
       </Head>
       <PageLoader isLoading={isLoading || isFetching} text="Fetching challenge...">
         <HeaderNav />
-        <PageWrapper props={{ pt: 30, px: { base: 4, md: 5, lg: 8 } }} bg="transaprent">
+        <PageWrapper props={{ pt: 30, px: { base: 4, md: 5, lg: 8 }, bg: "transaprent" }}>
           <Box>
             <Box
               mb={16}
@@ -247,7 +247,7 @@ export async function getServerSideProps({ query }: GetServerSidePropsContext) {
   // Pass the pathname as props
   return {
     props: {
-      challengeId: challengeId as string,
-    },
+      challengeId: challengeId as string
+    }
   };
 }

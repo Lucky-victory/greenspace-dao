@@ -24,6 +24,7 @@ import { useColorMode } from "@chakra-ui/react";
 import { ConnectOrLogout } from "../Auth/ConnectOrRegister";
 import RegisterForm from "../RegisterForm";
 import { motion, useScroll, useTransform } from "framer-motion";
+import { RegisterButton } from "../Auth/RegisterButton";
 
 export function HeaderNav() {
   const { isMobileSize, isTabletSize } = useResize();
@@ -125,9 +126,12 @@ export function HeaderNav() {
             )}
 
             {(isMobileSize || isTabletSize) && (
-              <IconButton ml={1} onClick={onMobileNavbarToggle} fontSize={24} aria-label="toggle mobile menu">
-                <LuMenu />
-              </IconButton>
+              <>
+                <RegisterButton onClick={onOpen} styleProps={{ size: "sm" }} />
+                <IconButton ml={1} onClick={onMobileNavbarToggle} fontSize={24} aria-label="toggle mobile menu">
+                  <LuMenu />
+                </IconButton>
+              </>
             )}
           </HStack>
         </HStack>

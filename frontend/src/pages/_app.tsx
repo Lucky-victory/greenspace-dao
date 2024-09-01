@@ -70,7 +70,7 @@ export default function App({ Component, pageProps }: AppProps) {
 function ColorModeToggle() {
   const { colorMode, toggleColorMode } = useColorMode();
   return (
-    <Button zIndex={20000} onClick={toggleColorMode}>
+    <Button pos={"fixed"} top={0} left={0} zIndex={20000} onClick={toggleColorMode}>
       Toggle {colorMode === "light" ? "Dark" : "Light"}
     </Button>
   );

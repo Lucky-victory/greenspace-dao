@@ -17,9 +17,7 @@ export const LoginAndRegisterButtons = ({ openModal }: { openModal: () => void }
         Sign In
       </Button>
       <LoginModal onClose={onClose} isOpen={isOpen} />
-      <Button rounded={"full"} colorScheme="gs-yellow" fontWeight="bold" onClick={handleRegisterClick}>
-        Join Now
-      </Button>
+      <RegisterButton onClick={handleRegisterClick} />
     </HStack>
   );
 };

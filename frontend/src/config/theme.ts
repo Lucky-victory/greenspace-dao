@@ -2,7 +2,7 @@ import { extendTheme, StyleFunctionProps, withDefaultColorScheme } from "@chakra
 
 const config = {
   initialColorMode: "light",
-  useSystemColorMode: true
+  useSystemColorMode: false
 };
 
 export const theme = extendTheme(
@@ -13,7 +13,7 @@ export const theme = extendTheme(
       a: "var(--font-poppins)"
     },
     styles: {
-      global: (props) => ({
+      global: (props: any) => ({
         html: {
           "--navbar-height": "60px"
         },

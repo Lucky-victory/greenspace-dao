@@ -1,5 +1,5 @@
 import DashboardLayout from "src/components/MemberDashboardLayout";
-import { Box, Card, Flex, Heading, Text } from "@chakra-ui/react";
+import { Box, Card, Flex, Heading, Text, useColorModeValue } from "@chakra-ui/react";
 
 import { usePrivy } from "@privy-io/react-auth";
 import { useStorage } from "@thirdweb-dev/react";
@@ -26,142 +26,72 @@ export default function MemberDashboardPage() {
     fetchDataFromIPFSStorage();
   }, [fetchDataFromIPFSStorage]);
   useEffect(() => {}, [registerData]);
+
+  const bgColor = useColorModeValue("gray.100", "gray.700");
+  const cardBgColor = useColorModeValue("white", "gray.800");
+  const textColor = useColorModeValue("gray.800", "white");
+  const labelColor = useColorModeValue("gray.600", "gray.400");
+
   return (
     <DashboardLayout>
       <Box className="min-h-full h-full" px={"4"} py={4}>
         <DashboardEmptyArea isLoading={isLoading || isFetching} isEmpty={!isLoading && !registerData}>
-          <Flex direction={"column"} w={"full"} py={5} px={4} bg={"gray.700"} rounded={"md"}>
+          <Flex direction={"column"} w={"full"} py={5} px={4} bg={bgColor} rounded={"xl"} shadow="md">
             {!isLoading && registerData && (
               <>
-                <Heading size="lg">Your Details</Heading>
+                <Heading size="lg" color={textColor} mb={6}>
+                  Your Details
+                </Heading>
 
-                <Box pt={5}>
-                  <Heading size="md" color="gray.300" mb={2} fontWeight={"bold"}>
+                <Box>
+                  <Heading size="md" color={labelColor} mb={3} fontWeight={"bold"}>
                     General
                   </Heading>
-                  <Card bg={"gray.800"} p={4}>
+                  <Card bg={cardBgColor} p={6} rounded="xl" shadow="sm" mb={6}>
                     <Flex wrap="wrap" justifyContent={"space-between"} gap="20px">
-                      <Flex>
-                        <Text whiteSpace={"pre"} color={"gray.500"} fontWeight={"bold"}>
-                          Name:&nbsp;
-                        </Text>
-                        <Text>{registerData.fullName}</Text>
-                      </Flex>
-                      <Flex>
-                        <Text whiteSpace={"pre"} color={"gray.500"} fontWeight={"bold"}>
-                          DOB:&nbsp;
-                        </Text>
-                        <Text>{registerData?.birthDate}</Text>
-                      </Flex>
-                      <Flex>
-                        <Text whiteSpace={"pre"} color={"gray.500"} fontWeight={"bold"}>
-                          Country:&nbsp;
-                        </Text>
-                        <Text>{registerData?.country}</Text>
-                      </Flex>
-                      <Flex>
-                        <Text whiteSpace={"pre"} color={"gray.500"} fontWeight={"bold"}>
-                          Biological Sex:&nbsp;
-                        </Text>
-                        <Text>{registerData.sex}</Text>
-                      </Flex>
+                      <InfoItem label="Name" value={registerData.fullName} />
+                      <InfoItem label="DOB" value={registerData.birthDate || ""} />
+                      <InfoItem label="Country" value={registerData.country || ""} />
+                      <InfoItem label="Biological Sex" value={registerData.sex} />
                     </Flex>
                   </Card>
-                  <Heading size="md" color="gray.300" mb={2} mt={4} fontWeight={"bold"}>
+                  <Heading size="md" color={labelColor} mb={3} fontWeight={"bold"}>
                     Specific
                   </Heading>
-                  <Card bg={"gray.800"} p={4}>
+                  <Card bg={cardBgColor} p={6} rounded="xl" shadow="sm" mb={6}>
                     <Flex wrap="wrap" justifyContent={"space-between"} gap="20px">
-                      <Flex>
-                        <Text whiteSpace={"pre"} color={"gray.500"} fontWeight={"bold"}>
-                          Weight:&nbsp;
-                        </Text>
-                        <Text>{registerData?.weight} kg</Text>
-                      </Flex>
-                      <Flex>
-                        <Text whiteSpace={"pre"} color={"gray.500"} fontWeight={"bold"}>
-                          Height:&nbsp;
-                        </Text>
-                        <Text>
-                          {registerData.height}
-                          {/* {1}ft {2}in */}
-                        </Text>
-                      </Flex>
-                      <Flex>
-                        <Text whiteSpace={"pre"} color={"gray.500"} fontWeight={"bold"}>
-                          Diet:&nbsp;
-                        </Text>
-                        <Text>{registerData.diet}</Text>
-                      </Flex>
-                      <Flex>
-                        <Text whiteSpace={"pre"} color={"gray.500"} fontWeight={"bold"}>
-                          Week Activity:&nbsp;
-                        </Text>
-                        <Text>{registerData?.active}</Text>
-                      </Flex>
+                      <InfoItem label="Weight" value={`${registerData.weight || ""} kg`} />
+                      <InfoItem label="Height" value={registerData.height} />
+                      <InfoItem label="Diet" value={registerData.diet} />
+                      <InfoItem label="Week Activity" value={registerData.active || ""} />
                     </Flex>
                   </Card>
-                  <Heading size="md" color="gray.300" mb={2} mt={4} fontWeight={"bold"}>
+                  <Heading size="md" color={labelColor} mb={3} fontWeight={"bold"}>
                     Extras
                   </Heading>
-                  <Card bg={"gray.800"} p={4}>
+                  <Card bg={cardBgColor} p={6} rounded="xl" shadow="sm" mb={6}>
                     <Flex wrap="wrap" gap="20px">
-                      <Flex>
-                        <Text whiteSpace={"pre"} color={"gray.500"} fontWeight={"bold"}>
-                          Sitting:&nbsp;
-                        </Text>
-                        <Text>{registerData?.sitting} hrs</Text>
-                      </Flex>
-                      <Flex>
-                        <Text whiteSpace={"pre"} color={"gray.500"} fontWeight={"bold"}>
-                          Alcohol:&nbsp;
-                        </Text>
-                        <Text>{registerData?.alcohol}</Text>
-                      </Flex>
+                      <InfoItem label="Sitting" value={`${registerData.sitting || ""} hrs`} />
+                      <InfoItem label="Alcohol" value={registerData.alcohol || ""} />
                     </Flex>
                   </Card>
-                  <Heading size="md" color="gray.300" mb={2} mt={4} fontWeight={"bold"}>
+                  <Heading size="md" color={labelColor} mb={3} fontWeight={"bold"}>
                     Smoking
                   </Heading>
-                  <Card bg={"gray.800"} p={4}>
+                  <Card bg={cardBgColor} p={6} rounded="xl" shadow="sm" mb={6}>
                     <Flex wrap="wrap" gap="20px">
-                      <Flex>
-                        <Text whiteSpace={"pre"} color={"gray.500"} fontWeight={"bold"}>
-                          Smoke:&nbsp;
-                        </Text>
-                        <Text>{registerData.smoke}</Text>
-                      </Flex>
-                      <Flex>
-                        <Text whiteSpace={"pre"} color={"gray.500"} fontWeight={"bold"}>
-                          Last smoke:&nbsp;
-                        </Text>
-                        <Text>{registerData?.smokingStopped}</Text>
-                      </Flex>
-                      <Flex>
-                        <Text whiteSpace={"pre"} color={"gray.500"} fontWeight={"bold"}>
-                          Smoke length:&nbsp;
-                        </Text>
-                        <Text>{registerData?.smokingLength}</Text>
-                      </Flex>
+                      <InfoItem label="Smoke" value={registerData.smoke} />
+                      <InfoItem label="Last smoke" value={registerData.smokingStopped || ""} />
+                      <InfoItem label="Smoke length" value={registerData.smokingLength || ""} />
                     </Flex>
                   </Card>
-                  <Heading size="md" color="gray.300" mb={2} mt={4} fontWeight={"bold"}>
+                  <Heading size="md" color={labelColor} mb={3} fontWeight={"bold"}>
                     Others
                   </Heading>
-                  <Card bg={"gray.800"} p={4}>
+                  <Card bg={cardBgColor} p={6} rounded="xl" shadow="sm">
                     <Flex wrap="wrap" gap="20px">
-                      <Flex>
-                        <Text whiteSpace={"pre"} color={"gray.500"} fontWeight={"bold"}>
-                          Sleep:&nbsp;
-                        </Text>
-                        <Text>{registerData?.sleepLength} hrs</Text>
-                      </Flex>
-                      <Flex>
-                        <Text whiteSpace={"pre"} color={"gray.500"} fontWeight={"bold"}>
-                          Overral Health:&nbsp;
-                        </Text>
-                        <Text>{registerData?.overallHealth}</Text>
-                      </Flex>
+                      <InfoItem label="Sleep" value={`${registerData.sleepLength || ""} hrs`} />
+                      <InfoItem label="Overall Health" value={registerData.overallHealth || ""} />
                     </Flex>
                   </Card>
                 </Box>
@@ -173,3 +103,18 @@ export default function MemberDashboardPage() {
     </DashboardLayout>
   );
 }
+const InfoItem = ({ label, value }: { label: string; value: string }) => {
+  const labelColor = useColorModeValue("gray.600", "gray.400");
+  const valueColor = useColorModeValue("gray.800", "white");
+
+  return (
+    <Flex direction="column">
+      <Text color={labelColor} fontWeight={"bold"} fontSize="sm">
+        {label}
+      </Text>
+      <Text color={valueColor} fontSize="md">
+        {value}
+      </Text>
+    </Flex>
+  );
+};

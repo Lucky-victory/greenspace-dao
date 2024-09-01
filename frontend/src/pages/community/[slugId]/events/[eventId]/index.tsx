@@ -2,13 +2,27 @@ import { HeaderNav } from "src/components/HeaderNav";
 import Head from "next/head";
 import PageWrapper from "src/components/PageWrapper";
 import PageLoader from "src/components/PageLoader";
-import { Box, Button, Flex, HStack, Heading, Image, Input, List, ListItem, Stack, Text } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Flex,
+  HStack,
+  Heading,
+  Icon,
+  Image,
+  Input,
+  List,
+  ListItem,
+  Stack,
+  Text,
+  useColorModeValue
+} from "@chakra-ui/react";
 import MarkdownRenderer from "src/components/MarkdownRenderer";
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 import {
   useCheckHasJoinCommunityEventMutation,
   useGetCommunityEventQuery,
-  useJoinCommunityEventMutation,
+  useJoinCommunityEventMutation
 } from "src/state/services";
 import { useRouter } from "next/router";
 import { format } from "date-fns";
@@ -21,7 +35,7 @@ import { useInAppAuth } from "src/hooks/common";
 import { BsChevronLeft } from "react-icons/bs";
 
 export default function EventPage({
-  eventId: eventIdFromServer,
+  eventId: eventIdFromServer
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const { connect, isLoggedIn, user } = useInAppAuth();
   const router = useRouter();
@@ -29,9 +43,9 @@ export default function EventPage({
   const {
     data: eventResponse,
     isLoading,
-    isFetching,
+    isFetching
   } = useGetCommunityEventQuery({
-    slugId: eventSlug,
+    slugId: eventSlug
   });
   const event = eventResponse?.data;
 
@@ -56,7 +70,7 @@ export default function EventPage({
     await joinEvent({
       eventId: event?.id,
       userId: user?.id as string,
-      slugId: eventSlug,
+      slugId: eventSlug
     }).unwrap();
   }
 
@@ -66,13 +80,18 @@ export default function EventPage({
         checkEventJoin({
           eventId: event?.id,
           userId: user?.id as string,
-          slugId: eventSlug,
+          slugId: eventSlug
         });
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [isLoadingJoin, isLoading, isLoggedIn, user?.id, event?.id, eventSlug]
   );
+
+  const bgColor = useColorModeValue("white", "gray.800");
+  const textColor = useColorModeValue("gray.800", "white");
+  const borderColor = useColorModeValue("gray.200", "gray.600");
+
   return (
     <>
       <Head>
@@ -82,16 +101,15 @@ export default function EventPage({
         <meta property="og:description" content={event?.details} />
         <meta property="og:type" content="website" />
         <meta property="og:image" content={event?.coverImage} />
-        {/* <meta property="og:url" content={`https://greenspacedao.xyz/`} /> */}
         <meta property="og:site_name" content={event?.title} />
         <meta property="og:locale" content="en_US" />
         <meta property="og:locale:alternate" content="en" />
         <meta property="og:locale:alternate" content="en_US" />
         <meta property="og:locale:alternate" content="en_GB" />
       </Head>
-      <PageLoader isLoading={isLoading || isFetching} text="Fetching event...">
+      <PageLoader isLoading={isLoading || isFetching}>
         <HeaderNav />
-        <PageWrapper props={{ pt: 30, px: { base: 4, md: 5, lg: 8 } }} bg="transaprent">
+        <PageWrapper props={{ pt: 30, px: { base: 4, md: 5, lg: 8 } }}>
           <Box>
             <Box
               mb={16}
@@ -111,7 +129,6 @@ export default function EventPage({
                 left={3}
                 colorScheme="gray"
                 zIndex={5}
-                // as={Link}
                 _hover={{ bg: "blackAlpha.700" }}
                 onClick={() => router.back()}
               >
@@ -135,11 +152,11 @@ export default function EventPage({
                 h={"auto"}
                 bg={"blackAlpha.800"}
               >
-                <Heading mb={4} size={{ base: "xl", md: "2xl" }}>
+                <Heading mb={4} size={{ base: "xl", md: "2xl" }} color="white">
                   {event?.title} (Starts {formatDate(event?.startDate, "MMM")} {formatDateWithOrdinal(event?.startDate)}
                   )
                 </Heading>
-                <Text fontSize={"lg"}>
+                <Text fontSize={"lg"} color="white">
                   Event dates: {formatDate(event?.startDate)} - {formatDate(event?.endDate)}
                 </Text>
               </Box>
@@ -147,10 +164,10 @@ export default function EventPage({
           </Box>
           <Flex align={"flex-start"} wrap={{ base: "wrap", lg: "nowrap" }} gap={{ base: 12, lg: 10 }} mb={10}>
             <Box>
-              <Heading size={"xl"} fontWeight={600} mb={4}>
+              <Heading size={"xl"} fontWeight={600} mb={4} color={textColor}>
                 Event Information
               </Heading>
-              <Box pb={4} lineHeight={1.9}>
+              <Box pb={4} lineHeight={1.9} color={textColor}>
                 <MarkdownRenderer markdown={event?.details} />
               </Box>
             </Box>
@@ -158,20 +175,21 @@ export default function EventPage({
               <Stack
                 minW={{ base: 300, md: 350 }}
                 flexShrink={0}
-                bg={"black"}
+                bg={bgColor}
                 rounded={"15px"}
-                border={"1px solid var(--chakra-colors-gray-600)"}
+                border={`1px solid`}
+                borderColor={`${borderColor}`}
                 p={{ base: 5, lg: 8 }}
               >
-                <Heading size={"lg"} fontWeight={600} mb={2}>
+                <Heading size={"lg"} fontWeight={600} mb={2} color={textColor}>
                   Event Details
                 </Heading>
                 <Stack as={List} pl={0} gap={3} mb={4} className="is-nav">
                   <ListItem>
                     <HStack>
-                      <FiCalendar size={20} />
-                      <Text>
-                        <Text as={"span"} color={"gray.400"}>
+                      <Icon as={FiCalendar} size={16} color={textColor} />
+                      <Text fontSize={{ base: "small", md: "medium" }} color={textColor}>
+                        <Text as={"span"} color={"gray.500"}>
                           Start Date:
                         </Text>{" "}
                         {formatDate(event?.startDate, "MMM dd, yyyy HH:mm a")}
@@ -180,9 +198,9 @@ export default function EventPage({
                   </ListItem>
                   <ListItem>
                     <HStack>
-                      <FiCalendar size={20} />
-                      <Text>
-                        <Text as={"span"} color={"gray.400"}>
+                      <Icon as={FiCalendar} size={16} color={textColor} />
+                      <Text fontSize={{ base: "small", md: "medium" }} color={textColor}>
+                        <Text as={"span"} color={"gray.500"}>
                           End Date:
                         </Text>{" "}
                         {formatDate(event?.endDate, "MMM dd, yyyy HH:mm a")}
@@ -191,8 +209,8 @@ export default function EventPage({
                   </ListItem>
                   <ListItem>
                     <HStack>
-                      <FiHome size={20} />
-                      <Text>
+                      <Icon as={FiHome} size={16} color={textColor} />
+                      <Text color={textColor}>
                         {" "}
                         <Text as={"span"} color={"gray.500"}>
                           Venue:
@@ -204,8 +222,8 @@ export default function EventPage({
                   {event?.location && (
                     <ListItem>
                       <HStack>
-                        <FiMapPin size={20} />
-                        <Text>
+                        <Icon as={FiMapPin} size={16} color={textColor} />
+                        <Text color={textColor}>
                           {" "}
                           <Text as={"span"} color={"gray.500"}>
                             Location:
@@ -216,7 +234,7 @@ export default function EventPage({
                     </ListItem>
                   )}
                 </Stack>
-                <Text fontSize={"15px"} color={"gray.300"}>
+                <Text fontSize={"15px"} color={"gray.500"}>
                   Join the event and get notified when the event starts.
                 </Text>
                 <Button
@@ -251,7 +269,7 @@ export async function getServerSideProps({ query }: GetServerSidePropsContext) {
   // Pass the pathname as props
   return {
     props: {
-      eventId: eventId as string,
-    },
+      eventId: eventId as string
+    }
   };
 }

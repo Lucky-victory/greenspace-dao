@@ -95,6 +95,8 @@ export default function CommunityViewPage({
     }
   };
 
+  const activeColor = useColorModeValue("gs-yellow.600", "gs-yellow.300");
+  const activeBg = useColorModeValue("gs-gray.100", "gs-gray.700");
   const tabButtons = tabs.map((tab) => {
     const isActive = tab.url === activeTab;
     return (
@@ -105,8 +107,8 @@ export default function CommunityViewPage({
           {...tabBtnStyles}
           {...(isActive && {
             fontWeight: 500,
-            color: "gs-yellow.300",
-            bg: activeBgColor
+            color: activeColor,
+            bg: activeBg
           })}
         >
           {tab.name}
@@ -115,7 +117,7 @@ export default function CommunityViewPage({
     );
   });
   return (
-    <PageLoader isLoading={isLoading || isFetching} text="Fetching data...">
+    <PageLoader isLoading={isLoading || isFetching} text="">
       <Head>
         <title>{community?.name}</title>
         <meta name="description" content={community?.description} />
@@ -135,7 +137,7 @@ export default function CommunityViewPage({
         <PageWrapper
           props={{
             h: "var(--chakra-vh,100vh)",
-            py: 5
+            py: { base: 0, lg: 5 }
           }}
         >
           {/* BANNER AREA */}
@@ -227,7 +229,7 @@ export default function CommunityViewPage({
               pos={"sticky"}
               bg={navBgColor}
               top={0}
-              className="is-nav"
+              className="is-nav no-scrollbar"
             >
               {tabButtons}
             </Flex>

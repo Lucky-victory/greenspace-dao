@@ -130,7 +130,7 @@ export default function HeroArea() {
               <Image
                 as={motion.img}
                 whileHover={{ scale: 1.05 }}
-                transition={{ duration: 0.3 }}
+                transition={{ duration: 0.3 } as any}
                 src="/assets/healthy-meal.jpg"
                 alt="Healthy meal"
                 w="100%"
@@ -143,7 +143,7 @@ export default function HeroArea() {
               <Image
                 as={motion.img}
                 whileHover={{ scale: 1.05 }}
-                transition={{ duration: 0.3 }}
+                transition={{ duration: 0.3 } as any}
                 src="/assets/exercise.jpg"
                 alt="People exercising"
                 w="100%"
@@ -155,7 +155,7 @@ export default function HeroArea() {
               <Image
                 as={motion.img}
                 whileHover={{ scale: 1.05 }}
-                transition={{ duration: 0.3 }}
+                transition={{ duration: 0.3 } as any}
                 src="/assets/community-support.jpg"
                 alt="Community support group"
                 w="100%"
@@ -167,7 +167,7 @@ export default function HeroArea() {
               <Image
                 as={motion.img}
                 whileHover={{ scale: 1.05 }}
-                transition={{ duration: 0.3 }}
+                transition={{ duration: 0.3 } as any}
                 alt="Person meditating"
                 src="/assets/meditation.jpg"
                 w="100%"

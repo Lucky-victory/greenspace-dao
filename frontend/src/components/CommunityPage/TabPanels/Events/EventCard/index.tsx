@@ -11,7 +11,7 @@ export default function EventCards({ spaceIdOrId, event }: { spaceIdOrId: string
 
   const tagStyles = {
     px: 2,
-    rounded: "sm",
+    rounded: "full",
     py: 1,
     fontSize: "13px",
     bg: tagBgColor,
@@ -20,24 +20,35 @@ export default function EventCards({ spaceIdOrId, event }: { spaceIdOrId: string
   };
 
   return (
-    <Flex gap={3} wrap={{ base: "wrap", md: "nowrap" }} bg={bgColor} py={3} px={3} color={textColor}>
+    <Flex
+      gap={3}
+      wrap={{ base: "wrap", md: "nowrap" }}
+      bg={bgColor}
+      py={4}
+      px={4}
+      color={textColor}
+      borderRadius="xl"
+      boxShadow="md"
+    >
       <Box
         flexShrink={0}
         w={{ md: 200, base: "full" }}
         minH={{ md: "100%", base: 200 }}
         maxH={{ base: 250 }}
         bg={bgColor}
+        borderRadius="lg"
+        overflow="hidden"
       >
         <Image w={"full"} h={"full"} objectFit={"cover"} alt="" src={event?.coverImage || "/assets/community-dp.png"} />
       </Box>
-      <Stack flex={1}>
+      <Stack flex={1} spacing={3}>
         <Heading size={"md"}>{event?.title}</Heading>
         <Box>
           <MarkdownRenderer markdown={shortenText(event?.details, 150)} />
         </Box>
         <Box>
           {!isEmpty(event?.tags) && (
-            <HStack>
+            <HStack spacing={2}>
               {event?.tags.map((tag: { name: string }, i: number) => (
                 <Text as={"span"} {...tagStyles} key={tag?.name + i}>
                   {tag?.name}
@@ -51,6 +62,9 @@ export default function EventCards({ spaceIdOrId, event }: { spaceIdOrId: string
             as={Link}
             href={`/community/${spaceIdOrId}/events/${event?.slugId}`}
             colorScheme="gs-yellow"
+            fontWeight="medium"
+            _hover={{ transform: "translateY(-2px)", boxShadow: "sm" }}
+            transition="all 0.2s"
           >
             Find out more
           </Button>

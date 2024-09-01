@@ -75,6 +75,12 @@ export const NotAMemberMiddlewareComp = ({
           justify={buttonSize !== "sm" ? "center" : ""}
           bg={bgColor}
           color={textColor}
+          pos={"fixed"}
+          bottom={0}
+          left={0}
+          right={0}
+          zIndex={1000}
+          pb={4}
           {...styleProps}
         >
           {title && <Text>{title}</Text>}
@@ -87,7 +93,7 @@ export const NotAMemberMiddlewareComp = ({
             onClick={handleCommunityJoin}
             isLoading={isLoadingJoin}
           >
-            Join
+            Become a member
           </Button>
         </Flex>
       )}

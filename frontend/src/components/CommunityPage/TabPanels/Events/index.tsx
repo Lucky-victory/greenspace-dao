@@ -13,7 +13,7 @@ export default function Events({ spaceIdOrId }: { spaceIdOrId: string }) {
   const events = data?.data as any[];
 
   return (
-    <Stack flex={1} maxH={"full"} overflowY={"auto"} pb={6}>
+    <Stack flex={1} maxH={"full"} overflowY={"auto"} pb={6} className="no-scrollbar">
       <TabHeading title="Events" />
       <Stack gap={5}>
         {(isLoading || isFetching) && [0, 0, 0, 0].map((_, i) => <ChallengeSkeleton key={"evt-loading" + i} />)}

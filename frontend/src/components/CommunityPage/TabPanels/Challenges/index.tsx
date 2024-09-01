@@ -8,19 +8,19 @@ import DashboardEmptyArea from "src/components/DashboardEmptyArea";
 
 export function ChallengeSkeleton() {
   return (
-    <Flex gap={3} wrap={{ base: "wrap", md: "nowrap" }} py={3} px={3}>
+    <Flex gap={3} wrap={{ base: "wrap", md: "nowrap" }} py={3} px={3} className="no-scrollbar">
       <Box flexShrink={0} w={{ md: 200, base: "full" }} minH={{ md: "100%", base: 200 }} maxH={{ base: 250 }}>
         <Skeleton height="100%" width="100%" />
       </Box>
       <Stack flex={1}>
-        <Skeleton height="24px" width="200px" />
-        <SkeletonText mt="4" noOfLines={3} spacing="4" />
-        <Stack direction="row" mt="4">
-          <Skeleton height="20px" width="60px" />
-          <Skeleton height="20px" width="60px" />
-          <Skeleton height="20px" width="60px" />
+        <Skeleton height="24px" width="200px" rounded={"lg"} />
+        <SkeletonText mt="4" noOfLines={3} spacing="4" rounded={"lg"} />
+        <Stack direction="row" mt="4" rounded={"lg"}>
+          <Skeleton height="20px" width="60px" rounded={"lg"} />
+          <Skeleton height="20px" width="60px" rounded={"lg"} />
+          <Skeleton height="20px" width="60px" rounded={"lg"} />
         </Stack>
-        <Skeleton height="40px" width="120px" mt="4" />
+        <Skeleton height="40px" width="120px" mt="4" rounded={"lg"} />
       </Stack>
     </Flex>
   );

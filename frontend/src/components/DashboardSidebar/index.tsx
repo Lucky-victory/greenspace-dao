@@ -1,8 +1,9 @@
 import { useResize } from "src/hooks/common";
 import { Link } from "@chakra-ui/next-js";
-import { Box, Flex, Icon, Image, List, ListItem, Stack, Text } from "@chakra-ui/react";
+import { Box, Flex, Icon, Image, List, ListItem, Stack, Text, useColorModeValue } from "@chakra-ui/react";
 import { usePathname } from "next/navigation";
 import { IconType } from "react-icons";
+
 export default function DashboardSideNav(props: {
   entryPath?: string;
   links: Array<{
@@ -17,11 +18,21 @@ export default function DashboardSideNav(props: {
   const pathname = usePathname();
   const miniSidebarStyles = {
     w: "60px",
-    px: 0,
+    px: 0
   };
   const parts = pathname.split("/");
   const beforeLastPart = parts[parts.length - 2];
   const lastPart = parts[parts.length - 1];
+
+  const bgColor = useColorModeValue("white", "gray.700");
+  const borderColor = useColorModeValue("gray.200", "gray.500");
+  const activeBgColor = useColorModeValue("gs-yellow.100", "gs-yellow.900");
+  const activeColor = useColorModeValue("gs-yellow.700", "gs-yellow.300");
+  const hoverBgColor = useColorModeValue("gs-yellow.50", "gs-yellow.800");
+  const textColor = useColorModeValue("gray.800", "white");
+  const smallLogoSrc = useColorModeValue("/icons/small-black-logo.svg", "/icons/small-white-logo.svg");
+  const largLogoSrc = useColorModeValue("/black-logo.svg", "/white-logo.svg");
+
   const _links = props.links.map((link, i) => {
     const isActive =
       lastPart === link?.url ||
@@ -31,16 +42,16 @@ export default function DashboardSideNav(props: {
 
     const buildLink = (entry: string, url: string) => (url.toLowerCase() === "overview" ? entry + "" : entry + url);
     const activeStyles = {
-      bg: "gs-yellow.900",
+      bg: activeBgColor,
       fontWeight: 500,
-      borderLeftColor: "gs-yellow.300",
-      color: "gs-yellow.300",
+      borderLeftColor: activeColor,
+      color: activeColor
     };
 
     return (
       <ListItem pos={"relative"} key={"dash-sidebar-nav-link" + i} pl={1}>
         <Link
-          _hover={{ ...activeStyles, fontWeight: "normal" }}
+          _hover={{ ...activeStyles, fontWeight: "normal", bg: hoverBgColor }}
           rounded={isMobileSize ? "none" : "md"}
           borderLeft={"4px solid"}
           borderLeftColor={"transparent"}
@@ -54,6 +65,7 @@ export default function DashboardSideNav(props: {
           alignItems={"center"}
           display={"flex"}
           gap={4}
+          color={textColor}
         >
           <Icon as={link?.icon} fontSize={isMobileSize ? 24 : 20} />
           {!isMobileSize && (
@@ -65,6 +77,7 @@ export default function DashboardSideNav(props: {
       </ListItem>
     );
   });
+
   return (
     <Box
       pos={"sticky"}
@@ -72,29 +85,30 @@ export default function DashboardSideNav(props: {
       zIndex={10}
       flexShrink={0}
       borderRight={"1px"}
-      borderRightColor={"gray.500"}
-      bg={"gray.700"}
+      borderRightColor={borderColor}
+      bg={bgColor}
       h={"full"}
       {...(isMobileSize ? miniSidebarStyles : { w: 250, px: 3 })}
     >
       <Box mb={5}>
         <Link href="/">
-          {isMobileSize && (
+          {isMobileSize ? (
             <Image
               alt=""
               mx={"auto"}
               mt={2}
               display={"block"}
-              src="/icons/small-white-logo.svg"
+              src={smallLogoSrc}
               width={40 + "px"}
               height={40 + "px"}
             />
+          ) : (
+            <Image alt="" src={largLogoSrc} width={170} height={60 + "px"} />
           )}
-          {!isMobileSize && <Image alt="" src="/white-logo.svg" width={170} height={60 + "px"} />}
         </Link>
       </Box>
       <Flex direction={"column"} as={List} gap={4} className="is-nav">
-        {[_links]}
+        {_links}
       </Flex>
     </Box>
   );

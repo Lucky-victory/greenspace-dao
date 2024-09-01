@@ -7,7 +7,7 @@ export default function About({ spaceIdOrId, description }: { spaceIdOrId: strin
   const bgColor = useColorModeValue("white", "gray.800");
 
   return (
-    <Stack flex={1} maxH={"full"} overflowY={"auto"} pb={6} bg={bgColor}>
+    <Stack flex={1} maxH={"full"} overflowY={"auto"} pb={6} pt={5}>
       <TabHeading title="About this community" />
 
       {description && <MarkdownRenderer markdown={description} />}

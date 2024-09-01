@@ -12,7 +12,7 @@ export default function ChallengeCard({ spaceIdOrId, challenge }: { spaceIdOrId:
 
   const tagStyles = {
     px: 2,
-    rounded: "sm",
+    rounded: "full",
     py: 1,
     fontSize: "13px",
     bg: tagBgColor,
@@ -21,13 +21,24 @@ export default function ChallengeCard({ spaceIdOrId, challenge }: { spaceIdOrId:
   };
 
   return (
-    <Flex gap={3} wrap={{ base: "wrap", md: "nowrap" }} bg={bgColor} py={3} px={3} color={textColor}>
+    <Flex
+      gap={3}
+      wrap={{ base: "wrap", md: "nowrap" }}
+      bg={bgColor}
+      py={3}
+      px={3}
+      color={textColor}
+      borderRadius="xl"
+      overflow="hidden"
+    >
       <Box
         flexShrink={0}
         w={{ md: 200, base: "full" }}
         minH={{ md: "100%", base: 200 }}
         maxH={{ base: 250 }}
         bg={bgColor}
+        borderRadius="lg"
+        overflow="hidden"
       >
         <Image
           w={"full"}

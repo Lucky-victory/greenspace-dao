@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState, useImperativeHandle, forwardRef } from "react";
-import { Box, Button, HStack, Image, Stack, Text } from "@chakra-ui/react";
+import { Box, Button, HStack, Image, Stack, Text, useColorModeValue } from "@chakra-ui/react";
 import { ResponsiveValue } from "@chakra-ui/system";
 import isEmpty from "just-is-empty";
 import { BsPencilSquare, BsTrash } from "react-icons/bs";
@@ -28,7 +28,7 @@ const CoverImageUploader = forwardRef<CoverImageUploaderHandle, Props>(
       getCoverImageFile,
       useContainerSize = false,
       containerWidth = "600px",
-      containerHeight = "10rem",
+      containerHeight = "10rem"
     },
     ref
   ) => {
@@ -39,18 +39,22 @@ const CoverImageUploader = forwardRef<CoverImageUploaderHandle, Props>(
       getRootProps,
       removeImage,
       open: openCoverImageDialog,
-      resetImages,
+      resetImages
     } = useDragAndDropImage([]);
 
     const [coverImage, setCoverImage] = useState<DropzoneImage>();
     const [coverImageFile, setCoverImageFile] = useState<File>();
+
+    const borderColor = useColorModeValue("gray.400", "gray.600");
+    const textColor = useColorModeValue("gray.700", "gray.200");
+    const subTextColor = useColorModeValue("gray.500", "gray.400");
 
     useImperativeHandle(
       ref,
       () => ({
         resetImages: () => {
           resetImages();
-        },
+        }
       }),
       [resetImages]
     );
@@ -93,20 +97,20 @@ const CoverImageUploader = forwardRef<CoverImageUploaderHandle, Props>(
               maxW: containerWidth,
               border: "2px",
               borderStyle: "dashed",
-              borderColor: "gray.400",
+              borderColor: borderColor,
               borderRadius: radius,
               p: "1rem",
               mx: "auto",
-              cursor: "pointer",
+              cursor: "pointer"
             })}
           >
             <input {...getInputProps()} id={inputId} />
             <Stack justify={"center"} borderRadius={"inherit"} h={"100%"} w={"100%"}>
               <Stack>
-                <Text as={"span"} fontSize={"18px"} fontWeight={"medium"}>
+                <Text as={"span"} fontSize={"18px"} fontWeight={"medium"} color={textColor}>
                   Drag or Upload Image
                 </Text>
-                <Text as={"span"} color={"gray.500"}>
+                <Text as={"span"} color={subTextColor}>
                   {subTitle}
                 </Text>
               </Stack>

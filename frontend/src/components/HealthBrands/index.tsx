@@ -45,7 +45,7 @@ const HealthBrands: React.FC = () => {
             display="flex"
             justifyContent="center"
             alignItems="center"
-            padding={4}
+            padding={2}
             borderRadius="md"
             boxShadow="md"
             transition="transform 0.2s"
@@ -58,7 +58,7 @@ const HealthBrands: React.FC = () => {
               src={brand.logoUrl}
               alt={`${brand.name} logo`}
               maxWidth="100%"
-              maxHeight="80px"
+              maxHeight="60px"
               objectFit="cover"
             />
           </Box>

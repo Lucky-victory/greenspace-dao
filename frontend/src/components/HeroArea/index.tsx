@@ -9,7 +9,10 @@ import {
   useColorModeValue,
   Image,
   SimpleGrid,
-  Container
+  Container,
+  AvatarGroup,
+  Avatar,
+  HStack
 } from "@chakra-ui/react";
 import { motion } from "framer-motion";
 import HealthBrands from "../HealthBrands";
@@ -89,43 +92,57 @@ export default function HeroArea() {
               Join thousands who&apos;ve already improved their health markers and energy levels. Get expert guidance,
               custom meal plans, and a supportive community to help you thrive.
             </Text>
-            <Stack
-              as={motion.div}
-              variants={itemVariants}
-              direction={{ base: "column", sm: "row" }}
-              spacing={4}
-              width="100%"
-              justify={{ base: "center", lg: "flex-start" }}
-            >
-              <Button
-                as="a"
-                href="#join-community"
-                size="lg"
-                colorScheme="gs-green"
-                fontWeight="bold"
-                _hover={{ transform: "translateY(-2px)", boxShadow: "lg" }}
-                borderRadius="full"
-                width={{ base: "100%", sm: "auto" }}
+            <Stack>
+              <Stack
+                as={motion.div}
+                variants={itemVariants}
+                direction={{ base: "column", sm: "row" }}
+                spacing={4}
+                width="100%"
+                justify={{ base: "center", lg: "flex-start" }}
               >
-                Join Our Community
-              </Button>
-              <Button
-                as="a"
-                href="#learn-more"
-                size="lg"
-                variant="outline"
-                colorScheme="gs-yellow"
-                fontWeight="bold"
-                _hover={{ bg: buttonHoverBg }}
-                borderRadius="full"
-                width={{ base: "100%", sm: "auto" }}
-              >
-                Learn More
-              </Button>
+                <Button
+                  as="a"
+                  href="#join-community"
+                  size="lg"
+                  colorScheme="gs-green"
+                  fontWeight="bold"
+                  _hover={{ transform: "translateY(-2px)", boxShadow: "lg" }}
+                  borderRadius="full"
+                  width={{ base: "100%", sm: "auto" }}
+                >
+                  Join Our Community
+                </Button>
+                <Button
+                  as="a"
+                  href="#learn-more"
+                  size="lg"
+                  variant="outline"
+                  colorScheme="gs-yellow"
+                  fontWeight="bold"
+                  _hover={{ bg: buttonHoverBg }}
+                  borderRadius="full"
+                  width={{ base: "100%", sm: "auto" }}
+                >
+                  Learn More
+                </Button>
+              </Stack>
+              <HStack mt={2}>
+                <AvatarGroup size={"md"}>
+                  <Avatar src={"/images/man.jpg"} />
+                  <Avatar src={"/images/girl-1.jpg"} />
+                  <Avatar src={"/images/woman-1.jpg"} />
+                  <Avatar src={"/images/guy-1.jpg"} />
+                  <Avatar src={"/images/woman-2.jpg"} />
+                </AvatarGroup>{" "}
+                <Text as={"span"} fontSize={"large"} fontWeight={600}>
+                  1000+ Happy users
+                </Text>
+              </HStack>
             </Stack>
           </VStack>
 
-          <Box as={motion.div} w={{ base: "100%", lg: "50%" }} maxW="800px" hideBelow={"sm"}>
+          <Box as={motion.div} w={{ base: "100%", lg: "50%" }} maxW="800px" hideBelow={"sm"} pr={{ lg: 4 }}>
             <SimpleGrid row={4} columns={{ base: 1, sm: 2 }} spacing={4} gridAutoFlow="dense">
               <Image
                 as={motion.img}

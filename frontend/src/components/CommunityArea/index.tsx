@@ -122,8 +122,18 @@ export default function CommunityArea() {
         <Text mt={5} fontWeight="bold">
           Ready to live longer? Join Green Heads today and start your journey to a brighter future!
         </Text>
-        <Button as={Link} href="/join" colorScheme="green" size="lg" width="fit-content" mt={5}>
-          Start Your Longevity Journey
+        <Button
+          as="a"
+          href="#join-community"
+          size="lg"
+          colorScheme="gs-green"
+          fontWeight="bold"
+          mt={2}
+          _hover={{ transform: "translateY(-2px)", boxShadow: "lg" }}
+          borderRadius="full"
+          width={{ base: "100%", sm: "fit-content" }}
+        >
+          Join Our Community
         </Button>
       </Stack>
     </Flex>

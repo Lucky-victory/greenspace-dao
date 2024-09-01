@@ -6,7 +6,7 @@ export default function Footer() {
   const bgColor = useColorModeValue("gray.100", "black");
   const textColor = useColorModeValue("gray.800", "white");
   const hoverColor = useColorModeValue("black", "white");
-  const logoSrc = useColorModeValue("/logo.svg", "/white-logo.svg");
+  const logoSrc = useColorModeValue("/black-logo.svg", "/white-logo.svg");
 
   return (
     <Box minH={150} px={{ base: 4, lg: 12 }} bg={bgColor} py={10}>

@@ -17,7 +17,7 @@ import DashboardLayout from "src/components/AdminDashboardLayout";
 import TextEditor from "src/components/TextEditor";
 
 import { useState } from "react";
-import CoverImageUploader from "src/components/CommunityPage/TabPanels/CoverImageUploader";
+import CoverImageUploader from "src/components/CoverImageUploader";
 import { useStorageUpload } from "@thirdweb-dev/react";
 import { useFormik } from "formik";
 import { resolveIPFSURI } from "src/helpers";

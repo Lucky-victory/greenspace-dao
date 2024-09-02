@@ -39,8 +39,8 @@ const itemVariants = {
 
 export default function HeroArea() {
   const textColor = useColorModeValue("gray.800", "gray.100");
-  const highlightColor = useColorModeValue("gs-green.600", "gs-yellow.400");
-  const highlightColorBase = useColorModeValue("gs-green.200", "gs-yellow.400");
+  const highlightColor = useColorModeValue("gs-green.700", "gs-yellow.400");
+  // const highlightColorBase = useColorModeValue("gs-green.200", "gs-yellow.400");
   const buttonHoverBg = useColorModeValue("gs-yellow.50", "gs-yellow.800");
 
   return (
@@ -87,7 +87,7 @@ export default function HeroArea() {
               lineHeight="shorter"
             >
               Feel Great with{" "}
-              <Text as="span" color={{ base: highlightColorBase, lg: highlightColor }}>
+              <Text as="span" color={highlightColor}>
                 GreenSpace
               </Text>
             </Heading>

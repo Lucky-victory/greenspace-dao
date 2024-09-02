@@ -7,12 +7,13 @@ import CommunityArea from "src/components/CommunityArea";
 import CoachArea from "src/components/CoachArea";
 import Footer from "src/components/Footer";
 import { useEffect } from "react";
+import TestimonialsSection from "src/components/Testimonials";
 
 export default function Home() {
   const { colorMode } = useColorMode();
   const bgGradient = useColorModeValue(
-    "linear(236deg, #DCDDDB 0%, #329648 0%, #FFFFFF 100%)",
-    "linear(236deg, #DCDDDB 0%, #329648 0%, #000000 100%)"
+    "linear(236deg, #DCDDDB 0%, #aae7b8 0%, #FFFFFF 100%)",
+    "linear(236deg, #DCDDDB 0%, #378949 0%, #000000 100%)"
   );
   const overlayBg = useColorModeValue("rgba(255, 255, 255, 0.44)", "rgba(41, 41, 41, 0.44)");
 
@@ -58,6 +59,7 @@ export default function Home() {
             <HeroArea />
             <CommunityArea />
             <CoachArea />
+            <TestimonialsSection />
             {/* </Box> */}
           </Box>
         </Box>

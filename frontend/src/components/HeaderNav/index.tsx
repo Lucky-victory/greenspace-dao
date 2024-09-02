@@ -118,7 +118,7 @@ export function HeaderNav() {
             {links}
           </List>
 
-          <HStack px={4} pr={8} py={2} h={"full"} justify={"flex-end"}>
+          <HStack px={4} py={2} h={"full"} justify={"flex-end"}>
             {!(isMobileSize || isTabletSize) && (
               <>
                 <ConnectOrLogout openModal={onOpen} />

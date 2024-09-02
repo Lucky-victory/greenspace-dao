@@ -91,7 +91,7 @@ export const generateNumId = (prefix = "", len = 10, sep = "") => {
   return `${prefix}${sep}${generateUniqueId({
     useLetters: false,
     useNumbers: true,
-    length: len,
+    length: len
   })}`;
 };
 export const generateUsername = (prefix = "GH", len = 10) => {
@@ -146,7 +146,7 @@ export async function mainHandler(
     GET,
     PUT,
     POST,
-    DELETE,
+    DELETE
   }: {
     GET?: HTTP_METHOD_CB;
     POST?: HTTP_METHOD_CB;
@@ -194,12 +194,18 @@ export function isDuplicate<T>(array: T[], property: keyof T, value: string) {
 export function shortenText(text: string, len = 50, end = "..."): string {
   return text?.length > len ? text?.substring(0, len) + end : text;
 }
-
+export const replaceCloudflareIpfs = (url: string = "") => {
+  if (url?.includes("cloudflare-ipfs.com")) {
+    const newUrl = url.replace("cloudflare-ipfs.com", "ipfs.io");
+    return newUrl;
+  }
+  return url;
+};
 export const apiPost = async (endpoint: string, params: Record<string, any>): Promise<{ message: string }> => {
   const result = await axios.post(`${endpoint}`, params, {
     headers: {
-      "content-type": "application/json",
-    },
+      "content-type": "application/json"
+    }
   });
   return { message: result.data };
 };
@@ -252,7 +258,7 @@ export const generateSlug = (text: string) =>
   slugify(shortenText(text, 60, "") + "-" + nanoid(6), {
     lower: true,
     remove: /[*+~.()'"!:@]/g,
-    strict: true,
+    strict: true
   });
 export function removeKeyFromObject<T extends object>(arr: T[], keysToRemove: (keyof T)[] = []) {
   if (isEmpty(arr)) return [];

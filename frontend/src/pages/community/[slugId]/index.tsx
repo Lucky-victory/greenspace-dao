@@ -26,6 +26,7 @@ import Members from "src/components/CommunityPage/TabPanels/Members";
 import { TabHeading } from "src/components/CommunityPage/TabHeading";
 import { BsChevronBarLeft, BsChevronLeft } from "react-icons/bs";
 import { Link } from "@chakra-ui/next-js";
+import { replaceCloudflareIpfs } from "src/utils";
 
 const tabsObj = [
   {
@@ -159,7 +160,7 @@ export default function CommunityViewPage({
               </Button>
               <Image
                 alt="banner"
-                src={community?.coverImage || "/assets/community-default-bg.png"}
+                src={replaceCloudflareIpfs(community?.coverImage!) || "/assets/community-default-bg.png"}
                 h={"full"}
                 w={"full"}
                 objectFit={"cover"}
@@ -194,7 +195,7 @@ export default function CommunityViewPage({
               >
                 <Image
                   alt=""
-                  src={community?.displayImage || "/assets/community-dp.png"}
+                  src={replaceCloudflareIpfs(community?.displayImage!) || "/assets/community-dp.png"}
                   h={"full"}
                   w={"full"}
                   objectFit={"cover"}

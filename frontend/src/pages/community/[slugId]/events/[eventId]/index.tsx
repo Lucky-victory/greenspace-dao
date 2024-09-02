@@ -28,7 +28,7 @@ import { useRouter } from "next/router";
 import { format } from "date-fns";
 import isEmpty from "just-is-empty";
 import { FiCalendar, FiHome, FiMapPin } from "react-icons/fi";
-import { formatDateWithOrdinal } from "src/utils";
+import { formatDateWithOrdinal, replaceCloudflareIpfs } from "src/utils";
 import GetNotifiedForm from "src/components/GetNotified";
 import { useEffect } from "react";
 import { useInAppAuth } from "src/hooks/common";
@@ -136,7 +136,7 @@ export default function EventPage({
               </Button>
               <Image
                 alt=""
-                src={event?.coverImage || "/assets/community.jpg"}
+                src={replaceCloudflareIpfs(event?.coverImage) || "/assets/community.jpg"}
                 width={"full"}
                 h={"full"}
                 objectFit={"cover"}

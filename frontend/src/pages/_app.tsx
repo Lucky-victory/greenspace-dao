@@ -73,7 +73,7 @@ function ColorModeToggle() {
 
   useEffect(() => {
     const handleKeyCommand = (event: KeyboardEvent) => {
-      if (event.ctrlKey && event.key === "m") {
+      if (event.key === "m") {
         toggleColorMode();
       }
     };

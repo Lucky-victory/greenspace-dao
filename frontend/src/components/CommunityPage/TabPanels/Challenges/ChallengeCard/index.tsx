@@ -1,7 +1,7 @@
 import { Box, Heading, HStack, Stack, Text, Button, Image, Flex, useColorModeValue } from "@chakra-ui/react";
 import { Link } from "@chakra-ui/next-js";
 import MarkdownRenderer from "src/components/MarkdownRenderer";
-import { shortenText } from "src/utils";
+import { replaceCloudflareIpfs, shortenText } from "src/utils";
 import isEmpty from "just-is-empty";
 
 export default function ChallengeCard({ spaceIdOrId, challenge }: { spaceIdOrId: string; challenge: any }) {
@@ -45,7 +45,7 @@ export default function ChallengeCard({ spaceIdOrId, challenge }: { spaceIdOrId:
           h={"full"}
           objectFit={"cover"}
           alt=""
-          src={challenge?.coverImage || "/assets/community-dp.png"}
+          src={replaceCloudflareIpfs(challenge?.coverImage) || "/assets/community-dp.png"}
         />
       </Box>
       <Stack flex={1}>

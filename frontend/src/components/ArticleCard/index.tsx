@@ -1,4 +1,4 @@
-import { shortenText } from "src/utils";
+import { shortenText, replaceCloudflareIpfs } from "src/utils";
 import { Article } from "src/types/shared";
 import { Link } from "@chakra-ui/next-js";
 import { Box, Heading, Image, LinkBox, LinkOverlay, Text, useColorModeValue, Flex, Badge } from "@chakra-ui/react";
@@ -25,7 +25,13 @@ const ArticleCard = ({ article }: { article: Article | Partial<Article> }) => {
       boxShadow={"lg"}
       bg={bgColor}
     >
-      <Image alt="" src={article?.image || "/images/placeholder-image.png"} objectFit={"cover"} w={"full"} h={200} />
+      <Image
+        alt=""
+        src={replaceCloudflareIpfs(article?.image as string) || "/images/placeholder-image.png"}
+        objectFit={"cover"}
+        w={"full"}
+        h={200}
+      />
       <Flex direction={"column"} p={6} flex={1}>
         <LinkOverlay href={"/blog/" + article?.slug} as={NextLink}>
           <Heading as={"h3"} size={"md"} color={headingColor} mb={2} _hover={{ color: "gs-yellow.500" }}>

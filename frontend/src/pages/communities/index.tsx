@@ -11,7 +11,7 @@ import { useCheckHasJoinCommunityMutation, useGetCommunitiesQuery, useJoinCommun
 import { useInAppAuth } from "src/hooks/common";
 import { Link } from "@chakra-ui/next-js";
 import { CardLoading } from "src/components/CommunityPage/CardLoading";
-import { shortenText } from "src/utils";
+import { replaceCloudflareIpfs, shortenText } from "src/utils";
 import Head from "next/head";
 
 export default function CommunitiesPage() {
@@ -109,7 +109,7 @@ export default function CommunitiesPage() {
                     <Box h={200} pos="relative">
                       <Image
                         alt=""
-                        src={community?.coverImage || "/assets/community-default-bg.png"}
+                        src={replaceCloudflareIpfs(community?.coverImage!) || "/assets/community-default-bg.png"}
                         h="full"
                         objectFit="cover"
                         w="full"
@@ -120,7 +120,8 @@ export default function CommunitiesPage() {
                           w={20}
                           h={20}
                           rounded="full"
-                          src={community?.displayImage || "/assets/community-dp.png"}
+                          objectFit={"cover"}
+                          src={replaceCloudflareIpfs(community?.displayImage!) || "/assets/community-dp.png"}
                         />
                       </Box>
                     </Box>

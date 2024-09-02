@@ -1,7 +1,7 @@
 import { Box, Heading, HStack, Stack, Text, Button, Image, Flex, useColorModeValue } from "@chakra-ui/react";
 import { Link } from "@chakra-ui/next-js";
 import MarkdownRenderer from "src/components/MarkdownRenderer";
-import { shortenText } from "src/utils";
+import { replaceCloudflareIpfs, shortenText } from "src/utils";
 import isEmpty from "just-is-empty";
 
 export default function EventCards({ spaceIdOrId, event }: { spaceIdOrId: string; event: any }) {
@@ -39,7 +39,13 @@ export default function EventCards({ spaceIdOrId, event }: { spaceIdOrId: string
         borderRadius="lg"
         overflow="hidden"
       >
-        <Image w={"full"} h={"full"} objectFit={"cover"} alt="" src={event?.coverImage || "/assets/community-dp.png"} />
+        <Image
+          w={"full"}
+          h={"full"}
+          objectFit={"cover"}
+          alt=""
+          src={replaceCloudflareIpfs(event?.coverImage) || "/assets/community-dp.png"}
+        />
       </Box>
       <Stack flex={1} spacing={3}>
         <Heading size={"md"}>{event?.title}</Heading>

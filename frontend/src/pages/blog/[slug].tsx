@@ -30,6 +30,7 @@ import Footer from "src/components/Footer";
 import { HeaderNav } from "src/components/HeaderNav";
 import { maskHexAddress, resolveIPFSURI } from "src/helpers";
 import { useGetArticleQuery } from "src/state/services";
+import { replaceCloudflareIpfs } from "src/utils";
 
 const ArticleView = () => {
   const router = useRouter();
@@ -110,7 +111,7 @@ const ArticleView = () => {
                 w="full"
                 h="400px"
                 objectFit="cover"
-                src={article?.image || "/images/placeholder-image.png"}
+                src={replaceCloudflareIpfs(article?.image!) || "/images/placeholder-image.png"}
                 alt={article?.title || "Article image"}
                 borderRadius="lg"
               />

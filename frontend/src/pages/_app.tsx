@@ -16,6 +16,7 @@ import "swiper/css";
 import { Provider as ReduxProvider } from "react-redux";
 import { HuddleClient } from "@huddle01/web-core";
 import { HuddleProvider } from "@huddle01/react";
+import { useEffect } from "react";
 const huddleClient = new HuddleClient({
   projectId: process.env.NEXT_PUBLIC_HUDDLE_PROJECT_ID!,
   options: {
@@ -69,9 +70,24 @@ export default function App({ Component, pageProps }: AppProps) {
 }
 function ColorModeToggle() {
   const { colorMode, toggleColorMode } = useColorMode();
+
+  useEffect(() => {
+    const handleKeyCommand = (event: KeyboardEvent) => {
+      if (event.ctrlKey && event.key === "m") {
+        toggleColorMode();
+      }
+    };
+    // register the keyboard command
+    document.addEventListener("keypress", handleKeyCommand);
+    return () => {
+      document.removeEventListener("keypress", handleKeyCommand);
+    };
+  }, [toggleColorMode]);
   return (
-    <Button pos={"fixed"} top={0} left={0} zIndex={20000} onClick={toggleColorMode}>
-      Toggle {colorMode === "light" ? "Dark" : "Light"}
-    </Button>
+    <>
+      {/* <Button pos={"fixed"} top={0} left={0} zIndex={20000} onClick={toggleColorMode}> */}
+      {/* Toggle {colorMode === "light" ? "Dark" : "Light"} */}
+      {/* </Button> */}
+    </>
   );
 }

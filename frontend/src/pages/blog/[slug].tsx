@@ -125,7 +125,7 @@ const ArticleView = () => {
               )}
             </Skeleton>
 
-            <Box bg={cardBgColor} p={8} borderRadius="lg" boxShadow="md">
+            <Box bg={cardBgColor} p={{ base: 4, md: 8 }} borderRadius="lg" boxShadow="md">
               {isLoading || isFetching || isEmpty(article) ? (
                 <VStack spacing={4} align="stretch">
                   <SkeletonText noOfLines={4} spacing={4} />

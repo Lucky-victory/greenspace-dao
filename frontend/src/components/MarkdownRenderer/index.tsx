@@ -17,7 +17,7 @@ import {
   TableCaption,
   TableContainer,
   Heading,
-  Image,
+  Image
 } from "@chakra-ui/react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -102,7 +102,7 @@ const MarkdownRenderer = ({ markdown }: { markdown: string }) => {
             pr={4}
             bg={"gray.700"}
           />
-        ),
+        )
       }}
     />
   );

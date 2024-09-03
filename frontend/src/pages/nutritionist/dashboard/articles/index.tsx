@@ -15,7 +15,7 @@ import {
   TableContainer,
   Image,
   Tr,
-  ResponsiveValue,
+  ResponsiveValue
 } from "@chakra-ui/react";
 import NutritionistDashBoardLayout from "src/components/NutritionistDashboardLayout";
 import Head from "next/head";
@@ -29,18 +29,16 @@ import DashboardEmptyArea from "src/components/DashboardEmptyArea";
 
 export default function ArticlesDashBoard() {
   const { data, isLoading, isFetching } = useGetArticlesQuery({
-    status: "all",
+    status: "all"
   });
-  const articles = removeKeyFromObject(data?.data || ([] as Article[]), [
-    "author",
-  ]);
+  const articles = removeKeyFromObject(data?.data || ([] as Article[]), ["author"]);
   console.log({ _data: articles });
 
   const tableHeadStyles = {
     // pb: 4,
     fontSize: "15px",
     fontWeight: "medium",
-    textTransform: "uppercase" as ResponsiveValue<"capitalize">,
+    textTransform: "uppercase" as ResponsiveValue<"capitalize">
     // color: '#9CA4AB',
   };
   return (
@@ -88,11 +86,7 @@ export default function ArticlesDashBoard() {
                 <TableContainer>
                   <Table>
                     <Thead>
-                      <Tr
-                        h={"auto"}
-                        borderBottom={"2px"}
-                        borderBottomColor={"gray.100"}
-                      >
+                      <Tr h={"auto"} borderBottom={"2px"} borderBottomColor={"gray.100"}>
                         {!isEmpty(articles) &&
                           selectObjectKeys(articles[0]).map((key, i) => {
                             return (
@@ -115,7 +109,7 @@ export default function ArticlesDashBoard() {
                             <Td>
                               <HStack>
                                 <Button
-                                  href={"/blog/article/" + d.slug}
+                                  href={"/article/" + d.slug}
                                   variant={"outline"}
                                   as={Link}
                                   size={"sm"}

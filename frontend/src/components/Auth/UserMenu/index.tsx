@@ -9,7 +9,7 @@ import {
   MenuItem,
   MenuList,
   Portal,
-  Text,
+  Text
 } from "@chakra-ui/react";
 import { LogoutButton } from "../Logout";
 import { Link } from "@chakra-ui/next-js";
@@ -45,6 +45,7 @@ export const UserMenu = () => {
     };
     fetchUser();
   }, [user, getUserCb, ready]);
+  console.log({ user });
 
   return (
     <>
@@ -57,7 +58,7 @@ export const UserMenu = () => {
           isLoading={isLoading}
           loadingText="Loading..."
         >
-          Hi, there <BoringAvatar size={30} />
+          Hi, <BoringAvatar size={30} />
         </Button>
       )}
 

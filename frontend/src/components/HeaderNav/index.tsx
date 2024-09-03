@@ -25,6 +25,7 @@ import { ConnectOrLogout } from "../Auth/ConnectOrRegister";
 import RegisterForm from "../RegisterForm";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { RegisterButton } from "../Auth/RegisterButton";
+import { usePrivy } from "@privy-io/react-auth";
 
 export function HeaderNav() {
   const { isMobileSize, isTabletSize } = useResize();
@@ -32,6 +33,7 @@ export function HeaderNav() {
   const { isOpen: isMobileNavbarOpen, onToggle: onMobileNavbarToggle, onClose: onMobileNavbarClose } = useDisclosure();
   const { colorMode } = useColorMode();
 
+  const { user, ready } = usePrivy();
   const { scrollY } = useScroll();
   const headerOpacity = useTransform(scrollY, [0, 50], [0.8, 1]);
   const headerY = useTransform(scrollY, [0, 50], [0, -10]);
@@ -127,7 +129,7 @@ export function HeaderNav() {
 
             {(isMobileSize || isTabletSize) && (
               <>
-                <RegisterButton onClick={onOpen} styleProps={{ size: "sm" }} />
+                {!user && <RegisterButton onClick={onOpen} styleProps={{ size: "sm" }} />}
                 <IconButton ml={1} onClick={onMobileNavbarToggle} fontSize={24} aria-label="toggle mobile menu">
                   <LuMenu />
                 </IconButton>

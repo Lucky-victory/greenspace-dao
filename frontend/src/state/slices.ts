@@ -1,4 +1,3 @@
-import { communityMessages } from "src/db/schema";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { GreenSpaceDAOApi } from "./services";
 
@@ -6,7 +5,7 @@ import { GreenSpaceDAOApi } from "./services";
 export const communityMessagesState = createSlice({
   name: "communityMessages",
   initialState: {
-    data: [] as any[],
+    data: [] as any[]
   },
   reducers: {
     update: (state, action: PayloadAction<{ data: Record<string, any>[] }>) => {
@@ -14,16 +13,13 @@ export const communityMessagesState = createSlice({
     },
     addMessage: (state, action: PayloadAction<{}>) => {
       state.data.push(action.payload);
-    },
+    }
   },
   extraReducers(builder) {
-    builder.addMatcher(
-      GreenSpaceDAOApi.endpoints.getCommunityMessages.matchFulfilled,
-      (state, action) => {
-        state.data = action.payload.data!;
-      }
-    );
-  },
+    builder.addMatcher(GreenSpaceDAOApi.endpoints.getCommunityMessages.matchFulfilled, (state, action) => {
+      state.data = action.payload.data!;
+    });
+  }
 });
 
 export const { update, addMessage } = communityMessagesState.actions;

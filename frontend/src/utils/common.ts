@@ -1,7 +1,7 @@
 export function resolveIPFSURI(
   ipfsURI: string,
   addGateWayUrl = true,
-  gatewayUrl = "https://cloudflare-ipfs.com/"
+  gatewayUrl = "https://ipfs.io/"
 ): string {
   // Check if the URI starts with 'ipfs://'
   if (ipfsURI.startsWith("ipfs://")) {

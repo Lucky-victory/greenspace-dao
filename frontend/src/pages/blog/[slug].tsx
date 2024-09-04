@@ -30,9 +30,11 @@ import Footer from "src/components/Footer";
 import { HeaderNav } from "src/components/HeaderNav";
 import { maskHexAddress, resolveIPFSURI } from "src/helpers";
 import { useGetArticleQuery } from "src/state/services";
-import { replaceCloudflareIpfs } from "src/utils";
+import { generateBigintId, generateNumId, generateUsername, replaceCloudflareIpfs } from "src/utils";
 
 const ArticleView = () => {
+  console.log({ id: generateBigintId(), username: generateUsername(), num: generateNumId() });
+
   const router = useRouter();
   const { slug } = router.query;
   const { data, isLoading, isFetching } = useGetArticleQuery({

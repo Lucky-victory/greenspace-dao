@@ -1,31 +1,28 @@
 import { db } from "src/db";
-import { users } from "src/db/schema";
 import { HTTP_METHOD_CB, errorHandlerCallback, mainHandler, successHandlerCallback } from "src/utils";
-import { and, eq } from "drizzle-orm";
 import { NextApiRequest, NextApiResponse } from "next";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   return mainHandler(req, res, {
-    GET,
+    GET
   });
 }
 
 export const GET: HTTP_METHOD_CB = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
-    const user = await db.query.users.findMany({
+    const users = await db.query.users.findMany({
       columns: {
-        email: false,
-      },
-      where: eq(users.userType, "member"),
+        email: false
+      }
     });
     return successHandlerCallback(req, res, {
       message: "member users retrieved successfully",
-      data: user || null,
+      data: users || []
     });
   } catch (error) {
     return errorHandlerCallback(req, res, {
       message: "Something went wrong...",
-      data: null,
+      data: null
     });
   }
 };

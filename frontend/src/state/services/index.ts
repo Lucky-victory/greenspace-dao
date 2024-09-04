@@ -10,7 +10,7 @@ import {
   NEW_USER,
   Nutritionist,
   USER,
-  VerificationStatus,
+  VerificationStatus
 } from "../types";
 import {
   FitnessPlan,
@@ -20,14 +20,14 @@ import {
   NewFitnessPlan,
   NewMealPlan,
   Community,
-  NEW_COMMUNITY,
+  NEW_COMMUNITY
 } from "src/types/shared";
 import { update } from "../slices";
 
 export const GreenSpaceDAOApi = createApi({
   reducerPath: "GreenSpaceDAOApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: "/api/",
+    baseUrl: "/api/"
   }),
   tagTypes: [
     "MeetingRecords",
@@ -44,7 +44,7 @@ export const GreenSpaceDAOApi = createApi({
     "CommunityMessages",
     "CommunityChallenges",
     "Appointments",
-    "Nutritionists",
+    "Nutritionists"
   ],
 
   endpoints: (builder) => ({
@@ -52,25 +52,25 @@ export const GreenSpaceDAOApi = createApi({
       query: (data) => ({
         url: `fitness-plans`,
         method: "POST",
-        body: data,
+        body: data
       }),
-      invalidatesTags: [{ type: "FitnessPlans" as const, id: "LIST" }],
+      invalidatesTags: [{ type: "FitnessPlans" as const, id: "LIST" }]
     }),
     addMealPlan: builder.mutation<APIResponse<MealPlan>, NewMealPlan>({
       query: ({ ...rest }) => ({
         url: `meal-plans`,
         method: "POST",
-        body: { ...rest },
+        body: { ...rest }
       }),
-      invalidatesTags: [{ type: "MealPlans" as const, id: "LIST" }],
+      invalidatesTags: [{ type: "MealPlans" as const, id: "LIST" }]
     }),
     sendUserInfoToAI: builder.mutation<APIResponse<any>, any>({
       query: (data) => ({
         url: `ai/`,
         method: "POST",
-        body: data,
+        body: data
       }),
-      invalidatesTags: [{ type: "Articles" as const, id: "LIST" }],
+      invalidatesTags: [{ type: "Articles" as const, id: "LIST" }]
     }),
     getArticles: builder.query<
       Partial<APIResponse<Article[]>>,
@@ -78,7 +78,7 @@ export const GreenSpaceDAOApi = createApi({
     >({
       query: (params) => {
         return {
-          url: `articles?${objectToSearchParams(params)}`,
+          url: `articles?${objectToSearchParams(params)}`
         };
       },
       providesTags: (result) =>
@@ -88,12 +88,12 @@ export const GreenSpaceDAOApi = createApi({
             [
               ...result?.data.map(({ slug }) => ({
                 type: "Articles" as const,
-                id: slug,
+                id: slug
               })),
-              { type: "Articles", id: "LIST" },
+              { type: "Articles", id: "LIST" }
             ]
           : // an error occurred, but we still want to refetch this query when `{ type: 'Articles', id: 'LIST' }` is invalidated
-            [{ type: "Articles", id: "LIST" }],
+            [{ type: "Articles", id: "LIST" }]
     }),
     getMealPlans: builder.query<
       Partial<APIResponse<MealPlan[]>>,
@@ -101,7 +101,7 @@ export const GreenSpaceDAOApi = createApi({
     >({
       query: (params) => {
         return {
-          url: `meal-plans?${objectToSearchParams(params)}`,
+          url: `meal-plans?${objectToSearchParams(params)}`
         };
       },
       providesTags: (result) =>
@@ -111,12 +111,12 @@ export const GreenSpaceDAOApi = createApi({
             [
               ...result?.data.map(({ slug }) => ({
                 type: "MealPlans" as const,
-                id: slug,
+                id: slug
               })),
-              { type: "MealPlans", id: "LIST" },
+              { type: "MealPlans", id: "LIST" }
             ]
           : // an error occurred, but we still want to refetch this query when `{ type: 'MealPlans', id: 'LIST' }` is invalidated
-            [{ type: "MealPlans", id: "LIST" }],
+            [{ type: "MealPlans", id: "LIST" }]
     }),
     getFitnessPlans: builder.query<
       Partial<APIResponse<FitnessPlan[]>>,
@@ -124,7 +124,7 @@ export const GreenSpaceDAOApi = createApi({
     >({
       query: (params) => {
         return {
-          url: `fitness-plans?${objectToSearchParams(params)}`,
+          url: `fitness-plans?${objectToSearchParams(params)}`
         };
       },
       providesTags: (result) =>
@@ -134,30 +134,30 @@ export const GreenSpaceDAOApi = createApi({
             [
               ...result?.data.map(({ slug }) => ({
                 type: "FitnessPlans" as const,
-                id: slug,
+                id: slug
               })),
-              { type: "FitnessPlans", id: "LIST" },
+              { type: "FitnessPlans", id: "LIST" }
             ]
           : // an error occurred, but we still want to refetch this query when `{ type: 'FitnessPlans', id: 'LIST' }` is invalidated
-            [{ type: "FitnessPlans", id: "LIST" }],
+            [{ type: "FitnessPlans", id: "LIST" }]
     }),
     getArticle: builder.query<Partial<APIResponse<Article>>, { slug: string; use_id?: boolean }>({
       query: ({ slug, use_id = false }) => `articles/${slug}?use_id=${use_id}`,
       providesTags: (result, error, { slug }) => {
         return [{ type: "Articles" as const, id: slug }];
-      },
+      }
     }),
     getMealPlan: builder.query<Partial<APIResponse<MealPlan>>, { slug: string; use_id?: boolean }>({
       query: ({ slug, use_id = false }) => `meal-plans/${slug}?use_id=${use_id}`,
       providesTags: (result, error, { slug }) => {
         return [{ type: "MealPlans" as const, id: slug }];
-      },
+      }
     }),
     getFitnessPlan: builder.query<Partial<APIResponse<FitnessPlan>>, { slug: string; use_id?: boolean }>({
       query: ({ slug, use_id = false }) => `fitness-plans/${slug}?use_id=${use_id}`,
       providesTags: (result, error, { slug }) => {
         return [{ type: "FitnessPlans" as const, id: slug }];
-      },
+      }
     }),
     updateArticle: builder.mutation<APIResponse<Article>, Partial<Article>>({
       query(data) {
@@ -165,11 +165,28 @@ export const GreenSpaceDAOApi = createApi({
         return {
           url: `articles/${slug}`,
           method: "PUT",
-          body,
+          body
         };
       },
 
-      invalidatesTags: (result, error, { slug }) => [{ type: "Articles", id: slug }],
+      invalidatesTags: (result, error, { slug }) => [{ type: "Articles", id: slug }]
+    }),
+    updateUser: builder.mutation<
+      APIResponse<Partial<USER>>,
+      Partial<USER> & {
+        addressOrAuthId: string;
+      }
+    >({
+      query(data) {
+        const { addressOrAuthId, ...body } = data;
+        return {
+          url: `users/${encodeURIComponent(addressOrAuthId)}`,
+          method: "PUT",
+          body
+        };
+      },
+
+      invalidatesTags: (result, error, { addressOrAuthId }) => [{ type: "Articles", id: addressOrAuthId }]
     }),
     updateFitnessPlan: builder.mutation<APIResponse<FitnessPlan>, Partial<FitnessPlan>>({
       query(data) {
@@ -177,11 +194,11 @@ export const GreenSpaceDAOApi = createApi({
         return {
           url: `fitness-plans/${slug}`,
           method: "PUT",
-          body,
+          body
         };
       },
 
-      invalidatesTags: (result, error, { slug }) => [{ type: "FitnessPlans", id: slug }],
+      invalidatesTags: (result, error, { slug }) => [{ type: "FitnessPlans", id: slug }]
     }),
     updateMealPlan: builder.mutation<APIResponse<MealPlan>, Partial<MealPlan>>({
       query(data) {
@@ -189,22 +206,22 @@ export const GreenSpaceDAOApi = createApi({
         return {
           url: `meal-plans/${slug}`,
           method: "PUT",
-          body,
+          body
         };
       },
 
-      invalidatesTags: (result, error, { slug }) => [{ type: "MealPlans", id: slug }],
+      invalidatesTags: (result, error, { slug }) => [{ type: "MealPlans", id: slug }]
     }),
 
     getUser: builder.query<Partial<APIResponse<USER>>, { usernameOrAuthId: string; params?: Record<string, any> }>({
       query: ({ usernameOrAuthId, params }) => {
         return {
-          url: `users/${usernameOrAuthId}?${objectToSearchParams(params!)}`,
+          url: `users/${encodeURIComponent(usernameOrAuthId)}?${objectToSearchParams(params!)}`
         };
       },
       providesTags: (result, error, { usernameOrAuthId }) => {
         return [{ type: "Users" as const, id: usernameOrAuthId }];
-      },
+      }
     }),
 
     checkNutritionistStatus: builder.mutation<APIResponse<{ status: VerificationStatus }>, { address: string }>({
@@ -212,9 +229,9 @@ export const GreenSpaceDAOApi = createApi({
         return {
           url: `users/nutritionists/status`,
           method: "POST",
-          body: data,
+          body: data
         };
-      },
+      }
     }),
     getNutritionist: builder.query<
       Partial<APIResponse<Nutritionist>>,
@@ -222,17 +239,17 @@ export const GreenSpaceDAOApi = createApi({
     >({
       query: ({ usernameOrAuthId, params }) => {
         return {
-          url: `users/nutritionists/${usernameOrAuthId}?${objectToSearchParams(params!)}`,
+          url: `users/nutritionists/${usernameOrAuthId}?${objectToSearchParams(params!)}`
         };
       },
       providesTags: (result, error, { usernameOrAuthId }) => {
         return [{ type: "Nutritionists" as const, id: usernameOrAuthId }];
-      },
+      }
     }),
     getNutritionists: builder.query<Partial<APIResponse<Nutritionist[]>>, { status?: VerificationStatus | "all" }>({
       query: (params) => {
         return {
-          url: `users/nutritionists?${objectToSearchParams(params)}`,
+          url: `users/nutritionists?${objectToSearchParams(params)}`
         };
       },
       providesTags: (result) =>
@@ -242,27 +259,27 @@ export const GreenSpaceDAOApi = createApi({
             [
               ...result?.data.map(({ authId }) => ({
                 type: "Nutritionists" as const,
-                id: authId,
+                id: authId
               })),
-              { type: "Nutritionists", id: "LIST" },
+              { type: "Nutritionists", id: "LIST" }
             ]
           : // an error occurred, but we still want to refetch this query when `{ type: 'FitnessPlans', id: 'LIST' }` is invalidated
-            [{ type: "Nutritionists", id: "LIST" }],
+            [{ type: "Nutritionists", id: "LIST" }]
     }),
     getMeeting: builder.query<Partial<APIResponse<MEETING>>, Record<string, any> & { roomId: string }>({
       query: ({ roomId, ...params }) => {
         return {
-          url: `meetings/${roomId}?${objectToSearchParams(params)}`,
+          url: `meetings/${roomId}?${objectToSearchParams(params)}`
         };
       },
       providesTags: (result, error, { id }) => {
         return [{ type: "Meetings" as const, id }];
-      },
+      }
     }),
     getMeetings: builder.query<Partial<APIResponse<MEETING[]>>, Record<string, string>>({
       query: (params) => {
         return {
-          url: `meetings?${objectToSearchParams(params)}`,
+          url: `meetings?${objectToSearchParams(params)}`
         };
       },
       providesTags: (result) =>
@@ -272,18 +289,18 @@ export const GreenSpaceDAOApi = createApi({
             [
               ...result?.data.map(({ id }) => ({
                 type: "Meetings" as const,
-                id,
+                id
               })),
-              { type: "Meetings", id: "LIST" },
+              { type: "Meetings", id: "LIST" }
             ]
           : // an error occurred, but we still want to refetch this query when `{ type: 'Meetings', id: 'LIST' }` is invalidated
-            [{ type: "Meetings", id: "LIST" }],
+            [{ type: "Meetings", id: "LIST" }]
     }),
     // TODO: Add return types
     getCommunities: builder.query<Partial<APIResponse<Community[]>>, { status?: string; userId?: string }>({
       query: (params) => {
         return {
-          url: `communities?${objectToSearchParams(params)}`,
+          url: `communities?${objectToSearchParams(params)}`
         };
       },
       providesTags: (result) =>
@@ -293,49 +310,49 @@ export const GreenSpaceDAOApi = createApi({
             [
               ...result?.data.map(({ id }) => ({
                 type: "Communities" as const,
-                id,
+                id
               })),
-              { type: "Communities", id: "LIST" },
+              { type: "Communities", id: "LIST" }
             ]
           : // an error occurred, but we still want to refetch this query when `{ type: 'Communities', id: 'LIST' }` is invalidated
-            [{ type: "Communities", id: "LIST" }],
+            [{ type: "Communities", id: "LIST" }]
     }), // TODO: Add return types
 
     getCommunity: builder.query<APIResponse<Community>, { params?: Record<string, any>; spaceIdOrId: string }>({
       query: ({ spaceIdOrId, params }) => {
         return {
-          url: `communities/${spaceIdOrId}?${objectToSearchParams(params!)}`,
+          url: `communities/${spaceIdOrId}?${objectToSearchParams(params!)}`
         };
       },
       providesTags: (result, error, { spaceIdOrId }) => {
         return [{ type: "Communities" as const, id: spaceIdOrId }];
-      },
+      }
     }),
     getCommunityEvent: builder.query<Partial<APIResponse<any>>, { params?: Record<string, any>; slugId: string }>({
       query: ({ slugId, params }) => {
         return {
-          url: `community/events/${slugId}?${objectToSearchParams(params!)}`,
+          url: `community/events/${slugId}?${objectToSearchParams(params!)}`
         };
       },
       providesTags: (result, error, { slugId }) => {
         return [{ type: "CommunityEvents" as const, id: slugId }];
-      },
+      }
     }),
     getCommunityChallenge: builder.query<Partial<APIResponse<any>>, { params?: Record<string, any>; slugId: string }>({
       query: ({ slugId, params }) => {
         return {
-          url: `community/challenges/${slugId}?${objectToSearchParams(params!)}`,
+          url: `community/challenges/${slugId}?${objectToSearchParams(params!)}`
         };
       },
       providesTags: (result, error, { slugId }) => {
         return [{ type: "CommunityChallenges" as const, id: slugId }];
-      },
+      }
     }),
     // TODO: Add return types
     getCommunityEvents: builder.query<Partial<APIResponse<any[]>>, { spaceIdOrId: string } & Record<string, any>>({
       query: ({ spaceIdOrId, ...params }) => {
         return {
-          url: `communities/${spaceIdOrId}/events?${objectToSearchParams(params)}`,
+          url: `communities/${spaceIdOrId}/events?${objectToSearchParams(params)}`
         };
       },
       providesTags: (result) =>
@@ -345,18 +362,18 @@ export const GreenSpaceDAOApi = createApi({
             [
               ...result?.data.map(({ id }) => ({
                 type: "CommunityEvents" as const,
-                id,
+                id
               })),
-              { type: "CommunityEvents", id: "LIST" },
+              { type: "CommunityEvents", id: "LIST" }
             ]
           : // an error occurred, but we still want to refetch this query when `{ type: 'CommunityEvents', id: 'LIST' }` is invalidated
-            [{ type: "CommunityEvents", id: "LIST" }],
+            [{ type: "CommunityEvents", id: "LIST" }]
     }),
     // TODO: Add return types
     getCommunityMessages: builder.query<Partial<APIResponse<any[]>>, { spaceIdOrId: string } & Record<string, any>>({
       query: ({ spaceIdOrId, ...params }) => {
         return {
-          url: `communities/${spaceIdOrId}/messages?${objectToSearchParams(params)}`,
+          url: `communities/${spaceIdOrId}/messages?${objectToSearchParams(params)}`
         };
       },
 
@@ -367,18 +384,18 @@ export const GreenSpaceDAOApi = createApi({
             [
               ...result?.data.map(({ id }) => ({
                 type: "CommunityMessages" as const,
-                id,
+                id
               })),
-              { type: "CommunityMessages", id: "LIST" },
+              { type: "CommunityMessages", id: "LIST" }
             ]
           : // an error occurred, but we still want to refetch this query when `{ type: 'CommunityMessages', id: 'LIST' }` is invalidated
-            [{ type: "CommunityMessages", id: "LIST" }],
+            [{ type: "CommunityMessages", id: "LIST" }]
     }),
     // TODO: Add return types
     getCommunityMembers: builder.query<Partial<APIResponse<any[]>>, { spaceIdOrId: string } & Record<string, any>>({
       query: ({ spaceIdOrId, ...params }) => {
         return {
-          url: `communities/${spaceIdOrId}/members?${objectToSearchParams(params)}`,
+          url: `communities/${spaceIdOrId}/members?${objectToSearchParams(params)}`
         };
       },
       providesTags: (result) =>
@@ -388,18 +405,18 @@ export const GreenSpaceDAOApi = createApi({
             [
               ...result?.data.map(({ id }) => ({
                 type: "CommunityMembers" as const,
-                id,
+                id
               })),
-              { type: "CommunityMembers", id: "LIST" },
+              { type: "CommunityMembers", id: "LIST" }
             ]
           : // an error occurred, but we still want to refetch this query when `{ type: 'CommunityMembers', id: 'LIST' }` is invalidated
-            [{ type: "CommunityMembers", id: "LIST" }],
+            [{ type: "CommunityMembers", id: "LIST" }]
     }),
     // TODO: Add return types
     getCommunityChallenges: builder.query<Partial<APIResponse<any[]>>, { spaceIdOrId: string } & Record<string, any>>({
       query: ({ spaceIdOrId, ...params }) => {
         return {
-          url: `communities/${spaceIdOrId}/challenges?${objectToSearchParams(params)}`,
+          url: `communities/${spaceIdOrId}/challenges?${objectToSearchParams(params)}`
         };
       },
       providesTags: (result) =>
@@ -409,18 +426,18 @@ export const GreenSpaceDAOApi = createApi({
             [
               ...result?.data.map(({ id }) => ({
                 type: "CommunityChallenges" as const,
-                id,
+                id
               })),
-              { type: "CommunityChallenges", id: "LIST" },
+              { type: "CommunityChallenges", id: "LIST" }
             ]
           : // an error occurred, but we still want to refetch this query when `{ type: 'CommunityChallenges', id: 'LIST' }` is invalidated
-            [{ type: "CommunityChallenges", id: "LIST" }],
+            [{ type: "CommunityChallenges", id: "LIST" }]
     }),
     // TODO: Add return types
     getAppointments: builder.query<Partial<APIResponse<any[]>>, { status?: string } & Record<string, any>>({
       query: (params) => {
         return {
-          url: `appointments?${objectToSearchParams(params)}`,
+          url: `appointments?${objectToSearchParams(params)}`
         };
       },
       providesTags: (result) =>
@@ -430,17 +447,17 @@ export const GreenSpaceDAOApi = createApi({
             [
               ...result?.data.map(({ id }) => ({
                 type: "Appointments" as const,
-                id,
+                id
               })),
-              { type: "Appointments", id: "LIST" },
+              { type: "Appointments", id: "LIST" }
             ]
           : // an error occurred, but we still want to refetch this query when `{ type: 'Appointments', id: 'LIST' }` is invalidated
-            [{ type: "Appointments", id: "LIST" }],
+            [{ type: "Appointments", id: "LIST" }]
     }),
-    getUsers: builder.query<Partial<APIResponse<USER[]>>, { t: "member" | "nutritionist" | "all" }>({
-      query: ({ t }) => {
+    getUsers: builder.query<Partial<APIResponse<USER[]>>, void>({
+      query: () => {
         return {
-          url: `users?t=${t}`,
+          url: `users`
         };
       },
       providesTags: (result) =>
@@ -450,28 +467,28 @@ export const GreenSpaceDAOApi = createApi({
             [
               ...result?.data.map(({ id }) => ({
                 type: "Users" as const,
-                id: id,
+                id: id
               })),
-              { type: "Users", id: "LIST" },
+              { type: "Users", id: "LIST" }
             ]
-          : [{ type: "Users", id: "LIST" }],
+          : [{ type: "Users", id: "LIST" }]
     }),
     // TODO: Add return types
     getAppointment: builder.query<Partial<APIResponse<any>>, { params: Record<string, any>; appointmentId: string }>({
       query: ({ appointmentId, params }) => {
         return {
-          url: `appointments/${appointmentId}?${objectToSearchParams(params)}`,
+          url: `appointments/${appointmentId}?${objectToSearchParams(params)}`
         };
       },
       providesTags: (result, error, { appointmentId }) => {
         return [{ type: "Appointments" as const, id: appointmentId }];
-      },
+      }
     }),
 
     getMeetingRecords: builder.query<Partial<APIResponse<MEETING_RECORD[]>>, Record<string, string>>({
       query: (params) => {
         return {
-          url: `meeting-records?${objectToSearchParams(params)}`,
+          url: `meeting-records?${objectToSearchParams(params)}`
         };
       },
       providesTags: (result) =>
@@ -481,12 +498,12 @@ export const GreenSpaceDAOApi = createApi({
             [
               ...result?.data.map(({ id }) => ({
                 type: "MeetingRecords" as const,
-                id,
+                id
               })),
-              { type: "MeetingRecords", id: "LIST" },
+              { type: "MeetingRecords", id: "LIST" }
             ]
           : // an error occurred, but we still want to refetch this query when `{ type: 'MeetingRecords', id: 'LIST' }` is invalidated
-            [{ type: "MeetingRecords", id: "LIST" }],
+            [{ type: "MeetingRecords", id: "LIST" }]
     }),
     createRoom: builder.mutation<
       APIResponse<{ roomId: string; token?: string }>,
@@ -500,9 +517,9 @@ export const GreenSpaceDAOApi = createApi({
       query: ({ params, ...data }) => ({
         url: `create-room/?${objectToSearchParams(params!)}`,
         method: "POST",
-        body: data,
+        body: data
       }),
-      invalidatesTags: [{ type: "Rooms" as const, id: "LIST" }],
+      invalidatesTags: [{ type: "Rooms" as const, id: "LIST" }]
     }),
     createToken: builder.mutation<
       APIResponse<{
@@ -529,33 +546,44 @@ export const GreenSpaceDAOApi = createApi({
       query: ({ params, ...data }) => ({
         url: `create-token?${objectToSearchParams(params)}`,
         method: "POST",
-        body: data,
+        body: data
       }),
-      invalidatesTags: [{ type: "Tokens" as const, id: "LIST" }],
+      invalidatesTags: [{ type: "Tokens" as const, id: "LIST" }]
     }),
     addUser: builder.mutation<APIResponse<USER>, NEW_USER>({
       query: (data) => ({
         url: `users`,
         method: "POST",
-        body: data,
+        body: data
       }),
-      invalidatesTags: [{ type: "Users" as const, id: "LIST" }],
+      invalidatesTags: [{ type: "Users" as const, id: "LIST" }]
+    }),
+    checkUserExist: builder.mutation<
+      APIResponse<{ isNewUser: boolean }>,
+      { authId?: string; username?: string; address?: string }
+    >({
+      query: (data) => ({
+        url: `users/is-new`,
+        method: "POST",
+        body: data
+      }),
+      invalidatesTags: [{ type: "Users" as const, id: "CheckUser" }]
     }),
     addNutritionist: builder.mutation<APIResponse<Nutritionist>, NEW_NUTRITIONIST>({
       query: (data) => ({
         url: `users/nutritionists`,
         method: "POST",
-        body: data,
+        body: data
       }),
-      invalidatesTags: [{ type: "Nutritionists" as const, id: "LIST" }],
+      invalidatesTags: [{ type: "Nutritionists" as const, id: "Nutritionists" }]
     }),
     addMeeting: builder.mutation<APIResponse<MEETING>, NEW_MEETING>({
       query: (data) => ({
         url: `meetings`,
         method: "POST",
-        body: data,
+        body: data
       }),
-      invalidatesTags: [{ type: "Meetings" as const, id: "LIST" }],
+      invalidatesTags: [{ type: "Meetings" as const, id: "Meeting" }]
     }),
 
     // TODO: Add return types
@@ -563,26 +591,26 @@ export const GreenSpaceDAOApi = createApi({
       query: (data) => ({
         url: `appointments`,
         method: "POST",
-        body: data,
+        body: data
       }),
-      invalidatesTags: [{ type: "Appointments" as const, id: "LIST" }],
+      invalidatesTags: [{ type: "Appointments" as const, id: "Appointments" }]
     }),
     // TODO: Add return types
     createCommunity: builder.mutation<APIResponse<any>, NEW_COMMUNITY>({
       query: (data) => ({
         url: `communities`,
         method: "POST",
-        body: data,
+        body: data
       }),
-      invalidatesTags: [{ type: "Communities" as const, id: "LIST" }],
+      invalidatesTags: [{ type: "Communities" as const, id: "Communities" }]
     }),
     joinCommunity: builder.mutation<APIResponse<any>, { communityId: number; userId: string; spaceIdOrId: string }>({
       query: ({ spaceIdOrId, ...data }) => ({
         url: `communities/${spaceIdOrId}/join`,
         method: "POST",
-        body: data,
+        body: data
       }),
-      invalidatesTags: [{ type: "Communities" as const, id: "LIST" }],
+      invalidatesTags: [{ type: "Communities" as const, id: "Communities" }]
     }),
 
     checkHasJoinCommunity: builder.mutation<
@@ -592,34 +620,34 @@ export const GreenSpaceDAOApi = createApi({
       query: ({ spaceIdOrId, ...data }) => ({
         url: `communities/${spaceIdOrId}/has-joined`,
         method: "POST",
-        body: data,
+        body: data
       }),
-      invalidatesTags: [{ type: "Communities" as const, id: "LIST" }],
+      invalidatesTags: [{ type: "Communities" as const, id: "LIST" }]
     }),
     createCommunityEvent: builder.mutation<APIResponse<any>, any>({
       query: (data) => ({
         url: `community/events`,
         method: "POST",
-        body: data,
+        body: data
       }),
-      invalidatesTags: [{ type: "CommunityEvents" as const, id: "LIST" }],
+      invalidatesTags: [{ type: "CommunityEvents" as const, id: "LIST" }]
     }),
     createCommunityChallenge: builder.mutation<APIResponse<any>, any>({
       query: (data) => ({
         url: `community/challenges`,
         method: "POST",
-        body: data,
+        body: data
       }),
-      invalidatesTags: [{ type: "CommunityChallenges" as const, id: "LIST" }],
+      invalidatesTags: [{ type: "CommunityChallenges" as const, id: "LIST" }]
     }),
     joinCommunityChallenge: builder.mutation<APIResponse<any>, { slugId: string; challengeId: number; userId: string }>(
       {
         query: ({ slugId, ...data }) => ({
           url: `community/challenges/${slugId}/join`,
           method: "POST",
-          body: data,
+          body: data
         }),
-        invalidatesTags: [{ type: "CommunityChallenges" as const, id: "LIST" }],
+        invalidatesTags: [{ type: "CommunityChallenges" as const, id: "LIST" }]
       }
     ),
 
@@ -630,17 +658,17 @@ export const GreenSpaceDAOApi = createApi({
       query: ({ slugId, ...data }) => ({
         url: `community/challenges/${slugId}/has-joined`,
         method: "POST",
-        body: data,
+        body: data
       }),
-      invalidatesTags: [{ type: "CommunityChallenges" as const, id: "LIST" }],
+      invalidatesTags: [{ type: "CommunityChallenges" as const, id: "LIST" }]
     }),
     joinCommunityEvent: builder.mutation<APIResponse<any>, { slugId: string; eventId: number; userId: string }>({
       query: ({ slugId, ...data }) => ({
         url: `community/events/${slugId}/join`,
         method: "POST",
-        body: data,
+        body: data
       }),
-      invalidatesTags: [{ type: "CommunityEvents" as const, id: "LIST" }],
+      invalidatesTags: [{ type: "CommunityEvents" as const, id: "LIST" }]
     }),
     checkHasJoinCommunityEvent: builder.mutation<
       APIResponse<{ hasJoined: boolean }>,
@@ -649,27 +677,27 @@ export const GreenSpaceDAOApi = createApi({
       query: ({ slugId, ...data }) => ({
         url: `community/events/${slugId}/has-joined`,
         method: "POST",
-        body: data,
+        body: data
       }),
-      invalidatesTags: [{ type: "CommunityEvents" as const, id: "LIST" }],
+      invalidatesTags: [{ type: "CommunityEvents" as const, id: "LIST" }]
     }),
     addMeetingRecord: builder.mutation<APIResponse<MEETING_RECORD>, NEW_MEETING_RECORD>({
       query: (data) => ({
         url: `meeting-records`,
         method: "POST",
-        body: data,
+        body: data
       }),
-      invalidatesTags: [{ type: "MeetingRecords" as const, id: "LIST" }],
+      invalidatesTags: [{ type: "MeetingRecords" as const, id: "LIST" }]
     }),
     addArticle: builder.mutation<APIResponse<Article>, NewArticle>({
       query: (data) => ({
         url: `articles`,
         method: "POST",
-        body: data,
+        body: data
       }),
-      invalidatesTags: [{ type: "Articles" as const, id: "LIST" }],
-    }),
-  }),
+      invalidatesTags: [{ type: "Articles" as const, id: "LIST" }]
+    })
+  })
 });
 export const {
   useSendUserInfoToAIMutation,
@@ -680,6 +708,7 @@ export const {
   useLazyGetNutritionistQuery,
   useJoinCommunityMutation,
   useCheckHasJoinCommunityMutation,
+  useUpdateUserMutation,
   useCheckHasJoinCommunityChallengeMutation,
   useCheckHasJoinCommunityEventMutation,
   useCreateCommunityChallengeMutation,
@@ -689,6 +718,7 @@ export const {
   useAddFitnessPlanMutation,
   useAddMealPlanMutation,
   useGetUsersQuery,
+  useCheckUserExistMutation,
   useAddMeetingMutation,
   useGetArticleQuery,
   useGetArticlesQuery,
@@ -738,5 +768,5 @@ export const {
   useLazyGetCommunityMembersQuery,
   useLazyGetCommunityMessagesQuery,
   useLazyGetCommunityQuery,
-  usePrefetch,
+  usePrefetch
 } = GreenSpaceDAOApi;

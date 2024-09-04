@@ -2,7 +2,7 @@ import { PrivyProvider } from "@privy-io/react-auth";
 import "src/styles/globals.css";
 import "src/styles/tiptap.css";
 import type { AppProps } from "next/app";
-import { Button, ChakraProvider, useColorMode } from "@chakra-ui/react";
+import { ChakraProvider, useColorMode } from "@chakra-ui/react";
 import { fonts } from "src/lib/fonts";
 import theme from "src/config/theme";
 import { WagmiProvider } from "wagmi";

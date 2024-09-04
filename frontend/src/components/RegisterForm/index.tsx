@@ -16,9 +16,15 @@ import { NewUserType, RegisterType } from "src/components/NewUserType";
 import { Swiper, SwiperRef, SwiperSlide } from "swiper/react";
 import SwiperMain from "swiper";
 import NutritionistForm, { NutritionistFormFields } from "src/components/NutritionistForm";
-import { useAddNutritionistMutation, useAddUserMutation, useSendUserInfoToAIMutation } from "src/state/services";
+import {
+  useAddNutritionistMutation,
+  useAddUserMutation,
+  useCheckUserExistMutation,
+  useSendUserInfoToAIMutation,
+  useUpdateUserMutation
+} from "src/state/services";
 import MemberRegisterForm from "../MemberRegisterForm";
-import { useLogin, usePrivy } from "@privy-io/react-auth";
+import { useLogin, usePrivy, User } from "@privy-io/react-auth";
 import { Sex } from "src/state/types";
 import { useRouter } from "next/router";
 import { useWallet } from "src/context/WalletProvider";
@@ -99,15 +105,16 @@ interface RegisterFormProps {
 
 const RegisterForm: React.FC<RegisterFormProps> = ({ isOpen, onClose }) => {
   const { allTokensData } = useAppContext();
-  const [storedInfo] = useLocalStorage<{ fromLogin?: boolean }>("stored-info", {});
-  const [addNutritionists, { isLoading }] = useAddNutritionistMutation();
-  const [addUser, { isLoading: addUserLoading }] = useAddUserMutation();
-  const [sendUserInfoToAI, { isLoading: sendUserInfoToAILoading }] = useSendUserInfoToAIMutation();
+  const [addNutritionists] = useAddNutritionistMutation();
+  const [addUser] = useAddUserMutation();
+  const [updateUser] = useUpdateUserMutation();
+  const [checkUserExist] = useCheckUserExistMutation();
+  const [sendUserInfoToAI] = useSendUserInfoToAIMutation();
   const { address } = useWallet();
   const [amount, setAmount] = useState("0.01");
   const debouncedAmount = useDebounce<string>(amount, 500);
   const [memberInitialValues, setMemberInitialValues] = useState<MemberRegisterFormFields>();
-  const { user, ready } = usePrivy();
+  const { user } = usePrivy();
   const swiperRef = useRef<SwiperRef>();
   const [activeSlideIndex, setActiveSlideIndex] = useState(0);
   const [selectedUserType, setSelectedUserType] = useState<RegisterType>("member");
@@ -132,34 +139,60 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ isOpen, onClose }) => {
     smokingLength: ""
   });
   const router = useRouter();
-  const { login } = useLogin({
-    onComplete: async (user, isNewUser, wasAlreadyAuthenticated, loginMethod) => {
-      if (isNewUser && !storedInfo?.fromLogin) {
-        switch (loginMethod) {
-          case "google":
+  async function authenticateWithGoogle(user: User) {
+    try {
+      await checkUserExist({
+        authId: user.id,
+        address: user?.wallet?.address
+      })
+        .unwrap()
+        .then(async (res) => {
+          if (res.data.isNewUser) {
             await addUser({
               fullName: user?.google?.name,
               authId: user?.id,
               email: user?.google?.email,
               address: user?.wallet?.address!,
-              emailVerified: true,
-              userCid: cid,
-              userType: selectedUserType
-            }).unwrap();
-            break;
+              emailVerified: true
+            })
+              .unwrap()
+              .then(() => {
+                router.push("/onboarding/member");
+              });
+          } else {
+            router.push("/member/dashboard");
+          }
+        });
+    } catch (error) {}
+  }
+  async function authenticateWithWallet(user: User) {
+    try {
+      await checkUserExist({
+        authId: user?.id,
+        address: address!
+      })
+        .unwrap()
+        .then((res) => {
+          if (res.data.isNewUser) {
+            router.push("/onboarding/member");
+          } else {
+            router.push("/member/dashboard");
+          }
+        });
+    } catch (error) {}
+  }
+  const { login } = useLogin({
+    onComplete: async (user, isNewUser, wasAlreadyAuthenticated, loginMethod) => {
+      switch (loginMethod) {
+        case "google":
+          await authenticateWithGoogle(user);
+          break;
 
-          default:
-            await addUser({
-              fullName: memberFormData.fullName,
-              authId: user?.id,
-              address: address!,
-              userType: selectedUserType,
-              userCid: cid
-            }).unwrap();
-        }
-        // sendUserInfoToAI(memberFormData);
-        router.push("/member/dashboard");
+        default:
+          await authenticateWithWallet(user);
       }
+      // sendUserInfoToAI(memberFormData);
+      // router.push("/member/dashboard");
     }
   });
 
@@ -168,30 +201,20 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ isOpen, onClose }) => {
       setMemberFormData(formData);
       setCid(userCid as string);
 
-      // const hash = await writeContract(config, {
-      //   address: communityAddr,
-      //   abi: communityAbi as readonly unknown[],
-      //   functionName: "registerUser",
-      //   args: [userCid, allTokensData.userNftUri],
-      //   //@ts-ignore
-      //   value: parseEther(debouncedAmount || "0")
-      // });
-
-      login();
+      if (user) {
+        await updateUser({
+          addressOrAuthId: user?.id,
+          ...formData
+        }).unwrap();
+      } else {
+        login();
+      }
     } catch (error) {
       console.log({ error });
     }
   }
   async function handleNutritionistFormSubmit(data: NutritionistFormFields, credentialUri: string, uploadUri: string) {
     try {
-      // const hash = await writeContract(config, {
-      //   address: communityAddr,
-      //   abi: communityAbi as readonly unknown[],
-      //   functionName: "registerNutritionist",
-      //   args: [uploadUri, allTokensData.nutritionistNftUri],
-      //   //@ts-ignore
-      //   value: parseEther(debouncedAmount || "0")
-      // });
       await addNutritionists({
         credentialsCid: credentialUri,
         address: address as string,
@@ -200,8 +223,11 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ isOpen, onClose }) => {
         sex: data.sex as Sex,
         country: data.country,
         birthDate: data.birthDate
-      }).unwrap();
-      router.push("/nutritionist/check-status");
+      })
+        .unwrap()
+        .then(() => {
+          router.push("/nutritionist/check-status");
+        });
     } catch (error) {
       console.log({ error });
     }

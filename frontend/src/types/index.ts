@@ -10,11 +10,12 @@ export type USER = {
   role?: "admin" | "user";
   avatar?: string;
   authId?: string;
+  email?: string;
+  emailVerified?: boolean;
   username: string;
-  userType?: USER_TYPE;
+  userCid?: string;
 };
-export type USER_TYPE = "member" | "nutritionist";
-export type NEW_USER = Pick<USER, "address" | "chainId" | "fullName" | "avatar" | "authId" | "userType">;
+export type NEW_USER = Pick<USER, "address" | "chainId" | "fullName" | "avatar" | "authId">;
 export type MEETING = {
   id: number;
   roomId: string;

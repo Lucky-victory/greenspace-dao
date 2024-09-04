@@ -12,35 +12,44 @@ import { usePrivy } from "@privy-io/react-auth";
 import TurndownService from "turndown";
 
 export const useLocalStorage = <T>(key: string, initialValue: T) => {
-  // State to store our value
-  const [storedValue, setStoredValue] = useState<T>(initialValue);
+  const [storedValue, setStoredValue] = useState<T>(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const item = window.localStorage.getItem(key);
+        return item ? JSON.parse(item) : initialValue;
+      } catch (error) {
+        console.log(error);
+        return initialValue;
+      }
+    }
+    return initialValue;
+  });
   console.log("use Storage " + key);
 
   const setValue = useCallback(
-    (value: T) => {
+    (value: T | ((val: T) => T)) => {
       try {
-        console.log("use Storage Callback");
-        // Allow value to be a function so we have same API as useState
-        const valueToStore = value;
-        // Save state
+        const valueToStore = value instanceof Function ? value(storedValue) : value;
         setStoredValue(valueToStore);
-        // Save to local storage
         if (typeof window !== "undefined") {
           window.localStorage.setItem(key, JSON.stringify(valueToStore));
         }
       } catch (error) {
-        // A more advanced implementation would handle the error case
         console.log(error);
       }
     },
-    [key]
+    [key, storedValue]
   );
 
   useEffect(() => {
     if (typeof window !== "undefined") {
       const handleStorageChange = (event: StorageEvent) => {
-        if (event.key === key && event.newValue) {
-          setStoredValue(JSON.parse(event.newValue));
+        if (event.key === key && event.newValue !== null) {
+          try {
+            setStoredValue(JSON.parse(event.newValue));
+          } catch (error) {
+            console.log(error);
+          }
         }
       };
       window.addEventListener("storage", handleStorageChange);

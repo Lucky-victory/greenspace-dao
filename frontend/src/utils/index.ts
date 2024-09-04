@@ -1,7 +1,7 @@
 import axios from "axios";
 import { NextApiRequest, NextApiResponse } from "next";
-import generateUniqueId from "generate-unique-id";
-import { nanoid } from "nanoid";
+import { SnowflakeIdGenerator } from "@green-auth/snowflake-unique-id";
+import { generate } from "random-words";
 
 export const env = process.env.NODE_ENV || "development";
 export const IS_DEV = env === "development";
@@ -9,6 +9,11 @@ import slugify from "slugify";
 import isEmpty from "just-is-empty";
 import { format } from "date-fns";
 
+const idGenerator = new SnowflakeIdGenerator({
+  nodeId: 8,
+  nodeBits: 8,
+  sequenceBits: 12
+});
 export function getCallerFunctionName(): string | null {
   const error = new Error();
   const stack = error.stack?.split("\n");
@@ -77,8 +82,13 @@ export function addMinutesToDate(minutes: number, date: string | Date) {
 
   return newTime;
 }
-export const generateCommunityId = (prefix = "GS") => {
-  return generateNumId(prefix, 14, "-");
+export const generateBigintId = (len?: number) => {
+  const fullId = idGenerator.bigIntId();
+  if (len === undefined) {
+    return fullId;
+  }
+  const idString = fullId.toString();
+  return idString.slice(-len);
 };
 /**
  *
@@ -88,14 +98,20 @@ export const generateCommunityId = (prefix = "GS") => {
  * @returns
  */
 export const generateNumId = (prefix = "", len = 10, sep = "") => {
-  return `${prefix}${sep}${generateUniqueId({
-    useLetters: false,
-    useNumbers: true,
-    length: len
-  })}`;
+  return `${prefix}${sep}${generateBigintId(len)}`;
 };
-export const generateUsername = (prefix = "GH", len = 10) => {
-  return generateNumId(prefix, len, "_");
+export const generateUsername = () => {
+  return (
+    generate({
+      exactly: 2,
+      minLength: 4,
+      maxLength: 5,
+      join: "",
+      formatter(word) {
+        return word.charAt(0).toUpperCase() + word.slice(1);
+      }
+    }) + generateBigintId(5)
+  );
 };
 export function objectToSearchParams(obj: Record<string, any>) {
   const params = new URLSearchParams();
@@ -170,7 +186,7 @@ export async function mainHandler(
   }
 }
 export function generateUrlSafeId(len = 21, prefix = ""): string {
-  return prefix + nanoid(len);
+  return prefix + idGenerator.urlSafeId(len);
 }
 interface NestedObject {
   [key: string]: any;
@@ -209,37 +225,8 @@ export const apiPost = async (endpoint: string, params: Record<string, any>): Pr
   });
   return { message: result.data };
 };
-// export const getUserFromDB = async (
-//   usernameOrIdOrAddress: string | number,
-//   columns = {}
-// ) => {
-//   const defaultCols = {
-//     id: true,
-//     address: true,
-//     fullName: true,
-//     username: true,
-//     avatar: true,
-//     userType: true,
-//     authId: true,
-//     role: true,
-//   };
-//   const cols = { ...defaultCols, ...columns };
-//   try {
-//     const user = await db.query.users.findFirst({
-//       where: or(
-//         eq(users.username, usernameOrIdOrAddress as string),
-//         eq(users.address, usernameOrIdOrAddress as string),
-//         eq(users.authId, usernameOrIdOrAddress as string)
-//       ),
-//       columns: cols,
-//     });
-//     return user;
-//   } catch (error) {
-//     throw error;
-//   }
-// };
+
 export function selectObjectKeys<T extends object>(obj: T) {
-  const resultArray = [];
   if (isEmpty(obj)) return [];
   return Object.keys(obj).map((key) => {
     if (Object.prototype.hasOwnProperty.call(obj, key)) {
@@ -251,11 +238,9 @@ export function selectObjectKeys<T extends object>(obj: T) {
       return keyString;
     }
   });
-
-  // return resultArray;
 }
 export const generateSlug = (text: string) =>
-  slugify(shortenText(text, 60, "") + "-" + nanoid(6), {
+  slugify(shortenText(text, 60, "") + "-" + generateBigintId(6), {
     lower: true,
     remove: /[*+~.()'"!:@]/g,
     strict: true

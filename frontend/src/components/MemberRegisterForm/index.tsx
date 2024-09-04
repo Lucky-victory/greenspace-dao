@@ -28,19 +28,19 @@ interface RegisterComponentProps {
   onClose?: () => void;
 
   initialValues?: Partial<MemberRegisterFormFields>;
-  onSubmit?: (formData: MemberRegisterFormFields, userCid?: string) => void;
+  onSubmit?: (formData: MemberRegisterFormFields, userCid?: string) => Promise<void>;
 }
 
 export const MemberRegisterForm: React.FC<RegisterComponentProps> = ({
   onClose,
-  onSubmit = () => {},
-  initialValues = {} // Default to empty object if not provided
+  onSubmit = async () => {},
+  initialValues = {}
 }) => {
   const toast = useToast();
 
   const swiperNestedRef = useRef<SwiperRef>();
 
-  const [amount] = useState("0.01");
+  // const [amount] = useState("0.01");
   // const debouncedAmount = useDebounce<string>(amount, 500);
   const [cid, setCid] = useState<string>("");
   const { mutateAsync: upload } = useStorageUpload();
@@ -57,9 +57,7 @@ export const MemberRegisterForm: React.FC<RegisterComponentProps> = ({
       const uploadedCid = await upload({ data: dataToUpload });
       const userCid = uploadedCid[0];
       setCid(userCid);
-      await new Promise((resolve, reject) => {
-        resolve(onSubmit?.(formDataObject, userCid));
-      });
+      await onSubmit(formDataObject, userCid);
       helpers.setSubmitting(false);
       onClose?.();
     } catch (error) {
@@ -78,6 +76,7 @@ export const MemberRegisterForm: React.FC<RegisterComponentProps> = ({
         <>
           <OnboardingProgress currentStep={currentStep} totalSteps={totalSteps} />
           <Formik
+            enableReinitialize
             initialValues={
               {
                 fullName: "",
@@ -158,11 +157,7 @@ export const MemberRegisterForm: React.FC<RegisterComponentProps> = ({
                       </Field>
                     </Stack>
                     <HStack my={6} justify="flex-end">
-                      <Button
-                        rounded="full"
-                        colorScheme="gray"
-                        onClick={() => swiperNestedRef.current?.swiper.slideNext()}
-                      >
+                      <Button rounded="full" onClick={() => swiperNestedRef.current?.swiper.slideNext()}>
                         Continue
                       </Button>
                     </HStack>
@@ -229,19 +224,16 @@ export const MemberRegisterForm: React.FC<RegisterComponentProps> = ({
                         )}
                       </Field>
                     </Stack>
-                    <HStack my={6} justify="space-between">
+                    <HStack my={6} justify="flex-end">
                       <Button
                         rounded="full"
+                        colorScheme="gray"
                         variant="outline"
                         onClick={() => swiperNestedRef.current?.swiper.slidePrev()}
                       >
                         Back
                       </Button>
-                      <Button
-                        rounded="full"
-                        colorScheme="gray"
-                        onClick={() => swiperNestedRef.current?.swiper.slideNext()}
-                      >
+                      <Button rounded="full" onClick={() => swiperNestedRef.current?.swiper.slideNext()}>
                         Continue
                       </Button>
                     </HStack>
@@ -312,19 +304,16 @@ export const MemberRegisterForm: React.FC<RegisterComponentProps> = ({
                         )}
                       </Field>
                     </Stack>
-                    <HStack my={6} justify="space-between">
+                    <HStack my={6} justify="flex-end">
                       <Button
                         rounded="full"
+                        colorScheme="gray"
                         variant="outline"
                         onClick={() => swiperNestedRef.current?.swiper.slidePrev()}
                       >
                         Back
                       </Button>
-                      <Button
-                        rounded="full"
-                        colorScheme="gray"
-                        onClick={() => swiperNestedRef.current?.swiper.slideNext()}
-                      >
+                      <Button rounded="full" onClick={() => swiperNestedRef.current?.swiper.slideNext()}>
                         Continue
                       </Button>
                     </HStack>
@@ -419,7 +408,6 @@ export const MemberRegisterForm: React.FC<RegisterComponentProps> = ({
           </Formik>
         </>
       </SwiperSlide>
-      {/* </Box> */}
     </>
   );
 };
